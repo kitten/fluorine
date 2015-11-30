@@ -24,11 +24,13 @@ npm install --save fluorine-lib
 
 Fluorine is heavily inspired and based on the ideas of Redux.
 
-### Documentation and Example
+## Documentation and Example
 
 TBD
 
-## Why write another Flux library?
+## Frequently Asked Questions
+
+### Why write another Flux library?
 
 The goal of this project is to create a efficient but minimal library on top
 of RxJS that can preserve your previous (pure reducer) stores and actions, which
@@ -43,7 +45,7 @@ Dispatcher. So Fluorine generates an observable that reduces your Dispatcher
 to an anonymous stream of state and provides tools to inject this state into
 your React application.
 
-## Why the name?
+### Why the name?
 
 Fluorine is (chemically-speaking) the most *reactive* non-metal. As Fluorine
 embraces RxJS to bring even more advantages of reactive programming to React, it
