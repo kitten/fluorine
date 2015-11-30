@@ -1,0 +1,25 @@
+{
+  "name": "fluoride",
+  "version": "0.0.1",
+  "main": "lib/index.js",
+  "jsnext:main": "src/index.js",
+  "files": [
+    "lib",
+    "src"
+  ],
+  "description": "State Accumulation from a single stream of actions",
+  "scripts": {
+    "clean": "rm -rf lib",
+    "build": "babel src --out-dir lib",
+    "prepublish": "npm run clean && npm run build"
+  },
+  "author": "Phil Plückthun <phil@plckthn.me>",
+  "license": "MIT",
+  "dependencies": {
+    "rx": "^4.0.7",
+  },
+  "devDependencies": {
+    "babel-cli": "^6.2.0",
+    "babel-preset-es2015": "^6.1.18"
+  }
+}
