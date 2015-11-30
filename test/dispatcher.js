@@ -65,3 +65,18 @@ test('Dispatcher returns predictable references', t => {
   t.equal(dispatcher.reduce(fnA), dispatcher.reduce(fnA))
   t.notEqual(dispatcher.reduce(fnA), dispatcher.reduce(fnB))
 })
+
+test('Dispatcher stores support multiple subscriptions with the same outcome', t => {
+  t.plan(2)
+
+  const dispatcher = createDispatcher()
+  const fnA = function (x) { return x }
+
+  dispatcher.reduce(fnA).subscribe(x => {
+    t.equal(x, null)
+  })
+
+  dispatcher.reduce(fnA).subscribe(x => {
+    t.equal(x, null)
+  })
+})
