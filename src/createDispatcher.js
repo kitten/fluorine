@@ -9,6 +9,7 @@ export default function createDispatcher() {
 
   const identifier = Symbol()
   const cache = []
+  const state = []
 
   // Extend Observable with our Dispatcher methods
   const res = dispatcher.asObservable()
@@ -31,7 +32,7 @@ export default function createDispatcher() {
 
   proto.getState = fn => {
     if (typeof fn[identifier] === 'number')
-      return cache[fn[identifier]].getValue()
+      return state[fn[identifier]]()
 
     throw `Function wasn't yet reduced and is therefore unknown.`
   }
@@ -41,16 +42,18 @@ export default function createDispatcher() {
       return cache[fn[identifier]]
 
     const store = new BehaviorSubject(init)
+    const anon = store.asObservable()
 
     dispatcher
       .scan(fn)
       .distinctUntilChanged()
-      .subscribe(store.onNext)
+      .subscribe(x => store.onNext(x))
 
     fn[identifier] = cache.length
-    cache.push(store)
+    state.push(store.getValue.bind(store))
+    cache.push(anon)
 
-    return store.asObservable()
+    return anon
   }
 
   return res
