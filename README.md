@@ -9,6 +9,9 @@ anonymous observables containing your state.
 
 Use all advantages of Redux and RxJS for your next React project.
 
+[![build status](https://img.shields.io/travis/philplckthun/fluorine/master.svg)](https://travis-ci.org/philplckthun/fluorine)
+[![npm version](https://img.shields.io/npm/v/fluorine-lib.svg)](https://www.npmjs.com/package/fluorine-lib)
+
 ## Installation
 
 To install the latest version:
@@ -21,7 +24,7 @@ npm install --save fluorine-lib
 
 Fluorine is heavily inspired and based on the ideas of Redux.
 
-## Documentation and Example
+### Documentation and Example
 
 TBD
 
