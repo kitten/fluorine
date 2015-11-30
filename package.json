@@ -10,7 +10,7 @@
   "description": "State Accumulation from a single stream of actions",
   "scripts": {
     "test": "babel-tape-runner test/*.js | faucet",
-    "lint": "eslint src",
+    "lint": "eslint src test",
     "check": "npm run lint && npm run test",
     "clean": "rm -rf lib",
     "build": "babel src --out-dir lib",
@@ -55,5 +55,8 @@
   },
   "peerDependencies": {
     "react": ">= 0.12.0"
+  },
+  "engines": {
+    "node": ">= 0.12.0"
   }
 }

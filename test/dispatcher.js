@@ -14,18 +14,18 @@ test('Dispatcher dispatch', t => {
   dispatcher
     .bufferWithCount(2)
     .subscribe(x => {
-      t.deepEqual(x, [null, action])
+      t.deepEqual(x, [ null, action ])
     })
 })
 
 test('Dispatcher reduces correctly', t => {
   t.plan(2)
 
-  const arr = [1, 2, 3]
+  const arr = [ 1, 2, 3 ]
   const dispatcher = createDispatcher()
   dispatcher.dispatch('NOISE') // This should be ignored
 
-  const reducer = function(state, action) {
+  const reducer = function (state, action) {
     if (state === null) {
       return 0
     }
@@ -41,7 +41,7 @@ test('Dispatcher reduces correctly', t => {
     .reduce(reducer)
     .bufferWithCount(4)
     .subscribe(x => {
-      t.deepEqual(x, [0, 1, 3, 6])
+      t.deepEqual(x, [ 0, 1, 3, 6 ])
       t.equal(dispatcher.getState(reducer), 6)
     })
 
@@ -59,8 +59,8 @@ test('Dispatcher returns predictable references', t => {
 
   const dispatcher = createDispatcher()
 
-  const fnA = function(x) { return x }
-  const fnB = function(x) { return x }
+  const fnA = function (x) { return x }
+  const fnB = function (x) { return x }
 
   t.equal(dispatcher.reduce(fnA), dispatcher.reduce(fnA))
   t.notEqual(dispatcher.reduce(fnA), dispatcher.reduce(fnB))
