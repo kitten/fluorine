@@ -39,7 +39,7 @@ export default function createDispatcher() {
       const store = BehaviorSubject(init)
 
       dispatcher
-        .scan(reducer)
+        .scan(fn)
         .distinctUntilChanged()
         .subscribe(store.onNext)
 
@@ -47,7 +47,7 @@ export default function createDispatcher() {
       cache.push(store)
 
       return store.asObservable()
-    }
+    },
 
     stream: dispatcher.asObservable()
   }

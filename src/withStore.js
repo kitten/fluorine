@@ -20,7 +20,7 @@ export default function withStore(store, prop = 'data') {
           data: next
         })
       }, err => {
-        console.error(err)
+        throw err
       })
     }
 

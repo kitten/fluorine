@@ -17,6 +17,14 @@ To install the latest version:
 npm install --save fluorine-js
 ```
 
+## Influences
+
+Fluorine is heavily inspired and based on the ideas of Redux.
+
+## Documentation and Example
+
+TBD
+
 ## Why write another Flux library?
 
 The goal of this project is to create a efficient but minimal library on top
