@@ -1,5 +1,5 @@
 {
-  "name": "fluorine",
+  "name": "fluorine-lib",
   "version": "0.0.1",
   "main": "lib/index.js",
   "jsnext:main": "src/index.js",
@@ -22,6 +22,18 @@
   "dependencies": {
     "rx": "^4.0.7"
   },
+  "keywords": [
+    "florine",
+    "redux",
+    "flux",
+    "react",
+    "reactivex",
+    "rxjs",
+    "reducer",
+    "state",
+    "functional",
+    "immutable"
+  ],
   "devDependencies": {
     "babel-cli": "^6.2.0",
     "babel-eslint": "^4.1.6",

@@ -14,7 +14,7 @@ Use all advantages of Redux and RxJS for your next React project.
 To install the latest version:
 
 ```
-npm install --save fluorine-js
+npm install --save fluorine-lib
 ```
 
 ## Influences
