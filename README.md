@@ -1,5 +1,7 @@
 # Fluorine
 
+[![Join the chat at https://gitter.im/philplckthun/fluorine](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/philplckthun/fluorine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Fluorine provides you with the tools to accumulate your state from a stream of
 actions.
 
