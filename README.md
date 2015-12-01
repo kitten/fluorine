@@ -11,6 +11,7 @@ Use all advantages of Redux and RxJS for your next React project.
 
 [![build status](https://img.shields.io/travis/philplckthun/fluorine/master.svg)](https://travis-ci.org/philplckthun/fluorine)
 [![npm version](https://img.shields.io/npm/v/fluorine-lib.svg)](https://www.npmjs.com/package/fluorine-lib)
+[![gitter channel](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/philplckthun/fluorine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Installation
 
