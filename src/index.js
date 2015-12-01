@@ -1,6 +1,6 @@
 import createDispatcher from './createDispatcher'
 import withActions from './withActions'
-import withStore from './widthStore'
+import withStore from './withStore'
 
 export {
   createDispatcher,
