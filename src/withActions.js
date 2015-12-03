@@ -5,15 +5,15 @@ export default function withActions(dispatcher, actions, prop = 'actions') {
   assert(typeof actions === 'object', 'Expected `actions` to be an Object.')
   return Child => class ActionContainer extends React.Component {
     render() {
-      const props = {}
-
-      props[prop] = {}
+      const _actions = {}
       for (let key in actions) {
         if (actions.hasOwnProperty(key)) {
-          props[prop] = action => dispatcher.dispatch(action)
+          _actions[key] = (...arg) => dispatcher.dispatch(actions[key](...arg))
         }
       }
 
+      const props = {}
+      props[prop] = _actions
       return <Child {...Object.assign({}, this.props, props)}/>
     }
   }

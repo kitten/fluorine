@@ -24,10 +24,12 @@ export default function createDispatcher() {
         })
       ).then(res => {
         dispatcher.onNext(res)
+        return res
       })
     }
 
     dispatcher.onNext(action)
+    return Promise.resolve(action)
   }
 
   proto.getState = fn => {
@@ -37,7 +39,7 @@ export default function createDispatcher() {
     throw `Function wasn't yet reduced and is therefore unknown.`
   }
 
-  proto.reduce =(fn, init = null) => {
+  proto.reduce = (fn, init = null) => {
     if (typeof fn[identifier] === 'number')
       return cache[fn[identifier]]
 
