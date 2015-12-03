@@ -6,6 +6,8 @@ stream to a Store, or get the state of any of an event stream's stores.
 
 Underneath the Dispatcher interface your event stream is represented by a ReactiveX
 [*ReplaySubject*](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/replaysubject.md).
+The Dispatcher inherits this ReplaySubject. So you can use the Dispatcher like it
+were an Observable itself.
 
 > **For Flux users:** It is crucial to understand, that with Fluorine the
 > Dispatcher is the central hub of your app's state. Instead of stores there are

@@ -21,13 +21,73 @@ To install the latest version:
 npm install --save fluorine-lib
 ```
 
-## Influences
+## Shortest Demo Possible
 
-Fluorine is heavily inspired and based on the ideas of Redux.
+This is an identical demo to the one on the Redux repo for comparison.
 
-## Documentation and Example
+```js
+import { createDispatcher } from 'fluorine-lib'
 
-TBD
+/**
+ * This is a reducer, a pure function with (state, action) => state signature.
+ * It describes how an action transforms the state into the next state.
+ *
+ * The shape of the state is up to you: it can be a primitive, an array, an object,
+ * or even an Immutable.js data structure. The only important part is that you should
+ * not mutate the state object, but return a new object if the state changes.
+ *
+ * In this example, we use a `switch` statement and strings, but you can use a helper that
+ * follows a different convention (such as function maps) if it makes sense for your project.
+ */
+function counter(state = 0, action) {
+  switch (action.type) {
+  case 'INCREMENT':
+    return state + 1
+  case 'DECREMENT':
+    return state - 1
+  default:
+    return state
+  }
+}
+
+// Create a dispatcher which is our event stream
+// We can now use its methods: dispatch, getState and reduce
+const dispatcher = createDispatcher()
+
+// This reduces the dispatcher event stream to a store. This is essentially an
+// RxJS Observable that emits the state of the store over time
+const store = dispatcher.reduce(counter)
+
+store.subscribe(x => {
+  console.log(x)
+})
+
+// The only way to mutate the internal state is to dispatch an action.
+// The actions can be serialized, logged or stored and later replayed.
+store.dispatch({ type: 'INCREMENT' })
+// 1
+store.dispatch({ type: 'INCREMENT' })
+// 2
+store.dispatch({ type: 'DECREMENT' })
+// 1
+```
+
+Compared to Flux we've got a much better separation of concerns. The store is
+just a pure function that describes the changing of the store's state with each
+action that is received.
+
+Compared to Redux we've got our single source of truth inside the Dispatcher as
+a stream of events / actions. We can even use the RxJS methods to operate on a
+store's state or even on all actions by calling methods on the Dispatcher itself.
+
+## Documentation
+
+* [API Reference](docs/api/README.md)
+
+To be done:
+
+* Basics
+* Glossary
 
 ## Frequently Asked Questions
 
@@ -54,3 +114,14 @@ is a fitting name.
 
 Furthermore the latin verb *fluo* means "flow", which reminded me about Flux and
 its unidirectional data-flow.
+
+## Thanks to
+
+* Dan Abramov for Redux that is a big influence to Fluorine
+* The rackt team
+* The React team
+* The ReactiveX and RxJS developers and the ReactiveX community
+
+## License
+
+MIT
