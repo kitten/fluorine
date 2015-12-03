@@ -7,7 +7,7 @@ functions that consume these stores and actions.
 
 ## Exports
 
-* [createDispatcher()](createDispather.md)
+* [createDispatcher()](createDispatcher.md)
 * [withActions(dispatcher, actions, [prop])](withActions.md)
 * [withStore(store, [prop])](withStore.md)
 
