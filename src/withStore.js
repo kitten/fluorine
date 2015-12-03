@@ -5,17 +5,24 @@ import {
 } from 'rx'
 
 export default function withStore(store, prop = 'data') {
-  assert(store instanceof Observable, 'Expected `store` to be an Observable.')
   return Child => class StoreContainer extends React.Component {
     constructor(props) {
       super(props)
+
+      if (typeof store === 'function') {
+        this.store = store(props)
+      } else {
+        this.store = store
+      }
+
       this.state = {
         data: null
       }
     }
 
     componentWillMount() {
-      this.sub = store.subscribe(next => {
+      assert(this.store instanceof Observable, 'Expected `store` to be an Observable.')
+      this.sub = this.store.subscribe(next => {
         this.setState({
           data: next
         })
