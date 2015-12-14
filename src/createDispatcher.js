@@ -23,7 +23,9 @@ export default function createDispatcher() {
           dispatcher.onNext(res)
         })
       ).then(res => {
-        dispatcher.onNext(res)
+        if (res && res.type) {
+          dispatcher.onNext(res)
+        }
         return res
       })
     }
