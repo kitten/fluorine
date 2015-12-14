@@ -47,7 +47,7 @@ export default function createDispatcher() {
     const anon = store.asObservable()
 
     dispatcher
-      .scan(fn)
+      .scan(fn, null)
       .distinctUntilChanged()
       .subscribe(x => store.onNext(x))
 

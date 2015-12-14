@@ -14,7 +14,7 @@ test('Dispatcher dispatch', t => {
   dispatcher
     .bufferWithCount(2)
     .subscribe(x => {
-      t.deepEqual(x, [ null, action ])
+      t.deepEqual(x, [ { type: '_INIT_' }, action ])
     })
 })
 
@@ -26,8 +26,8 @@ test('Dispatcher reduces correctly', t => {
   dispatcher.dispatch('NOISE') // This should be ignored
 
   const reducer = function (state, action) {
-    if (state === null) {
-      return 0
+    if (!state) {
+      state = 0
     }
 
     if (action.type === 'ADD') {
@@ -70,13 +70,13 @@ test('Dispatcher stores support multiple subscriptions with the same outcome', t
   t.plan(2)
 
   const dispatcher = createDispatcher()
-  const fnA = function (x) { return x }
+  const fnA = function (w, x) { return x }
 
   dispatcher.reduce(fnA).subscribe(x => {
-    t.equal(x, null)
+    t.equal(x.type, '_INIT_')
   })
 
   dispatcher.reduce(fnA).subscribe(x => {
-    t.equal(x, null)
+    t.equal(x.type, '_INIT_')
   })
 })
