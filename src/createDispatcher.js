@@ -5,7 +5,7 @@ import {
 
 export default function createDispatcher() {
   const dispatcher = new ReplaySubject()
-  dispatcher.onNext(null) // Initialisation action
+  dispatcher.onNext({ type: '_INIT_' }) // Initialisation action
 
   const identifier = Symbol()
   const cache = []
