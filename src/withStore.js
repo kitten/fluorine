@@ -15,13 +15,12 @@ export default function withStore(store, prop = 'data') {
         this.store = store
       }
 
+      assert(this.store instanceof Observable, 'Expected `store` to be an Observable.')
+
       this.state = {
         data: null
       }
-    }
 
-    componentWillMount() {
-      assert(this.store instanceof Observable, 'Expected `store` to be an Observable.')
       this.sub = this.store.subscribe(next => {
         this.setState({
           data: next
@@ -29,6 +28,22 @@ export default function withStore(store, prop = 'data') {
       }, err => {
         throw err
       })
+    }
+
+    componentWillReceiveProps(newProps) {
+      if (typeof store === 'function') {
+        const newStore = store(newProps)
+        if (newStore !== this.store) {
+          this.sub.dispose()
+          this.sub = newStore.subscribe(next => {
+            this.setState({
+              data: next
+            })
+          }, err => {
+            throw err
+          })
+        }
+      }
     }
 
     componentWillUnmount() {
