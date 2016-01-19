@@ -20,7 +20,9 @@ export default function withStore(store, prop = 'data') {
       this.state = {
         data: null
       }
+    }
 
+    componentWillMount() {
       this.sub = this.store.subscribe(next => {
         this.setState({
           data: next
