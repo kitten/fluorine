@@ -12,7 +12,7 @@ export default class Counter extends Component {
   static propTypes = {
     actions: PropTypes.objectOf(PropTypes.func).isRequired,
     counter: PropTypes.number.isRequired
-  }
+  };
 
   render() {
     const {
