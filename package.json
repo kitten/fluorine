@@ -10,7 +10,7 @@
   "description": "State Accumulation from a single stream of actions",
   "scripts": {
     "test": "jest",
-    "lint": "eslint src test",
+    "lint": "eslint src",
     "check": "npm run lint && npm run test",
     "clean": "rm -rf lib",
     "build": "babel src --out-dir lib",
