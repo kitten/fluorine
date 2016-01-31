@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils'
 
 import withActions from '../src/withActions'
@@ -8,8 +8,10 @@ const doSomething = () => ({
   type: 'DO_SOMETHING'
 })
 
-function Child() {
-  return <div/>
+class Child extends Component {
+  render() {
+    return <div/>
+  }
 }
 
 describe('withActions', () => {
@@ -20,25 +22,27 @@ describe('withActions', () => {
     })(Child)
 
     const tree = renderIntoDocument(<Wrapper/>)
-    console.log(tree)
-
-    expect(tree.type).toBe(Child)
+    const child = findRenderedComponentWithType(tree, Child)
 
     // Check for actions prop
     expect(
-      tree.props.actions &&
-      typeof tree.props.actions === 'object' &&
-      tree.props.actions.hasOwnProperty('doSomething') &&
-      typeof tree.props.actions.doSomething === 'function'
+      child.props.actions &&
+      typeof child.props.actions === 'object' &&
+      child.props.actions.hasOwnProperty('doSomething') &&
+      typeof child.props.actions.doSomething === 'function'
     ).toBeTruthy()
 
     // Check that actions only contains what we've passed
-    expect(Object.keys(tree.props.actions)).toEqual([ 'doSomething' ])
+    expect(Object.keys(child.props.actions)).toEqual([ 'doSomething' ])
   })
 
   it('wraps actions to correctly dispatch', t => {
     const dispatcher = createDispatcher()
-    const reducer = (state = false, action) => {
+    const reducer = (state, action) => {
+      if (state === null || state === undefined) {
+        state = false
+      }
+
       switch (action.type) {
         case 'DO_SOMETHING': return true
         default: return state
@@ -53,9 +57,11 @@ describe('withActions', () => {
     })(Child)
 
     const tree = renderIntoDocument(<Wrapper/>)
+    const child = findRenderedComponentWithType(tree, Child)
+    expect(dispatcher.getState(reducer)).toBe(false)
 
     // Dispatch action returned by doSomething
-    tree.props.actions.doSomething()
+    child.props.actions.doSomething()
 
     expect(dispatcher.getState(reducer)).toBe(true)
   })
