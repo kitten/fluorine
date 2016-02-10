@@ -1,11 +1,57 @@
 import {
   BehaviorSubject,
-  ReplaySubject
+  ReplaySubject,
+  Observable
 } from 'rx'
+
+const _state = {
+  doNext(action) {
+    const { reducer } = this
+
+    const nextState = reducer(this.state, action)
+    if (nextState === this.state) {
+      return this
+    }
+
+    this.next = Object.assign(Object.create(_state), {
+      state: nextState,
+      action,
+      reducer
+    })
+
+    return this.next
+  }
+}
+
+function rewriteHistory(pastAnchor, filter) {
+  const { reducer } = pastAnchor
+  let { state } = pastAnchor
+  let anchor = pastAnchor
+
+  while (anchor.next) {
+    if (filter(anchor.next.action)) {
+      // Recompute state
+      anchor.next.state = reducer(anchor.state, anchor.next.action)
+    } else {
+      // Erase filtered action from history
+      anchor.next.state = anchor.state
+      anchor.next.action = {}
+    }
+
+    state = anchor.next.state
+    anchor = anchor.next
+  }
+
+  return state
+}
+
+const init = Observable
+  .of({ type: '_INIT_' })
+  .shareReplay()
 
 export default function createDispatcher() {
   const dispatcher = new ReplaySubject()
-  dispatcher.onNext({ type: '_INIT_' }) // Initialisation action
+  dispatcher.onNext(init) // Initialisation agenda
 
   const identifier = Symbol()
   const cache = []
@@ -14,20 +60,23 @@ export default function createDispatcher() {
   return Object.assign(dispatcher.asObservable(), {
     dispatch(action) {
       if (typeof action === 'function') {
-        return Promise.resolve(
-          action(res => {
-            dispatcher.onNext(res)
-          })
-        ).then(res => {
-          if (res && res.type) {
-            dispatcher.onNext(res)
-          }
-          return res
+        const res = action(x => {
+          dispatcher.onNext(Observable.of(x))
         })
+
+        if (Promise.isPrototypeOf(res)) {
+          dispatcher.onNext(Observable.fromPromise(res))
+        }
+
+        return Promise.resolve(res)
       }
 
-      dispatcher.onNext(action)
+      dispatcher.onNext(Observable.of(action))
       return Promise.resolve(action)
+    },
+    schedule(agenda) {
+      dispatcher.onNext(agenda)
+      return Promise.resolve(agenda)
     },
     getState(fn) {
       if (typeof fn[identifier] === 'number')
@@ -35,26 +84,43 @@ export default function createDispatcher() {
 
       throw `Function wasn't yet reduced and is therefore unknown.`
     },
-    reduce(fn, init = null) {
+    reduce(fn, init) {
       if (typeof fn[identifier] === 'number')
         return cache[fn[identifier]]
 
       const store = new BehaviorSubject(init)
-      const anon = store.asObservable()
 
-      dispatcher
-        .scan(fn, null)
-        .distinctUntilChanged()
-        .subscribe(x => store.onNext(x),
-          err => {
-            throw err
-          })
+      let anchor = Object.assign(Object.create(_state), {
+        reducer: fn,
+        state: init
+      })
+
+      dispatcher.subscribe(agenda => {
+        let pastAnchor = null
+        const bucket = []
+
+        agenda.subscribe(action => {
+          if (!pastAnchor) {
+            pastAnchor = anchor
+          }
+          bucket.push(action)
+          anchor = anchor.doNext(action)
+          store.onNext(anchor.state)
+        }, err => {
+          console.error(err)
+          if (pastAnchor) {
+            const restored = rewriteHistory(pastAnchor, x => bucket.indexOf(x) === 0)
+            store.onNext(restored)
+          }
+        })
+      })
 
       fn[identifier] = cache.length
       state.push(store.getValue.bind(store))
-      cache.push(anon)
 
-      return anon
+      const output = store.distinctUntilChanged()
+      cache.push(output)
+      return output
     }
   })
 }

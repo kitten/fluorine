@@ -1,7 +1,7 @@
 import createDispatcher from '../src/createDispatcher'
 
 describe('Dispatcher', () => {
-  it('dispatch', t => {
+  it('dispatches', t => {
     const dispatcher = createDispatcher()
     const action = {
       type: 'Test'
@@ -10,6 +10,7 @@ describe('Dispatcher', () => {
     dispatcher.dispatch(action)
 
     dispatcher
+      .mergeAll()
       .bufferWithCount(2)
       .subscribe(x => {
         expect(x).toEqual([ { type: '_INIT_' }, action ])
