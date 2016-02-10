@@ -65,7 +65,11 @@ export default function createDispatcher() {
         })
 
         if (Promise.isPrototypeOf(res)) {
-          dispatcher.onNext(Observable.fromPromise(res))
+          dispatcher.onNext(
+            Observable
+              .fromPromise(res)
+              .shareReplay()
+          )
         }
 
         return Promise.resolve(res)
@@ -75,7 +79,7 @@ export default function createDispatcher() {
       return Promise.resolve(action)
     },
     schedule(agenda) {
-      dispatcher.onNext(agenda)
+      dispatcher.onNext(agenda.shareReplay())
       return Promise.resolve(agenda)
     },
     getState(fn) {
