@@ -75,6 +75,15 @@ export default function createDispatcher() {
         return Promise.resolve(res)
       }
 
+      if (Promise.isPrototypeOf(action)) {
+        dispatcher.onNext(
+          Observable
+            .fromPromise(action)
+            .shareReplay()
+        )
+        return action
+      }
+
       dispatcher.onNext(Observable.of(action))
       return Promise.resolve(action)
     },
