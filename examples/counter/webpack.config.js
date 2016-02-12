@@ -8,7 +8,7 @@ module.exports = {
   ],
   devtool: 'cheap-module-eval-source-map',
   resolve: {
-    extensions: ['', '.js', '.jsx'],
+    extensions: ['', '.js', '.jsx']
   },
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin()
