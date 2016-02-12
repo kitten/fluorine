@@ -56,7 +56,7 @@ export default function createDispatcher() {
   const cache = []
   const state = []
 
-  return Object.assign(dispatcher.asObservable(), {
+  return Object.assign(dispatcher.mergeAll(), {
     dispatch(action) {
       if (typeof action === 'function') {
         const res = action(x => {

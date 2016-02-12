@@ -10,7 +10,6 @@ describe('Dispatcher', () => {
     dispatcher.dispatch(action)
 
     dispatcher
-      .mergeAll()
       .bufferCount(2)
       .subscribe(x => {
         expect(x).toEqual([ { type: '_INIT_' }, action ])
