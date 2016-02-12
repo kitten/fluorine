@@ -7,7 +7,7 @@
     "lib",
     "src"
   ],
-  "description": "State Accumulation from a single stream of actions",
+  "description": "Reactive state and side effect management for React using a single stream of actions",
   "scripts": {
     "test": "jest",
     "lint": "eslint src",
