@@ -11,7 +11,7 @@ describe('Dispatcher', () => {
 
     dispatcher
       .mergeAll()
-      .bufferWithCount(2)
+      .bufferCount(2)
       .subscribe(x => {
         expect(x).toEqual([ { type: '_INIT_' }, action ])
       })
@@ -36,7 +36,7 @@ describe('Dispatcher', () => {
 
     dispatcher
       .reduce(reducer)
-      .bufferWithCount(4)
+      .bufferCount(4)
       .subscribe(x => {
         expect(x).toEqual([ 0, 1, 3, 6 ])
         expect(dispatcher.getState(reducer)).toBe(6)

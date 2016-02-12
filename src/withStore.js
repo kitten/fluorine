@@ -2,7 +2,7 @@ import React from 'react'
 import assert from './util/assert'
 import {
   Observable
-} from 'rx'
+} from 'rxjs'
 
 export default function withStore(store, prop = 'data') {
   return Child => class StoreContainer extends React.Component {
@@ -36,7 +36,7 @@ export default function withStore(store, prop = 'data') {
       if (typeof store === 'function') {
         const newStore = store(newProps)
         if (newStore !== this.store) {
-          this.sub.dispose()
+          this.sub.unsubscribe()
           this.sub = newStore.subscribe(next => {
             this.setState({
               data: next
@@ -49,7 +49,7 @@ export default function withStore(store, prop = 'data') {
     }
 
     componentWillUnmount() {
-      this.sub.dispose()
+      this.sub.unsubscribe()
     }
 
     render() {

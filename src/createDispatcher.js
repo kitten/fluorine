@@ -2,7 +2,7 @@ import {
   BehaviorSubject,
   ReplaySubject,
   Observable
-} from 'rx'
+} from 'rxjs'
 
 const _state = {
   doNext(action) {
@@ -47,11 +47,10 @@ function rewriteHistory(pastAnchor, filter) {
 
 const init = Observable
   .of({ type: '_INIT_' })
-  .shareReplay()
 
 export default function createDispatcher() {
   const dispatcher = new ReplaySubject()
-  dispatcher.onNext(init) // Initialisation agenda
+  dispatcher.next(init) // Initialisation agenda
 
   const identifier = Symbol()
   const cache = []
@@ -61,14 +60,14 @@ export default function createDispatcher() {
     dispatch(action) {
       if (typeof action === 'function') {
         const res = action(x => {
-          dispatcher.onNext(Observable.of(x))
+          dispatcher.next(Observable.of(x))
         })
 
         if (Promise.isPrototypeOf(res)) {
-          dispatcher.onNext(
+          dispatcher.next(
             Observable
               .fromPromise(res)
-              .shareReplay()
+              .publishReplay()
           )
         }
 
@@ -76,19 +75,19 @@ export default function createDispatcher() {
       }
 
       if (Promise.isPrototypeOf(action)) {
-        dispatcher.onNext(
+        dispatcher.next(
           Observable
             .fromPromise(action)
-            .shareReplay()
+            .publishReplay()
         )
         return action
       }
 
-      dispatcher.onNext(Observable.of(action))
+      dispatcher.next(Observable.of(action))
       return Promise.resolve(action)
     },
     schedule(agenda) {
-      dispatcher.onNext(agenda.shareReplay())
+      dispatcher.next(agenda.publishReplay())
       return Promise.resolve(agenda)
     },
     getState(fn) {
@@ -118,12 +117,12 @@ export default function createDispatcher() {
           }
           bucket.push(action)
           anchor = anchor.doNext(action)
-          store.onNext(anchor.state)
+          store.next(anchor.state)
         }, err => {
           console.error(err)
           if (pastAnchor) {
             const restored = rewriteHistory(pastAnchor, x => bucket.indexOf(x) === 0)
-            store.onNext(restored)
+            store.next(restored)
           }
         })
       })
