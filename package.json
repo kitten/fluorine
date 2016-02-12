@@ -44,8 +44,7 @@
     "immutable"
   ],
   "dependencies": {
-    "babel-runtime": "^6.3.19",
-    "rx": "^4.0.7"
+    "babel-runtime": "^6.3.19"
   },
   "devDependencies": {
     "babel-cli": "^6.2.0",
@@ -60,10 +59,12 @@
     "jest-cli": "^0.8.2",
     "react": "^0.14.7",
     "react-addons-test-utils": "^0.14.7",
-    "react-dom": "^0.14.7"
+    "react-dom": "^0.14.7",
+    "rx": "^4.0.7"
   },
   "peerDependencies": {
-    "react": "^0.14.0"
+    "react": ">= 0.14.0",
+    "rx": ">= 4.0.7"
   },
   "engines": {
     "node": ">= 0.12.0"
