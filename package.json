@@ -1,13 +1,13 @@
 {
   "name": "fluorine-lib",
-  "version": "0.6.0",
+  "version": "1.0.3",
   "main": "lib/index.js",
   "jsnext:main": "src/index.js",
   "files": [
     "lib",
     "src"
   ],
-  "description": "State Accumulation from a single stream of actions",
+  "description": "Reactive state and side effect management for React using a single stream of actions",
   "scripts": {
     "test": "jest",
     "lint": "eslint src",
@@ -60,11 +60,11 @@
     "react": "^0.14.7",
     "react-addons-test-utils": "^0.14.7",
     "react-dom": "^0.14.7",
-    "rx": "^4.0.7"
+    "rxjs": "^5.0.0-beta.2"
   },
   "peerDependencies": {
     "react": ">= 0.14.0",
-    "rx": ">= 4.0.7"
+    "rxjs": "^5.0.0-beta.2"
   },
   "engines": {
     "node": ">= 0.12.0"
