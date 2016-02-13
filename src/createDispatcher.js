@@ -4,49 +4,13 @@ import {
   Observable
 } from 'rxjs'
 
+import {
+  createState,
+  filterActions
+} from './util/state'
+
 function isPromise(obj) {
   return Promise.prototype.isPrototypeOf(obj)
-}
-
-const _state = {
-  doNext(action) {
-    const { reducer } = this
-
-    const nextState = reducer(this.state, action)
-    if (nextState === this.state) {
-      return this
-    }
-
-    this.next = Object.assign(Object.create(_state), {
-      state: nextState,
-      action,
-      reducer
-    })
-
-    return this.next
-  }
-}
-
-function rewriteHistory(pastAnchor, filter) {
-  const { reducer } = pastAnchor
-  let { state } = pastAnchor
-  let anchor = pastAnchor
-
-  while (anchor.next) {
-    if (filter(anchor.next.action)) {
-      // Recompute state
-      anchor.next.state = reducer(anchor.state, anchor.next.action)
-    } else {
-      // Erase filtered action from history
-      anchor.next.state = anchor.state
-      anchor.next.action = {}
-    }
-
-    state = anchor.next.state
-    anchor = anchor.next
-  }
-
-  return state
 }
 
 const init = Observable
@@ -97,18 +61,14 @@ export default function createDispatcher() {
       if (typeof fn[identifier] === 'number')
         return state[fn[identifier]]()
 
-      throw `Function wasn't yet reduced and is therefore unknown.`
+      console.error(`Function wasn't yet reduced and is therefore unknown.`)
     },
     reduce(fn, init) {
       if (typeof fn[identifier] === 'number')
         return cache[fn[identifier]]
 
       const store = new BehaviorSubject(init)
-
-      let anchor = Object.assign(Object.create(_state), {
-        reducer: fn,
-        state: init
-      })
+      let anchor = createState(fn, init)
 
       dispatcher.subscribe(agenda => {
         let pastAnchor = null
@@ -118,19 +78,23 @@ export default function createDispatcher() {
           if (!pastAnchor) {
             pastAnchor = anchor
           }
+
           bucket.push(action)
+
           anchor = anchor.doNext(action)
           store.next(anchor.state)
         }, err => {
           console.error(err)
+
           if (pastAnchor) {
-            const restored = rewriteHistory(pastAnchor, x => bucket.indexOf(x) === 0)
-            store.next(restored)
+            filterActions(pastAnchor, x => bucket.indexOf(x) === 0)
+            store.next(anchor.state)
           }
         })
       })
 
       fn[identifier] = cache.length
+
       state.push(store.getValue.bind(store))
 
       const output = store.distinctUntilChanged()
@@ -139,3 +103,4 @@ export default function createDispatcher() {
     }
   })
 }
+
