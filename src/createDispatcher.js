@@ -4,6 +4,10 @@ import {
   Observable
 } from 'rxjs'
 
+function isPromise(obj) {
+  return Promise.prototype.isPrototypeOf(obj)
+}
+
 const _state = {
   doNext(action) {
     const { reducer } = this
@@ -58,12 +62,21 @@ export default function createDispatcher() {
 
   return Object.assign(dispatcher.mergeAll(), {
     dispatch(action) {
+      if (isPromise(action)) {
+        dispatcher.next(
+          Observable
+            .fromPromise(action)
+            .publishReplay()
+        )
+        return action
+      }
+
       if (typeof action === 'function') {
         const res = action(x => {
           dispatcher.next(Observable.of(x))
         })
 
-        if (Promise.isPrototypeOf(res)) {
+        if (isPromise(res)) {
           dispatcher.next(
             Observable
               .fromPromise(res)
@@ -74,21 +87,11 @@ export default function createDispatcher() {
         return Promise.resolve(res)
       }
 
-      if (Promise.isPrototypeOf(action)) {
-        dispatcher.next(
-          Observable
-            .fromPromise(action)
-            .publishReplay()
-        )
-        return action
-      }
-
       dispatcher.next(Observable.of(action))
       return Promise.resolve(action)
     },
     schedule(agenda) {
       dispatcher.next(agenda.publishReplay())
-      return Promise.resolve(agenda)
     },
     getState(fn) {
       if (typeof fn[identifier] === 'number')
