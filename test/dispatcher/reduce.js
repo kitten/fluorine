@@ -1,53 +1,39 @@
-import createDispatcher from '../src/createDispatcher'
+import createDispatcher from '../../src/createDispatcher'
 
-describe('Dispatcher', () => {
-  it('dispatches', t => {
-    const dispatcher = createDispatcher()
-    const action = {
-      type: 'Test'
+function CounterStore(state = 0, action) {
+  switch (action.type) {
+    case 'ADD': {
+      return state + 1
+      break
     }
 
-    dispatcher.dispatch(action)
+    case 'SUBTRACT': {
+      return state - 1
+      break
+    }
 
-    dispatcher
-      .bufferCount(2)
-      .subscribe(x => {
-        expect(x).toEqual([ { type: '_INIT_' }, action ])
-      })
-  })
+    default: return state
+  }
+}
 
-  it('reduces correctly', t => {
-    const arr = [ 1, 2, 3 ]
+const add = { type: 'ADD' }
+const subtract = { type: 'SUBTRACT' }
+
+describe('Dispatcher.reduce', () => {
+  it('reduces correctly', () => {
     const dispatcher = createDispatcher()
     dispatcher.dispatch('NOISE') // This should be ignored
 
-    const reducer = function (state, action) {
-      if (!state) {
-        state = 0
-      }
-
-      if (action.type === 'ADD') {
-        return state + action.payload
-      }
-
-      return state
-    }
-
     dispatcher
-      .reduce(reducer)
+      .reduce(CounterStore)
       .bufferCount(4)
       .subscribe(x => {
-        expect(x).toEqual([ 0, 1, 3, 6 ])
-        expect(dispatcher.getState(reducer)).toBe(6)
+        expect(x).toEqual([ 0, 1, 2, 3 ])
       })
 
-    // Finally dispatch data
-    arr
-      .map(x => ({
-        type: 'ADD',
-        payload: x
-      }))
-      .forEach(dispatcher.dispatch)
+    dispatcher.dispatch(add)
+    dispatcher.dispatch(add)
+    dispatcher.dispatch(add)
   })
 
   it('returns predictable references', t => {
@@ -73,5 +59,5 @@ describe('Dispatcher', () => {
       expect(x.type).toBe('_INIT_')
     })
   })
-})
 
+})
