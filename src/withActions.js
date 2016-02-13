@@ -18,9 +18,11 @@ export default function withActions(dispatcher, actions, prop = 'actions') {
 
   return Child => class ActionContainer extends Component {
     render() {
-      return <Child {...this.props} {...{
-        [prop]: _actions
-      }}/>
+      return (
+        <Child {...this.props} {...{
+          [prop]: _actions
+        }}/>
+      )
     }
   }
 }
