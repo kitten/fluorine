@@ -36,9 +36,11 @@ action.
 
 ### Arguments
 
-1. `action`: An action should always be a plain object describing a change to
-  your app's state, or a function generating actions. The action is later on
-  passed into the reducers.
+1. `action`: This can either be: An *action object*, an *action creator* or a
+  Promise resolving to an action. The action creator has the signature
+  `action(dispatch)`, so the so called **thunk** can call dispatch to emit
+  actions. Furthermore the thunk can return a promise that resolves to an
+  action as well.
 
 ### Returns
 
@@ -47,19 +49,16 @@ A Promise containing the dispatched action.
 ### Notes
 
 You can pass dispatch a plain object action. However, it is possible as well to
-pass it a function. The function may produce actions in several ways. It may:
+pass it a function. This function is then called a **thunk**.
 
-- Return a action
-- Return a Promise that resolves to an action
-- Use the callback to dispatch actions
-
-Normally you won't call *dispatch* directly with actions, but use pure functions
-which describe an action and will be injected using [*withStore*](withStore.md).
+Normally you won't call this method directly, but use wrappers around it that
+bind the function to the dispatcher. An easy way to bind action creators and
+pass them as props to an underlying component is [*withStore*](withStore.md).
 
 ### Example
 
 ```js
-import { Dispatcher } from './dispatcher'
+import dispatcher from './dispatcher'
 
 function addTodo(text) {
   return {
@@ -68,7 +67,7 @@ function addTodo(text) {
   }
 }
 
-Dispatcher.dispatch(addTodo('Hello World'))
+dispatcher.dispatch(addTodo('Hello World'))
 
 function getTodos(url) {
   return () => {
@@ -76,7 +75,7 @@ function getTodos(url) {
   }
 }
 
-Dispatcher.dispatch(getTodos('http://example.com/my-todos'))
+dispatcher.dispatch(getTodos('http://example.com/my-todos'))
 
 function generateTodos(array) {
   return dispatch => {
@@ -84,7 +83,7 @@ function generateTodos(array) {
   }
 }
 
-Dispatcher.dispatch(generateTodos([
+dispatcher.dispatch(generateTodos([
   'A Todo',
   'Another Todo'
 ]))
@@ -102,7 +101,8 @@ of your store.
 1. `reducer`: A reducing function that returns the next state. Its arguments are
   the past state and an action, that was injected into the Dispatcher.
 
-1. `init`: The initial state of the store.
+1. `init`: The initial value of the store. This is useful if you're cached a previous
+  state somewhere and want to restore it.
 
 ### Returns
 
@@ -138,6 +138,66 @@ dispatcher.dispatch({
 store.subscribe(x => {
   console.log(x) // ['Hello World!']
 })
+```
+
+--------------------------------------------------------------------------------
+
+## <a id='schedule'></a>[`schedule(agenda)`](#schedule)
+
+Schedule a new Agenda. This is an alternative to [`.dispatch()`](#dispatch) that
+takes observables instead of actions or action creators. Instead this observable
+then emits actions.
+
+This has two big advantages:
+
+* It is easy to represent an asynchronous task with an
+observable, instead of repeatedly calling the `dispatch` callback in a thunk.
+
+* If the agenda (observable) fails all its action will be rolled backed. It will
+be like you never scheduled the task.
+
+### Arguments
+
+1. `agenda`: An observable emitting actions
+
+### Returns
+
+**Nothing**
+
+### Notes
+
+Unlike `.dispatch()` this method doesn't return a promise. You should rely on
+RxJS's side effects to react to completion or a certain state. Check out the
+[`do` operator](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/do.md).
+
+If you're using this to send requests to an API, then you can reverse the
+standard order of doing things. You would POST a new resource and dispatch the
+create action if that succeeds? Try dispatching first. If the POST request
+fails you can let Fluorine revert the action automatically. In calls that'll
+likely succeed this is a big win for UI smoothness.
+
+### Example
+
+This is a rough example of the note above.
+
+```js
+import dispatcher from './dispatcher'
+
+dispatcher.schedule(Observable
+  .of({
+    type: 'ADD_USER',
+    payload: {
+      name: 'Leonardo'
+    }
+  })
+  .concat(Observable
+    .of('/user')
+    .flatMap(path => Observable
+      .fromPromise(fetch(path, {
+        method: 'POST'
+      }))
+    )
+  )
 ```
 
 --------------------------------------------------------------------------------
@@ -185,3 +245,4 @@ dispatcher.dispatch({
 
 store.getState() // ['Hello World!']
 ```
+
