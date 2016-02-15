@@ -47,6 +47,26 @@ describe('Dispatcher.schedule', () => {
       })
   })
 
+  it('accepts connectable observables properly', () => {
+    const dispatcher = createDispatcher()
+
+    const obs = Observable
+      .interval(200)
+      .take(3)
+      .map(() => add)
+      .share()
+
+    dispatcher.schedule(obs)
+    dispatcher.schedule(obs)
+
+    dispatcher
+      .reduce(AdderStore)
+      .bufferCount(4)
+      .subscribe(x => {
+        expect(x).toEqual([ 0, 1, 2, 3 ])
+      })
+  })
+
   it('reverts changes if an agenda fails', () => {
     const dispatcher = createDispatcher()
 

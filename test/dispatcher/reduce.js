@@ -22,7 +22,6 @@ const subtract = { type: 'SUBTRACT' }
 describe('Dispatcher.reduce', () => {
   it('reduces correctly', () => {
     const dispatcher = createDispatcher()
-    dispatcher.dispatch('NOISE') // This should be ignored
 
     dispatcher
       .reduce(CounterStore)
@@ -31,6 +30,7 @@ describe('Dispatcher.reduce', () => {
         expect(x).toEqual([ 0, 1, 2, 3 ])
       })
 
+    dispatcher.dispatch('NOISE') // This should be ignored
     dispatcher.dispatch(add)
     dispatcher.dispatch(add)
     dispatcher.dispatch(add)

@@ -11,6 +11,12 @@ describe('Dispatcher.dispatch', () => {
   it('accepts actions', () => {
     const dispatcher = createDispatcher()
 
+    dispatcher
+      .bufferCount(2)
+      .subscribe(x => {
+        expect(x).toEqual([ init, action ])
+      })
+
     const res = dispatcher.dispatch(action)
 
     // Check whether the dispatcher returns a Promise
@@ -19,15 +25,17 @@ describe('Dispatcher.dispatch', () => {
       expect(x).toEqual(action)
     })
 
+
+  })
+
+  it('accepts thunks', () => {
+    const dispatcher = createDispatcher()
+
     dispatcher
       .bufferCount(2)
       .subscribe(x => {
         expect(x).toEqual([ init, action ])
       })
-  })
-
-  it('accepts thunks', () => {
-    const dispatcher = createDispatcher()
 
     const res = dispatcher.dispatch(dispatch => {
       setTimeout(() => {
@@ -36,16 +44,16 @@ describe('Dispatcher.dispatch', () => {
     })
 
     expect(isPromise(res)).toBeTruthy()
+  })
+
+  it('accepts promises', () => {
+    const dispatcher = createDispatcher()
 
     dispatcher
       .bufferCount(2)
       .subscribe(x => {
         expect(x).toEqual([ init, action ])
       })
-  })
-
-  it('accepts promises', () => {
-    const dispatcher = createDispatcher()
 
     const res = dispatcher.dispatch(new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -58,15 +66,17 @@ describe('Dispatcher.dispatch', () => {
       expect(x).toEqual(action)
     })
 
+
+  })
+
+  it('accepts thunks returning a promise', () => {
+    const dispatcher = createDispatcher()
+
     dispatcher
       .bufferCount(2)
       .subscribe(x => {
         expect(x).toEqual([ init, action ])
       })
-  })
-
-  it('accepts thunks returning a promise', () => {
-    const dispatcher = createDispatcher()
 
     const res = dispatcher.dispatch(() => new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -79,11 +89,7 @@ describe('Dispatcher.dispatch', () => {
       expect(x).toEqual(action)
     })
 
-    dispatcher
-      .bufferCount(2)
-      .subscribe(x => {
-        expect(x).toEqual([ init, action ])
-      })
+
   })
 })
 
