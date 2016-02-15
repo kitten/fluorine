@@ -1,6 +1,7 @@
 import {
   BehaviorSubject,
-  ReplaySubject,
+  Subject,
+  Scheduler,
   Observable
 } from 'rxjs'
 
@@ -9,28 +10,49 @@ import {
   filterActions
 } from './util/state'
 
+import {
+  parseOpts,
+  logAgendas,
+  logStore
+} from './util/logger'
+
 function isPromise(obj) {
   return Promise.prototype.isPrototypeOf(obj)
 }
 
-const init = Observable
-  .of({ type: '_INIT_' })
+const kickstart = { type: '_INIT_' }
 
-export default function createDispatcher() {
-  const dispatcher = new ReplaySubject()
-  dispatcher.next(init) // Initialisation agenda
+export default function createDispatcher(opts = {}) {
+  const dispatcher = new Subject()
 
   const identifier = Symbol()
   const cache = []
   const state = []
 
+  let scheduler
+  switch (opts.scheduler) {
+    case Scheduler.asap:
+    case Scheduler.queue: {
+      scheduler = opts.scheduler
+      break
+    }
+    default: scheduler = Scheduler.asap
+  }
+
+  const logging = parseOpts(opts.logging)
+  if (logging.agendas) {
+    logAgendas(dispatcher)
+  }
+
+  function next(agenda) {
+    dispatcher.next(agenda
+        .share()
+        .subscribeOn(scheduler))
+  }
+
   function dispatch(action) {
     if (isPromise(action)) {
-      dispatcher.next(
-        Observable
-          .fromPromise(action)
-          .publishReplay()
-      )
+      next(Observable.fromPromise(action))
       return action
     }
 
@@ -38,14 +60,6 @@ export default function createDispatcher() {
       const res = action(x => {
         dispatcher.next(Observable.of(x))
       })
-
-      if (isPromise(res)) {
-        dispatcher.next(
-          Observable
-            .fromPromise(res)
-            .publishReplay()
-        )
-      }
 
       return Promise.resolve(res)
     }
@@ -55,12 +69,13 @@ export default function createDispatcher() {
   }
 
   function schedule(agenda) {
-    dispatcher.next(agenda.publishReplay())
+    next(agenda)
   }
 
   function getState(fn) {
     if (typeof fn[identifier] === 'number')
       return state[fn[identifier]]()
+
 
     console.error(`Function wasn't yet reduced and is therefore unknown.`)
   }
@@ -69,12 +84,22 @@ export default function createDispatcher() {
     if (typeof fn[identifier] === 'number')
       return cache[fn[identifier]]
 
-    const store = new BehaviorSubject(init)
-    let anchor = createState(fn, init)
+    // Index and name
+    fn[identifier] = cache.length
+    const name = fn.name || `#${fn[identifier]}`
+
+    let anchor = createState(fn, fn(init, kickstart))
+
+    const store = new BehaviorSubject(anchor.state)
 
     dispatcher.subscribe(agenda => {
       let pastAnchor = null
       const bucket = []
+
+      let logger
+      if (logging.stores) {
+        logger = logStore(name, agenda)
+      }
 
       agenda.subscribe(action => {
         if (!pastAnchor) {
@@ -83,25 +108,34 @@ export default function createDispatcher() {
 
         bucket.push(action)
 
-        anchor = anchor.doNext(action)
-        store.next(anchor.state)
+        const newAnchor = anchor.doNext(action)
+
+        if (anchor !== newAnchor) {
+          anchor = newAnchor
+          store.next(anchor.state)
+
+          if (logging.stores && logger) {
+            logger.change(action, anchor.state)
+          }
+        }
       }, err => {
         console.error(err)
 
         if (pastAnchor) {
           filterActions(pastAnchor, x => bucket.indexOf(x) === 0)
           store.next(anchor.state)
+
+          if (logging.stores && logger) {
+            logger.revert(anchor.state, err, bucket)
+          }
         }
       })
     })
 
-    fn[identifier] = cache.length
-
     state.push(store.getValue.bind(store))
+    cache.push(store)
 
-    const output = store.distinctUntilChanged()
-    cache.push(output)
-    return output
+    return store
   }
 
   return Object.assign(dispatcher.mergeAll(), {

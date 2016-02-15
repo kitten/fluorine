@@ -1,8 +1,12 @@
 # Documentation
 
-## Basics
+## Introduction
 
-TBD
+* [Getting Started](introduction/getting-started.md)
+* [Structure](introduction/structure.md)
+* [Your First Store](introduction/your-first-store.md)
+
+## Concepts
 
 ## Glossary
 
