@@ -1,6 +1,7 @@
 import {
   BehaviorSubject,
-  ReplaySubject,
+  Subject,
+  Scheduler,
   Observable
 } from 'rxjs'
 
@@ -13,24 +14,24 @@ function isPromise(obj) {
   return Promise.prototype.isPrototypeOf(obj)
 }
 
-const init = Observable
-  .of({ type: '_INIT_' })
+const kickstart = { type: '_INIT_' }
 
 export default function createDispatcher() {
-  const dispatcher = new ReplaySubject()
-  dispatcher.next(init) // Initialisation agenda
+  const dispatcher = new Subject()
 
   const identifier = Symbol()
   const cache = []
   const state = []
 
+  function next(agenda) {
+    dispatcher.next(agenda
+        .share()
+        .subscribeOn(Scheduler.asap))
+  }
+
   function dispatch(action) {
     if (isPromise(action)) {
-      dispatcher.next(
-        Observable
-          .fromPromise(action)
-          .share()
-      )
+      next(Observable.fromPromise(action))
       return action
     }
 
@@ -40,11 +41,7 @@ export default function createDispatcher() {
       })
 
       if (isPromise(res)) {
-        dispatcher.next(
-          Observable
-            .fromPromise(res)
-            .share()
-        )
+        next(Observable.fromPromise(res))
       }
 
       return Promise.resolve(res)
@@ -55,7 +52,7 @@ export default function createDispatcher() {
   }
 
   function schedule(agenda) {
-    dispatcher.next(agenda.share())
+    next(agenda)
   }
 
   function getState(fn) {
@@ -69,8 +66,9 @@ export default function createDispatcher() {
     if (typeof fn[identifier] === 'number')
       return cache[fn[identifier]]
 
-    const store = new BehaviorSubject(init)
-    let anchor = createState(fn, init)
+    let anchor = createState(fn, fn(init, kickstart))
+
+    const store = new BehaviorSubject(anchor.state)
 
     dispatcher.subscribe(agenda => {
       let pastAnchor = null
