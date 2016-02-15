@@ -29,7 +29,7 @@ export default function createDispatcher() {
       dispatcher.next(
         Observable
           .fromPromise(action)
-          .publishReplay()
+          .share()
       )
       return action
     }
@@ -43,7 +43,7 @@ export default function createDispatcher() {
         dispatcher.next(
           Observable
             .fromPromise(res)
-            .publishReplay()
+            .share()
         )
       }
 
@@ -55,7 +55,7 @@ export default function createDispatcher() {
   }
 
   function schedule(agenda) {
-    dispatcher.next(agenda.publishReplay())
+    dispatcher.next(agenda.share())
   }
 
   function getState(fn) {
