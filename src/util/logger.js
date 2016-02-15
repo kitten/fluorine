@@ -1,0 +1,71 @@
+function strTime(date) {
+  return `${date.toLocaleTimeString('en-GB')}.${date.getMilliseconds()}`
+}
+
+export function parseOpts(logging) {
+  const opts = {
+    agendas: false,
+    stores: false
+  }
+
+  if (typeof logging === 'object') {
+    opts.agendas = logging.agendas
+    opts.stores = logging.stores
+  } else if (logging) {
+    opts.agendas = true
+    opts.stores = true
+  }
+
+  return opts
+}
+
+export function logAgendas(dispatcher) {
+  dispatcher.subscribe(agenda => {
+    const timestamp = new Date()
+
+    agenda
+      .reduce((bucket, action) => bucket.concat([ action ]), [])
+      .first()
+      .do(() => {
+        const timestampEnd = new Date()
+        const title = `Agenda ${agenda.constructor.name} @ ${strTime(timestamp)} (in ${timestampEnd - timestamp}ms)`
+
+        console.groupCollapsed(`%c ${title}`, 'color: #111111;')
+        console.log('%c agenda', 'color: #9e9e9e; font-weight: bold;', agenda)
+      })
+      .subscribe(actions => {
+        actions.map(action => {
+          console.log('%c action', 'color: #03a9f4; font-weight: bold;', action)
+        })
+      }, error => {
+        console.log('%c error', 'color: #f20404; font-weight: bold;', error)
+      }, () => {
+        console.groupEnd()
+      })
+  })
+}
+
+export const logStore = (name, agenda) => ({
+  change(action, state) {
+    const timestamp = new Date()
+    const title = `Store ${name} @ ${strTime(timestamp)}`
+
+    console.groupCollapsed(`%c ${title}`, 'color: #111111;')
+    console.log('%c agenda', 'color: #9e9e9e; font-weight: bold;', agenda)
+    console.log('%c action', 'color: #03a9f4; font-weight: bold;', action)
+    console.log(`%c change`, 'color: #4caf50; font-weight: bold;', state)
+    console.groupEnd()
+  },
+  revert(state, error, bucket) {
+    const timestamp = new Date()
+    const title = `Revert ${name} @ ${strTime(timestamp)}`
+
+    console.groupCollapsed(`%c ${title}`, 'color: #f20404;')
+    console.log('%c agenda', 'color: #9e9e9e; font-weight: bold;', agenda)
+    console.log(`%c state`, 'color: #4caf50; font-weight: bold;', state)
+    console.log(`%c error`, 'color: #f20404; font-weight: bold;', error)
+    console.log('%c actions', 'color: #03a9f4; font-weight: bold;', bucket)
+    console.groupEnd()
+  }
+})
+

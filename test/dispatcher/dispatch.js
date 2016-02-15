@@ -69,27 +69,5 @@ describe('Dispatcher.dispatch', () => {
 
   })
 
-  it('accepts thunks returning a promise', () => {
-    const dispatcher = createDispatcher()
-
-    dispatcher
-      .bufferCount(2)
-      .subscribe(x => {
-        expect(x).toEqual([ init, action ])
-      })
-
-    const res = dispatcher.dispatch(() => new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(action)
-      })
-    }))
-
-    expect(isPromise(res)).toBeTruthy()
-    res.then(x => {
-      expect(x).toEqual(action)
-    })
-
-
-  })
 })
 

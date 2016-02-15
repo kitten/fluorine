@@ -10,23 +10,44 @@ import {
   filterActions
 } from './util/state'
 
+import {
+  parseOpts,
+  logAgendas,
+  logStore
+} from './util/logger'
+
 function isPromise(obj) {
   return Promise.prototype.isPrototypeOf(obj)
 }
 
 const kickstart = { type: '_INIT_' }
 
-export default function createDispatcher() {
+export default function createDispatcher(opts = {}) {
   const dispatcher = new Subject()
 
   const identifier = Symbol()
   const cache = []
   const state = []
 
+  let scheduler
+  switch (opts.scheduler) {
+    case Scheduler.asap:
+    case Scheduler.queue: {
+      scheduler = opts.scheduler
+      break
+    }
+    default: scheduler = Scheduler.asap
+  }
+
+  const logging = parseOpts(opts.logging)
+  if (logging.agendas) {
+    logAgendas(dispatcher)
+  }
+
   function next(agenda) {
     dispatcher.next(agenda
         .share()
-        .subscribeOn(Scheduler.asap))
+        .subscribeOn(scheduler))
   }
 
   function dispatch(action) {
@@ -39,10 +60,6 @@ export default function createDispatcher() {
       const res = action(x => {
         dispatcher.next(Observable.of(x))
       })
-
-      if (isPromise(res)) {
-        next(Observable.fromPromise(res))
-      }
 
       return Promise.resolve(res)
     }
@@ -59,12 +76,17 @@ export default function createDispatcher() {
     if (typeof fn[identifier] === 'number')
       return state[fn[identifier]]()
 
+
     console.error(`Function wasn't yet reduced and is therefore unknown.`)
   }
 
   function reduce(fn, init) {
     if (typeof fn[identifier] === 'number')
       return cache[fn[identifier]]
+
+    // Index and name
+    fn[identifier] = cache.length
+    const name = fn.name || `#${fn[identifier]}`
 
     let anchor = createState(fn, fn(init, kickstart))
 
@@ -74,6 +96,11 @@ export default function createDispatcher() {
       let pastAnchor = null
       const bucket = []
 
+      let logger
+      if (logging.stores) {
+        logger = logStore(name, agenda)
+      }
+
       agenda.subscribe(action => {
         if (!pastAnchor) {
           pastAnchor = anchor
@@ -81,25 +108,34 @@ export default function createDispatcher() {
 
         bucket.push(action)
 
-        anchor = anchor.doNext(action)
-        store.next(anchor.state)
+        const newAnchor = anchor.doNext(action)
+
+        if (anchor !== newAnchor) {
+          anchor = newAnchor
+          store.next(anchor.state)
+
+          if (logging.stores && logger) {
+            logger.change(action, anchor.state)
+          }
+        }
       }, err => {
         console.error(err)
 
         if (pastAnchor) {
           filterActions(pastAnchor, x => bucket.indexOf(x) === 0)
           store.next(anchor.state)
+
+          if (logging.stores && logger) {
+            logger.revert(anchor.state, err, bucket)
+          }
         }
       })
     })
 
-    fn[identifier] = cache.length
-
     state.push(store.getValue.bind(store))
+    cache.push(store)
 
-    const output = store.distinctUntilChanged()
-    cache.push(output)
-    return output
+    return store
   }
 
   return Object.assign(dispatcher.mergeAll(), {
