@@ -30,7 +30,7 @@ describe('Dispatcher.reduce', () => {
         expect(x).toEqual([ 0, 1, 2, 3 ])
       })
 
-    dispatcher.dispatch('NOISE') // This should be ignored
+    dispatcher.dispatch({ type: 'NOISE' }) // This should be ignored
     dispatcher.dispatch(add)
     dispatcher.dispatch(add)
     dispatcher.dispatch(add)

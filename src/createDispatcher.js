@@ -16,6 +16,8 @@ import {
   logStore
 } from './util/logger'
 
+import assert from './util/assert'
+
 function isPromise(obj) {
   return Promise.prototype.isPrototypeOf(obj)
 }
@@ -45,12 +47,21 @@ export default function createDispatcher(opts = {}) {
   }
 
   function next(agenda) {
-    dispatcher.next(agenda
-        .share()
-        .subscribeOn(scheduler))
+    assert(agenda instanceof Observable, 'Agendas can only be represented by Observables!')
+
+    const obs = agenda
+      .share()
+      .subscribeOn(scheduler)
+
+    dispatcher.next(obs)
   }
 
   function dispatch(action) {
+    assert((
+      typeof action === 'function' ||
+      typeof action === 'object'
+    ), 'Dispatch only takes thunks and actions!')
+
     if (isPromise(action)) {
       next(Observable.fromPromise(action))
       return action
