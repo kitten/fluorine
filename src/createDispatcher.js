@@ -151,11 +151,41 @@ export default function createDispatcher(opts = {}) {
     return store
   }
 
+  function wrapActions(arg) {
+    const transform = fn => ((...args) => dispatch(fn(...args)))
+
+    if (typeof arg === 'function') {
+      return transform(arg)
+    }
+
+    if (Array.isArray(arg)) {
+      return arg.map(fn => {
+        assert(typeof fn === 'function', 'Expected array to contain exclusively functions.')
+        return transform(fn)
+      })
+    }
+
+    if (typeof arg === 'object') {
+      return Object.keys(arg).reduce((prev, key) => {
+        if (arg.hasOwnProperty(key)) {
+          const fn = arg[key]
+          assert(typeof fn === 'function', 'Expected object to contain exclusively functions.')
+          prev[key] = transform(fn)
+        }
+
+        return prev
+      }, {})
+    }
+
+    throw `Method 'wrapActions' expects either an action creator or an array/object containing some as arguments.`
+  }
+
   return Object.assign(dispatcher.mergeAll(), {
     dispatch,
     schedule,
     getState,
-    reduce
+    reduce,
+    wrapActions
   })
 }
 
