@@ -47,7 +47,7 @@ export default function createDispatcher(opts = {}) {
   }
 
   function next(agenda) {
-    assert(agenda instanceof Observable, 'Agendas can only be represented by Observables!')
+    assert(agenda instanceof Observable, `Agendas can only be represented by Observables.`)
 
     const obs = agenda
       .share()
@@ -60,7 +60,7 @@ export default function createDispatcher(opts = {}) {
     assert((
       typeof action === 'function' ||
       typeof action === 'object'
-    ), 'Dispatch only takes thunks and actions!')
+    ), `Method 'dispatch' only takes thunks and actions as arguments.`)
 
     if (isPromise(action)) {
       next(Observable.fromPromise(action))
