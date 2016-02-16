@@ -106,16 +106,18 @@ export default function createDispatcher(opts = {}) {
           pastAnchor = anchor
         }
 
-        bucket.push(action)
+        if (action) {
+          bucket.push(action)
 
-        const newAnchor = anchor.doNext(action)
+          const newAnchor = anchor.doNext(action)
 
-        if (anchor !== newAnchor) {
-          anchor = newAnchor
-          store.next(anchor.state)
+          if (anchor !== newAnchor) {
+            anchor = newAnchor
+            store.next(anchor.state)
 
-          if (logging.stores && logger) {
-            logger.change(action, anchor.state)
+            if (logging.stores && logger) {
+              logger.change(action, anchor.state)
+            }
           }
         }
       }, err => {
