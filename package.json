@@ -32,15 +32,14 @@
   },
   "license": "MIT",
   "keywords": [
-    "florine",
-    "redux",
+    "fluorine",
     "flux",
     "react",
-    "reactivex",
-    "rxjs",
+    "rx",
     "reducer",
     "state",
-    "functional",
+    "side effect",
+    "manager",
     "immutable"
   ],
   "dependencies": {
