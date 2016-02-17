@@ -50,8 +50,9 @@ export default function createDispatcher(opts = {}) {
     assert(agenda instanceof Observable, `Agendas can only be represented by Observables.`)
 
     const obs = agenda
-      .share()
       .subscribeOn(scheduler)
+      .publishReplay()
+      .refCount()
 
     dispatcher.next(obs)
   }
