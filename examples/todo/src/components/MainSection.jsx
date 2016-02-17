@@ -1,5 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import { withStore, withActions } from 'fluorine-lib'
+import todo from '../reducers/todo'
+import dispatcher from '../dispatcher'
+import * as todoActions from '../actions/todo'
+
 import TodoItem from './TodoItem'
 import Footer from './Footer'
 
@@ -9,6 +13,8 @@ const TODO_FILTERS = {
   SHOW_COMPLETED: todo => todo.completed
 }
 
+@withStore(dispatcher.reduce(todo), "todos")
+@withActions(dispatcher, todoActions)
 export default class MainSection extends Component {
   static propTypes = {
     todos: PropTypes.array.isRequired,

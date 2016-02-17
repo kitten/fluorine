@@ -1,14 +1,13 @@
 import React, { Component, PropTypes } from 'react'
-import { withStore, withActions } from 'fluorine-lib'
 import TodoTextInput from './TodoTextInput'
+import { addTodo } from '../actions/todo'
+import { dispatch } from '../dispatcher'
 
 export default class HeaderComp extends Component {
-  static propTypes = {
-  };
 
   handleSave = (text) => {
     if (text.length !== 0) {
-      this.props.addTodo(text)
+      dispatch(addTodo(text))
     }
   };
 

@@ -15,13 +15,12 @@ export default class Container extends Component {
   };
 
   render() {
-
     const { todos, actions } = this.props;
 
     return (
       <div>
-        <Header addTodo={actions.addTodo} />
-        <MainSection todos={todos} actions={actions} />
+        <Header/>
+        <MainSection/>
       </div>
     )
   }
