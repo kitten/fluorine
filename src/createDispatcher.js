@@ -16,6 +16,8 @@ import {
   logStore
 } from './util/logger'
 
+import assert from './util/assert'
+
 function isPromise(obj) {
   return Promise.prototype.isPrototypeOf(obj)
 }
@@ -45,12 +47,22 @@ export default function createDispatcher(opts = {}) {
   }
 
   function next(agenda) {
-    dispatcher.next(agenda
-        .share()
-        .subscribeOn(scheduler))
+    assert(agenda instanceof Observable, `Agendas can only be represented by Observables.`)
+
+    const obs = agenda
+      .subscribeOn(scheduler)
+      .publishReplay()
+      .refCount()
+
+    dispatcher.next(obs)
   }
 
   function dispatch(action) {
+    assert((
+      typeof action === 'function' ||
+      typeof action === 'object'
+    ), `Method 'dispatch' only takes thunks and actions as arguments.`)
+
     if (isPromise(action)) {
       next(Observable.fromPromise(action))
       return action
@@ -106,27 +118,38 @@ export default function createDispatcher(opts = {}) {
           pastAnchor = anchor
         }
 
-        bucket.push(action)
+        if (action) {
+          bucket.push(action)
 
-        const newAnchor = anchor.doNext(action)
+          const newAnchor = anchor.doNext(action)
 
-        if (anchor !== newAnchor) {
-          anchor = newAnchor
-          store.next(anchor.state)
+          if (anchor !== newAnchor) {
+            anchor = newAnchor
+            store.next(anchor.state)
 
-          if (logging.stores && logger) {
-            logger.change(action, anchor.state)
+            if (logging.stores && logger) {
+              logger.change(action, anchor.state)
+            }
           }
         }
       }, err => {
-        console.error(err)
+        if (!logging.stores || !logger) {
+          console.error(err)
+        }
 
-        if (pastAnchor) {
-          filterActions(pastAnchor, x => bucket.indexOf(x) === 0)
-          store.next(anchor.state)
+        // Only revert if there were actions emitted and a past state
+        if (pastAnchor && bucket.length > 0) {
+          const prevState = anchor.state
 
-          if (logging.stores && logger) {
-            logger.revert(anchor.state, err, bucket)
+          filterActions(pastAnchor, x => bucket.indexOf(x) === -1)
+
+          // Only emit and log if it actually changed something
+          if (prevState !== anchor.state) {
+            store.next(anchor.state)
+
+            if (logging.stores && logger) {
+              logger.revert([ prevState, anchor.state ], err, bucket)
+            }
           }
         }
       })
@@ -138,11 +161,41 @@ export default function createDispatcher(opts = {}) {
     return store
   }
 
+  function wrapActions(arg) {
+    const transform = fn => ((...args) => dispatch(fn(...args)))
+
+    if (typeof arg === 'function') {
+      return transform(arg)
+    }
+
+    if (Array.isArray(arg)) {
+      return arg.map(fn => {
+        assert(typeof fn === 'function', 'Expected array to contain exclusively functions.')
+        return transform(fn)
+      })
+    }
+
+    if (typeof arg === 'object') {
+      return Object.keys(arg).reduce((prev, key) => {
+        if (arg.hasOwnProperty(key)) {
+          const fn = arg[key]
+          assert(typeof fn === 'function', 'Expected object to contain exclusively functions.')
+          prev[key] = transform(fn)
+        }
+
+        return prev
+      }, {})
+    }
+
+    throw `Method 'wrapActions' expects either an action creator or an array/object containing some as arguments.`
+  }
+
   return Object.assign(dispatcher.mergeAll(), {
     dispatch,
     schedule,
     getState,
-    reduce
+    reduce,
+    wrapActions
   })
 }
 
