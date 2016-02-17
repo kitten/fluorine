@@ -37,12 +37,12 @@ export default class TodoTextInput extends Component {
   }
 
   render() {
+
+    let classes = `${this.props.editing && "edit"} ${this.props.newTodo && "new-todo"}`;
+
     return (
-      <input className={
-        classnames({
-          edit: this.props.editing,
-          'new-todo': this.props.newTodo
-        })}
+      <input
+        className={classes}
         type="text"
         placeholder={this.props.placeholder}
         autoFocus="true"

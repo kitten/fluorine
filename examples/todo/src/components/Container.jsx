@@ -6,7 +6,7 @@ import dispatcher from '../dispatcher'
 import todo from '../reducers/todo'
 import * as todoActions from '../actions/todo'
 
-@withStore(dispatcher.reduce(todo))
+@withStore(dispatcher.reduce(todo), "todos")
 @withActions(dispatcher, todoActions)
 export default class Container extends Component {
   static propTypes = {
@@ -15,9 +15,11 @@ export default class Container extends Component {
 
   render() {
 
+    const { todos, actions } = this.props;
+
     return (
       <div>
-        <Header addTodo={this.props.actions.addTodo} />
+        <Header addTodo={actions.addTodo} />
         <MainSection todos={todos} actions={actions} />
       </div>
     )

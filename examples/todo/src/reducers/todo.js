@@ -27,17 +27,35 @@ const actions = {
     ]
   },
   [DELETE_TODO]: (state, action) => {
-
+    return state.filter(todo =>
+      todo.id !== action.id
+    )
+  },
+  [EDIT_TODO]: (state, action) => {
+    return state.map(todo =>
+      todo.id === action.id ?
+        Object.assign({}, todo, { text: action.text }) :
+        todo
+    )
+  },
+  [COMPLETE_TODO]: (state, action) => {
+    return state.map(todo =>
+      todo.id === action.id ?
+        Object.assign({}, todo, { completed: !todo.completed }) :
+        todo
+    )
+  },
+  [COMPLETE_ALL]: (state, action) => {
+    const areAllMarked = state.every(todo => todo.completed)
+    return state.map(todo => Object.assign({}, todo, {
+      completed: !areAllMarked
+    }))
+  },
+  [CLEAR_COMPLETED]: (state, action) => {
+    return state.filter(todo => todo.completed === false)
   }
 }
 
 export default function todo(state = initialState, action) {
-  // switch (action.type) {
-  //   case ADD_TODO:
-  //     return state + 1
-  //   case DELETE_TODO:
-  //     return state - 1
-  //   default:
-  //     return state
-  // }
+  return actions[action.type] ? actions[action.type](state, action) : state
 }
