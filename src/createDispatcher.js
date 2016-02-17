@@ -133,10 +133,12 @@ export default function createDispatcher(opts = {}) {
           }
         }
       }, err => {
-        console.error(err)
+        if (!logging.stores || !logger) {
+          console.error(err)
+        }
 
         if (pastAnchor) {
-          filterActions(pastAnchor, x => bucket.indexOf(x) === 0)
+          filterActions(pastAnchor, x => bucket.indexOf(x) === -1)
           store.next(anchor.state)
 
           if (logging.stores && logger) {
