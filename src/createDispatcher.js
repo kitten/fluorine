@@ -137,12 +137,19 @@ export default function createDispatcher(opts = {}) {
           console.error(err)
         }
 
-        if (pastAnchor) {
-          filterActions(pastAnchor, x => bucket.indexOf(x) === -1)
-          store.next(anchor.state)
+        // Only revert if there were actions emitted and a past state
+        if (pastAnchor && bucket.length > 0) {
+          const prevState = anchor.state
 
-          if (logging.stores && logger) {
-            logger.revert(anchor.state, err, bucket)
+          filterActions(pastAnchor, x => bucket.indexOf(x) === -1)
+
+          // Only emit and log if it actually changed something
+          if (prevState !== anchor.state) {
+            store.next(anchor.state)
+
+            if (logging.stores && logger) {
+              logger.revert([ prevState, anchor.state ], err, bucket)
+            }
           }
         }
       })
