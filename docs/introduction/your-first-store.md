@@ -44,14 +44,12 @@ import {
 
 function Counter(state = 0, action) {
   switch (action.type) {
-    type COUNTER_ADD: {
+    case COUNTER_ADD: {
       return state + 1
-      break
     }
 
-    type COUNTER_SUBTRACT: {
+    case COUNTER_SUBTRACT: {
       return state - 1
-      break
     }
 
     default: return state
@@ -81,3 +79,52 @@ which go great with reducers.
 
 ## The Actions
 
+Our actions are already resembled inside the Counter store, where we
+decide what happens if we receive a certain action.
+
+Generally action creators are returning plain objects that contain
+the `type` of the action, with which the store can differentiate
+between them.
+
+When writing your actions you should be aware that all stores are
+receiving them. Thus you shouldn't use one `type` for two
+different and un related operations, lest chaos ensues.
+
+For our counter store we don't need a lot of actions:
+
+```js
+import {
+  COUNTER_ADD,
+  COUNTER_SUBTRACT
+} from '../constants/CounterTypes'
+
+function add() {
+  return { type: COUNTER_ADD }
+}
+
+function subtract() {
+  return { type: COUNTER_SUBTRACT }
+}
+```
+
+## The Constants
+
+We already imported these inside the store. Most commonly and in this
+case, they're just exported strings, that are passed as a `type` in
+your actions.
+
+Let's write them down:
+
+```js
+export const COUNTER_ADD = "COUNTER_ADD"
+export const COUNTER_SUBTRACT = "COUNTER_SUBTRACT"
+```
+
+Theoretically they can be any string you like as long as they're unique.
+It is preferable to keep them readable though.
+
+## Continue
+
+This is how we arrive at a simple Counter store. You can check this out
+as a complete example project in the examples directory in the Fluorine
+repo: [Counter Example](https://github.com/philpl/fluorine/tree/master/examples/counter)
