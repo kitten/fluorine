@@ -10,7 +10,8 @@ import * as todoActions from '../actions/todo'
 @withActions(dispatcher, todoActions)
 export default class Container extends Component {
   static propTypes = {
-
+    todos: PropTypes.array.isRequired,
+    actions: PropTypes.object.isRequired
   };
 
   render() {
