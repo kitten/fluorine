@@ -34,16 +34,19 @@ describe('Dispatcher.schedule', () => {
   it('accepts observables to schedule an agenda', () => {
     const dispatcher = createDispatcher()
 
-    dispatcher.schedule(Observable
+    const addThree = Observable
       .interval(200)
       .take(3)
-      .map(() => add))
+      .map(() => add)
+
+    dispatcher.schedule(addThree)
+    dispatcher.schedule(Observable.of(subtract), Observable.of(subtract))
 
     dispatcher
       .reduce(AdderStore)
-      .bufferCount(4)
+      .bufferCount(6)
       .subscribe(x => {
-        expect(x).toEqual([ 0, 1, 2, 3 ])
+        expect(x).toEqual([ 0, 1, 2, 3, 2, 1 ])
       })
   })
 
