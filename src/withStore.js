@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import assert from './util/assert'
 import {
   Observable
-} from 'rxjs'
+} from '@reactivex/rxjs'
 
 export default function withStore(store, prop = 'data') {
   return Child => class StoreContainer extends Component {

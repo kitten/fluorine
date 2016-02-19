@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs'
+import { Observable } from '@reactivex/rxjs'
 
 import { INCREMENT_COUNTER, DECREMENT_COUNTER } from '../constants/counter'
 

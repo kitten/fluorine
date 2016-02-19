@@ -3,7 +3,7 @@ import {
   Subject,
   Scheduler,
   Observable
-} from 'rxjs'
+} from '@reactivex/rxjs'
 
 import {
   createState,
