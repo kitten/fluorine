@@ -43,6 +43,7 @@
     "immutable"
   ],
   "dependencies": {
+    "@reactivex/rxjs": "^5.0.0-beta.2",
     "babel-runtime": "^6.3.19"
   },
   "devDependencies": {
@@ -58,12 +59,10 @@
     "jest-cli": "^0.8.2",
     "react": "^0.14.7",
     "react-addons-test-utils": "^0.14.7",
-    "react-dom": "^0.14.7",
-    "@reactivex/rxjs": "^5.0.0-beta.2"
+    "react-dom": "^0.14.7"
   },
   "peerDependencies": {
-    "react": ">= 0.14.0",
-    "@reactivex/rxjs": "^5.0.0-beta.2"
+    "react": ">= 0.14.0"
   },
   "engines": {
     "node": ">= 0.12.0"
