@@ -1,117 +1,67 @@
 # Dispatcher
 
-A Dispatcher is an interface to the event stream of your application. You may
-inject new events by dispatching an action, use a reducer to reduce the event
-stream to a Store, or get the state of any of an event stream's stores.
+For a description on how the dispatcher works, what it is and what the concept
+of using it is, read: [Concepts > Dispatcher](../concepts/dispatcher.md)
 
-Underneath the Dispatcher interface your event stream is represented by a ReactiveX
-[*ReplaySubject*](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/replaysubject.md).
-The Dispatcher inherits this ReplaySubject. So you can use the Dispatcher like it
-were an Observable itself.
-
-> **For Flux users:** It is crucial to understand, that with Fluorine the
-> Dispatcher is the central hub of your app's state. Instead of stores there are
-> reducers which describe how a store is 'manufactured' from the event stream.
-
-> **For Redux users:** Fluorine uses a central Dispatcher, which is not present
-> in Redux apps. Instead of manufacturing a root store, you create a Dispatcher.
-> Stores are anonymous Observables (Think 'streams') which emit the store's
-> state.
-
-## Index
+## Methods
 
 * [dispatch(action)](#dispatch)
-* [getState(reducer)](#getState)
 * [reduce(reducer, init)](#reduce)
+* [schedule(agenda)](#schedule)*
+* [getState(reducer)](#getState)
+* [wrapActions(actions)](#wrapActions)
 
 --------------------------------------------------------------------------------
 
 ## <a id='dispatch'></a>[`dispatch(action)`](#dispatch)
 
-This dispatches an action. An action is an event in the internal event stream.
-(Behind the scenes this calls onNext on the internal ReplaySubject)
-
-Dispatching an action will trigger each reducer with the current state and this
-action.
+Takes a thunk, a promise, or a plain action; converts it into an agenda and
+schedules it.
 
 ### Arguments
 
-1. `action`: This can either be: An *action object*, an *action creator* or a
-  Promise resolving to an action. The action creator has the signature
-  `action(dispatch)`, so the so called **thunk** can call dispatch to emit
-  actions. Furthermore the thunk can return a promise that resolves to an
-  action as well.
+1. `action`: This can either be:
+  - a plain *action* object
+  - a promise resolving to an *action*
+  - or a thunk (function)
+
+The *thunk* has the signature: `function (dispatch)`, where dispatch is
+a method taking a plain action object.
 
 ### Returns
 
-A Promise containing the dispatched action.
+A Promise resolving to the dispatched action.
+
+In the case of a *thunk* it returns a promise wrapping the value
+that the *thunk* has returned.
 
 ### Notes
 
-You can pass dispatch a plain object action. However, it is possible as well to
-pass it a function. This function is then called a **thunk**.
-
-Normally you won't call this method directly, but use wrappers around it that
-bind the function to the dispatcher. An easy way to bind action creators and
-pass them as props to an underlying component is [*withStore*](withStore.md).
-
-### Example
-
-```js
-import dispatcher from './dispatcher'
-
-function addTodo(text) {
-  return {
-    type: 'ADD_TODO',
-    text
-  }
-}
-
-dispatcher.dispatch(addTodo('Hello World'))
-
-function getTodos(url) {
-  return () => {
-    return fetch(url)
-  }
-}
-
-dispatcher.dispatch(getTodos('http://example.com/my-todos'))
-
-function generateTodos(array) {
-  return dispatch => {
-    array.forEach(obj => dispatch(obj))
-  }
-}
-
-dispatcher.dispatch(generateTodos([
-  'A Todo',
-  'Another Todo'
-]))
-```
+Instead of using this directly you'd probably use the [`wrapActions`](#wrapActions)
+method or the [`withActions`](withActions.md) decorator.
 
 --------------------------------------------------------------------------------
 
 ## <a id='reduce'></a>[`reduce(reducer, [init])`](#reduce)
 
-Creates a Fluorine store. A store is just an observable which emits new states
-of your store.
+Takes a reducer and returns a Fluorine store.
+
+A store is just an observable which emits new states of your store.
 
 ### Arguments
 
-1. `reducer`: A reducing function that returns the next state. Its arguments are
-  the past state and an action, that was injected into the Dispatcher.
+1. `reducer`: A reducing function that returns the next state. The reducer's
+  signature is `function (state, action)`, where state is the previous state
+  of your store.
 
-1. `init`: The initial value of the store. This is useful if you're cached a previous
-  state somewhere and want to restore it.
+1. `init`: The initial value of the store. This is useful if you're cached
+  a previous state somewhere and want to restore it. By default the initial
+  state is `undefined`.
 
 ### Returns
 
-The store. (An observable)
-
-### Notes
-
-Behind the scenes the store is represented by a ReactiveX
-[BehaviorSubject](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/behaviorsubject.md).
+A [BehaviorSubject](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/behaviorsubject.md)
+emitting your store's state.
 
 ### Example
 
@@ -160,6 +110,9 @@ be like you never scheduled the task.
 
 1. `agenda`: An observable emitting actions
 
+Optionally you can pass multiple agendas and they will be concatenated using
+`Observable.concat([])`.
+
 ### Returns
 
 **Nothing**
@@ -204,7 +157,7 @@ dispatcher.schedule(Observable
 
 ## <a id='getState'></a>[`getState(reducer)`](#getState)
 
-Get the current state of a store that is generated using the passed in reducer.
+Takes a reducer and returns the corresponding state's store.
 
 ### Arguments
 
@@ -244,5 +197,48 @@ dispatcher.dispatch({
 })
 
 store.getState() // ['Hello World!']
+```
+
+--------------------------------------------------------------------------------
+
+## <a id='wrapActions'></a>[`wrapActions(actions)`](#wrapActions)
+
+Takes actions and "binds" them to the dispatcher, in the sense that it wraps
+the action creators in functions, that dispatch the return values.
+
+### Arguments
+
+1. `actions`: This can either be:
+  - a single action creator
+  - an object containing only action creators
+  - an array containing action creators
+
+### Returns
+
+Depending on what you passed as `actions` it will return the same type, but
+with the action creators wrapped in a function that passes the result into
+the dispatch method.
+
+The wrapper function is: `(...args) => dispatch(action(...args))`
+
+### Example
+
+```js
+import dispatcher from './dispatcher'
+
+function addTodo(str) {
+  return {
+    type: 'ADD_TODO',
+    payload: str
+  }
+}
+
+const boundAddTodo = dispatcher.wrapActions(addTodo)
+
+const obj = dispatcher.wrapActions({ addTodo })
+obj.boundAddTodo
+
+const arr = dispatcher.wrapActions([ addTodo ])
+arr[0]
 ```
 
