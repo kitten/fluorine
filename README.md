@@ -22,18 +22,19 @@ To install the latest stable version:
 npm install --save fluorine-lib
 ```
 
-To install the latest development version on the `develop` branch:
+It will install the `babel-runtime` and `@reactivex/rxjs` as dependencies.
+
+It furthermore needs React as a peer dependency to work:
 
 ```sh
-npm install --save fluorine-lib@next
+npm install --save react
 ```
 
-### Peer Dependencies
+If you wish to use the dispatcher without the decorators for a *non-React* project
+then just import the `createDispatcher` method, without anything else:
 
-Fluorine needs RxJS 5 and React installed to work:
-
-```sh
-npm install --save react rxjs
+```
+import createDispatcher from 'fluorine-lib/lib/createDispatcher'
 ```
 
 ## A Short Demo
