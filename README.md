@@ -13,7 +13,6 @@ a Flux-like Dispatcher as the single source of truth.
 [**You can find a raison d'être and a short comparison to Redux on Medium**](https://medium.com/@PhilPlckthun/fluorine-flux-beyond-redux-with-rxjs-79c80c7663b4)
 
 [![build status](https://travis-ci.org/philpl/fluorine.svg)](https://travis-ci.org/philpl/fluorine)
-[![gitter channel](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/philpl/fluorine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Installation
 
