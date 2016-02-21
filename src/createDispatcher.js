@@ -166,7 +166,7 @@ export default function createDispatcher(opts = {}) {
   }
 
   function wrapActions(arg) {
-    const transform = fn => ((...args) => dispatch(fn(...args)))
+    const transform = fn => (...args) => dispatch(fn(...args))
 
     if (typeof arg === 'function') {
       return transform(arg)
