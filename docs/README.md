@@ -8,9 +8,10 @@
   * [Concepts](introduction/concepts.md)
   * [Your First Store](introduction/your-first-store.md)
 
-It is highly advised to read the introduction
-[*Concepts*](introduction/concepts.md)
-into Fluorine's basic concepts.
+It is advised, that you at least read the
+[Concepts](docs/introduction/concepts.md)
+document, that describes all the concepts, basics and
+patterns that you need to get started.
 
 ## Glossary
 

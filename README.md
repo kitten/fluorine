@@ -10,7 +10,7 @@ a Flux-like Dispatcher as the single source of truth.
 - Manage your side effect as Observables with automatic rollbacks if something went wrong
 - Unopinionated and simple API
 
-[**You can find a raison d'être and a short comparison to Redux on Medium**](https://medium.com/@PhilPlckthun/fluorine-flux-beyond-redux-with-rxjs-79c80c7663b4)
+This is the ultimate way to use RxJS for state and side effect management!
 
 [![build status](https://travis-ci.org/philpl/fluorine.svg)](https://travis-ci.org/philpl/fluorine)
 
@@ -116,12 +116,10 @@ if they fail. This makes it easy to design exceedingly complex side effects.
 
 ## Documentation
 
-* [API Reference](docs/api/README.md)
+You can find the [Documentation](docs/README.md) here on Github.
 
-To be done:
-
-* Basics
-* Glossary
+It is advised, that you read the [Concepts](docs/introduction/concepts.md) document,
+that describes all the concepts, basics and patterns that you need to get started.
 
 ## Frequently Asked Questions
 
