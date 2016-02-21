@@ -1,8 +1,13 @@
 import React, { Component, PropTypes } from 'react'
-import { withStore, withActions } from 'fluorine-lib'
+import { withStore } from 'fluorine-lib'
 import todo from '../reducers/todo'
 import dispatcher from '../dispatcher'
 import * as todoActions from '../actions/todo'
+console.log(dispatcher.wrapActions)
+const {
+  clearCompleted,
+  completeAll
+} = dispatcher.wrapActions(todoActions)
 
 import TodoItem from './TodoItem'
 import Footer from './Footer'
@@ -16,11 +21,9 @@ const TODO_FILTERS = {
 }
 
 @withStore(dispatcher.reduce(todo), "todos")
-@withActions(dispatcher, todoActions)
 export default class MainSection extends Component {
   static propTypes = {
-    todos: PropTypes.instanceOf(List).isRequired,
-    actions: PropTypes.object.isRequired
+    todos: PropTypes.instanceOf(List).isRequired
   };
 
   state = {
@@ -28,7 +31,7 @@ export default class MainSection extends Component {
   };
 
   handleClearCompleted = () => {
-    this.props.actions.clearCompleted()
+    clearCompleted()
   };
 
   handleShow = (filter) => {
@@ -36,13 +39,13 @@ export default class MainSection extends Component {
   };
 
   renderToggleAll(completedCount) {
-    const { todos, actions } = this.props
+    const { todos } = this.props
     if (todos.size > 0) {
       return (
         <input className="toggle-all"
                type="checkbox"
                checked={completedCount === todos.size}
-               onChange={actions.completeAll} />
+               onChange={completeAll} />
       )
     }
   }
@@ -65,7 +68,7 @@ export default class MainSection extends Component {
 
   render() {
 
-    const { todos, actions } = this.props
+    const { todos } = this.props
     const { filter } = this.state
 
     const filteredTodos = todos.filter(TODO_FILTERS[filter])
@@ -79,7 +82,7 @@ export default class MainSection extends Component {
         {this.renderToggleAll(completedCount)}
         <ul className="todo-list">
           {filteredTodos.map(todo =>
-            <TodoItem key={todo.get("id")} todo={todo} {...actions} />
+            <TodoItem key={todo.get("id")} todo={todo}/>
           )}
         </ul>
         {this.renderFooter(completedCount)}
