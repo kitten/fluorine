@@ -3,7 +3,7 @@ import {
   Subject,
   Scheduler,
   Observable
-} from 'rxjs'
+} from '@reactivex/rxjs'
 
 import {
   createState,
@@ -80,8 +80,12 @@ export default function createDispatcher(opts = {}) {
     return Promise.resolve(action)
   }
 
-  function schedule(agenda) {
-    next(agenda)
+  function schedule(...agendas) {
+    if (agendas.length === 1) {
+      next(agendas[0])
+    } else if (agendas.length > 1) {
+      next(Observable.concat(...agendas))
+    }
   }
 
   function getState(fn) {

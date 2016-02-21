@@ -1,41 +1,73 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
 import { withStore, withActions } from 'fluorine-lib'
 
-import dispatcher from '../dispatcher'
+import dispatcher, { reduce, schedule } from '../dispatcher'
 import counter from '../reducers/counter'
-import * as CounterActions from '../actions/counter'
 
-@withStore(dispatcher.reduce(counter), 'counter')
-@withActions(dispatcher, CounterActions)
+import {
+  increment,
+  decrement,
+  incrementDelayedThunk,
+  incrementDelayedAgenda,
+  incrementIfOdd,
+  incrementDelayedRollback
+} from '../actions/counter'
+
+@withStore(reduce(counter), 'counter')
+@withActions(dispatcher, {
+  increment,
+  decrement,
+  incrementDelayedThunk
+})
 
 export default class Counter extends Component {
-  static propTypes = {
-    actions: PropTypes.objectOf(PropTypes.func).isRequired,
-    counter: PropTypes.number.isRequired
-  };
-
   render() {
     const {
       counter,
       actions
     } = this.props
 
+    const {
+      increment,
+      decrement,
+      incrementDelayedThunk
+    } = actions
+
     return (
-      <p>
-        Clicked: {counter} times
-        {' '}
-        <button onClick={() => actions.increment()}>
-          +
-        </button>
-        {' '}
-        <button onClick={() => actions.decrement()}>
-          -
-        </button>
-        {' '}
-        <button onClick={() => actions.incrementAsync()}>
-          Increment async
-        </button>
-      </p>
+      <div>
+        <p>
+          Clicked: {counter} times
+        </p>
+
+        <div>
+          <button onClick={() => increment()}>
+            +
+          </button>
+
+          <button onClick={() => decrement()}>
+            -
+          </button>
+
+          <button onClick={() => incrementDelayedThunk()}>
+            Increment async (thunk)
+          </button>
+
+          <br/>
+
+          <button onClick={() => schedule(incrementDelayedAgenda())}>
+            Increment async (agenda)
+          </button>
+
+          <button onClick={() => schedule(incrementIfOdd)}>
+            Increment if odd
+          </button>
+
+          <button onClick={() => schedule(incrementDelayedRollback)}>
+            Increment async and rollback
+          </button>
+
+        </div>
+      </div>
     )
   }
 }

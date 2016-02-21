@@ -2,11 +2,16 @@
 
 ## Introduction
 
-* [Getting Started](introduction/getting-started.md)
-* [Structure](introduction/structure.md)
-* [Your First Store](introduction/your-first-store.md)
+* [Index and Requirements](introduction/README.md)
+  * [Getting Started](introduction/getting-started.md)
+  * [Structure](introduction/structure.md)
+  * [Concepts](introduction/concepts.md)
+  * [Your First Store](introduction/your-first-store.md)
 
-## Concepts
+It is advised, that you at least read the
+[Concepts](docs/introduction/concepts.md)
+document, that describes all the concepts, basics and
+patterns that you need to get started.
 
 ## Glossary
 

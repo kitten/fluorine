@@ -123,7 +123,7 @@ export const COUNTER_SUBTRACT = "COUNTER_SUBTRACT"
 Theoretically they can be any string you like as long as they're unique.
 It is preferable to keep them readable though.
 
-## Continue
+## Continue to read
 
 This is how we arrive at a simple Counter store. You can check this out
 as a complete example project in the examples directory in the Fluorine

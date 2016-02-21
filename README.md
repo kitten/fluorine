@@ -10,10 +10,9 @@ a Flux-like Dispatcher as the single source of truth.
 - Manage your side effect as Observables with automatic rollbacks if something went wrong
 - Unopinionated and simple API
 
-[**You can find a raison d'être and a short comparison to Redux on Medium**](https://medium.com/@PhilPlckthun/fluorine-flux-beyond-redux-with-rxjs-79c80c7663b4)
+This is the ultimate way to use RxJS for state and side effect management!
 
 [![build status](https://travis-ci.org/philpl/fluorine.svg)](https://travis-ci.org/philpl/fluorine)
-[![gitter channel](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/philpl/fluorine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Installation
 
@@ -23,18 +22,19 @@ To install the latest stable version:
 npm install --save fluorine-lib
 ```
 
-To install the latest development version on the `develop` branch:
+It will install the `babel-runtime` and `@reactivex/rxjs` as dependencies.
+
+It furthermore needs React as a peer dependency to work:
 
 ```sh
-npm install --save fluorine-lib@next
+npm install --save react
 ```
 
-### Peer Dependencies
+If you wish to use the dispatcher without the decorators for a *non-React* project
+then just import the `createDispatcher` method, without anything else:
 
-Fluorine needs RxJS 5 and React installed to work:
-
-```sh
-npm install --save react rxjs
+```
+import createDispatcher from 'fluorine-lib/lib/createDispatcher'
 ```
 
 ## A Short Demo
@@ -116,12 +116,10 @@ if they fail. This makes it easy to design exceedingly complex side effects.
 
 ## Documentation
 
-* [API Reference](docs/api/README.md)
+You can find the [Documentation](docs/README.md) here on Github.
 
-To be done:
-
-* Basics
-* Glossary
+It is advised, that you read the [Concepts](docs/introduction/concepts.md) document,
+that describes all the concepts, basics and patterns that you need to get started.
 
 ## Frequently Asked Questions
 
