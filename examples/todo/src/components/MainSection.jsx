@@ -3,7 +3,7 @@ import { withStore } from 'fluorine-lib'
 import todo from '../reducers/todo'
 import dispatcher from '../dispatcher'
 import * as todoActions from '../actions/todo'
-console.log(dispatcher.wrapActions)
+
 const {
   clearCompleted,
   completeAll
