@@ -2,7 +2,7 @@
 
 Creates a Dispatcher.
 
-See ["Dispatcher"](Dispatcher.md) for more information on the Dispatcher itself.
+See ["Dispatcher"](dispatcher.md) for more information on the Dispatcher itself.
 
 ## Arguments
 
@@ -11,7 +11,7 @@ See ["Dispatcher"](Dispatcher.md) for more information on the Dispatcher itself.
 
 ## Returns
 
-A [**Dispatcher**](Dispatcher.md)
+A [**Dispatcher**](dispatcher.md)
 
 ## Usage as a Singleton
 

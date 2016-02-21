@@ -23,13 +23,15 @@ import { createDispatcher } from 'fluorine-lib';
 ### ES5
 
 ```js
-var createDispatcher = require('fluorine-lib').createDispatcher;
+var createDispatcher = require('fluorine-lib/lib/createDispatcher');
 ```
 
 ## Dispatcher API
 
-* [Dispatcher](Dispatcher.md)
-  * [dispatch(action)](Dispatcher.md#dispatch)
-  * [schedule(agenda)](Dispatcher.md#schedule)
-  * [getState(reducer)](Dispatcher.md#getState)
-  * [reduce(reducer, init)](Dispatcher.md#reduce)
+* [Dispatcher](dispatcher.md)
+  * [dispatch(action)](dispatcher.md#dispatch)
+  * [reduce(reducer, init)](dispatcher.md#reduce)
+  * [schedule(agenda)](dispatcher.md#schedule)
+  * [getState(reducer)](dispatcher.md#getState)
+  * [wrapActions(actions)](dispatcher.md#wrapActions)
+

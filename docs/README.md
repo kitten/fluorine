@@ -2,11 +2,15 @@
 
 ## Introduction
 
-* [Getting Started](introduction/getting-started.md)
-* [Structure](introduction/structure.md)
-* [Your First Store](introduction/your-first-store.md)
+* [Index and Requirements](introduction/README.md)
+  * [Getting Started](introduction/getting-started.md)
+  * [Structure](introduction/structure.md)
+  * [Concepts](introduction/concepts.md)
+  * [Your First Store](introduction/your-first-store.md)
 
-## Concepts
+It is highly advised to read the introduction
+[*Concepts*](introduction/concepts.md)
+into Fluorine's basic concepts.
 
 ## Glossary
 

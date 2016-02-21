@@ -88,10 +88,8 @@ plan not to use the `withStore` and `withActions` decorators.
 For more information and help on the decorators and the pros and cons
 consult the concepts page for them: Decorators
 
-## Continue
+## Continue to read
 
-The next part in the introduction is on how to code your first
-store: [Your First Store](your-first-store.md). It will help you to
-understand how we can set up stores with Fluorine in the structure
-we've just established.
+The next part in the introduction is on the basic concepts of Fluorine
+[Concepts](concepts.md)
 
