@@ -1,10 +1,12 @@
 import React, { Component, PropTypes } from 'react'
 import TodoTextInput from './TodoTextInput'
 
+import { Map } from 'immutable'
+
 export default class TodoItem extends Component {
 
   static propTypes = {
-    todo: PropTypes.object.isRequired,
+    todo: PropTypes.instanceOf(Map).isRequired,
     editTodo: PropTypes.func.isRequired,
     deleteTodo: PropTypes.func.isRequired,
     completeTodo: PropTypes.func.isRequired
@@ -32,9 +34,9 @@ export default class TodoItem extends Component {
     const { editing } = this.state
 
     return (
-        <TodoTextInput text={todo.text}
+        <TodoTextInput text={todo.get("text")}
                        editing={editing}
-                       onSave={this.handleSave.bind(this, todo.id)} />
+                       onSave={this.handleSave.bind(this, todo.get("id"))} />
     )
   }
 
@@ -45,13 +47,13 @@ export default class TodoItem extends Component {
       <div className="view">
         <input className="toggle"
                type="checkbox"
-               checked={todo.completed}
-               onChange={completeTodo.bind(this, todo.id)} />
+               checked={todo.get("completed")}
+               onChange={completeTodo.bind(this, todo.get("id"))} />
         <label onDoubleClick={this.handleDoubleClick}>
-          {todo.text}
+          {todo.get("text")}
         </label>
         <button className="destroy"
-                onClick={deleteTodo.bind(this, todo.id)} />
+                onClick={deleteTodo.bind(this, todo.get("id"))} />
       </div>
     )
   }
@@ -60,7 +62,7 @@ export default class TodoItem extends Component {
     const { todo, completeTodo, deleteTodo } = this.props
 
     return (
-      <li className={`${todo.completed && "completed"} ${this.state.editing && "editing"}`}>
+      <li className={`${todo.get("completed") && "completed"} ${this.state.editing && "editing"}`}>
         {
           this.state.editing ? this.getEditingInput() : this.getNormalInput()
         }
