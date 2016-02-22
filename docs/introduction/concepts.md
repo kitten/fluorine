@@ -53,7 +53,7 @@ schedules tasks. If you talk about state and side effect management then
 the manager in that case is your Dispatcher.
 
 The Dispatcher is the **single source of truth**. All stores are directly
-derived from it and react ot its actions.
+derived from it and react to its actions.
 
 More on the dispatcher and the stores will follow below:
 [Fully Reactive Dispatchers and Stores](#fully-reactive-dispatchers-and-stores)
@@ -91,7 +91,11 @@ consecutive results of the reducer method.
 This is very similar to RxJS's `scan` method.
 [More info](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/scan.md)
 
-More on the dispatcher and the stores will follow further below.
+More on the dispatcher and the stores will follow below:
+[Fully Reactive Dispatchers and Stores](#fully-reactive-dispatchers-and-stores)
+
+Check out the reducer in our Todo MVC Example to see a store in action:
+[Todo MVC Example store](https://github.com/philpl/fluorine/blob/master/examples/todo/src/reducers/todo.js)
 
 ### Actions
 
@@ -106,6 +110,9 @@ with the signature:
 
 This is then called an action creator.
 It's not something new, but it is worth noting in this context.
+
+Check out the actions in our Todo MVC Example to see actions in action:
+[Todo MVC Example actions](https://github.com/philpl/fluorine/blob/master/examples/todo/src/actions/todo.js)
 
 
 ## <a id='actions-and-thunks'></a>[Actions and Thunks](#actions-and-thunks)
@@ -171,6 +178,10 @@ this method for you instead. More about that in the
 API docs:
 [Dispatcher.wrapActions](../api/dispatcher.md#wrapActions)
 [withActions](../api/withActions.md)
+
+See the `wrapActions` method in use in our Todo MVC
+Example app:
+[Todo MVC Example MainSection](https://github.com/philpl/fluorine/blob/master/examples/todo/src/components/MainSection.jsx)
 
 ### Side effect management
 
@@ -309,7 +320,7 @@ to represent a stream of actions with a set of side effects.
 Side effects might influence actions, but sometimes they
 don't.
 
-Let's list all tricks and festures that are possible with Agendas:
+Let's list all tricks and features that are possible with Agendas:
 
 ### Composing actions
 
@@ -353,7 +364,7 @@ function addTodo(id, text) {
 }
 ```
 
-Now, why is this stupid observbale discarding its results
+Now, why is this stupid observable discarding its results
 by mapping these to null?
 
 In this example we don't care about the actual result of

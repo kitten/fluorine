@@ -144,8 +144,8 @@ Fluorine is (chemically-speaking) the most *reactive* non-metal. As Fluorine
 embraces RxJS to bring even more advantages of reactive programming to React, it
 is a fitting name.
 
-Furthermore the latin verb *fluo* means "flow", which reminded me about Flux and
-its unidirectional data-flow.
+Furthermore the latin verb *fluo* means "flow", which is a direct refernce
+to Flux and its unidirectional data-flow.
 
 ## Thanks to
 
