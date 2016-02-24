@@ -360,16 +360,15 @@ Let's say you're adding a todo to your server:
 function addTodo(id, text) {
   return Observable
     .fromPromise(fetch('/add-todo', { method: 'POST' }))
-    .map(() => null)
+    .ignoreElements()
 }
 ```
 
-Now, why is this stupid observable discarding its results
-by mapping these to null?
+Now, why is this stupid observable discarding its results?
 
 In this example we don't care about the actual result of
-the request, if it succeeds. So we map all emissions to
-`null` so that the dispatcher will ignore them.
+the request, if it succeeds. So we use the Rx operator `ignoreElements`
+so that the dispatcher will ignore them.
 
 This is a clean side effect, that doesn't emit any actions
 on its own.
