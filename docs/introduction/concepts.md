@@ -9,7 +9,7 @@ This is an extensive document, describing Fluorine's concepts and patterns.
 
 * [Flux and Unidirectional Dataflow](#flux-and-unidirectional-dataflow)
 * [Functional Additions to Flux](#functional-additions-to-flux)
-* [Actions, Thunks and Agendas](#actions-thunks-and-agendas)
+* [Actions and Thunks](#actions-and-thunks)
 * [Abstracting Side effects as Agendas](#abstracting-side-effects-as-agendas)
 * [Fully Reactive Dispatchers and Stores](#fully-reactive-dispatchers-and-stores)
 
