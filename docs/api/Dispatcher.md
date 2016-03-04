@@ -203,8 +203,8 @@ store.getState() // ['Hello World!']
 
 ## <a id='wrapActions'></a>[`wrapActions(actions)`](#wrapActions)
 
-Takes actions and "binds" them to the dispatcher, in the sense that it wraps
-the action creators in functions, that dispatch the return values.
+Takes actions and "binds" them to the dispatcher. It wraps
+the action creators in functions that dispatch the return values.
 
 ### Arguments
 
