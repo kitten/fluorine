@@ -19,7 +19,7 @@ import {
 import assert from './util/assert'
 
 function isPromise(obj) {
-  return Promise.prototype.isPrototypeOf(obj)
+  return !!obj && typeof obj.then === 'function';
 }
 
 const kickstart = { type: '_INIT_' }
