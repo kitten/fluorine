@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react'
-import { withStore, withActions } from 'fluorine-lib'
 
 export default class TodoTextInput extends Component {
   static propTypes = {
