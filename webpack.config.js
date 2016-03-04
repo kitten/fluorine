@@ -5,6 +5,7 @@ var conf = {
   resolve: {
     extensions: [ '', '.js' ]
   },
+  plugins: [],
   module: {
     loaders: [
       {
