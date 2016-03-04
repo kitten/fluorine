@@ -3,8 +3,8 @@
 This is a decorator that can be used to insert ready-to-use actions into your
 component.
 
-Actions are supposed to be written as pure function for composability. But the
-result needs to be dispatched somehow. So this is a decorator that injects an
+Actions are supposed to be written as pure functions for composability. However, the
+result needs to be dispatched somehow. `withActions` is a decorator that injects an
 object containing actions into your component as a prop and wraps them in a
 function that injects the result into the [`dispatch`](Dispatcher.md#dispatch)
 method.
