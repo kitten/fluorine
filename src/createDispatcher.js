@@ -89,7 +89,7 @@ export default function createDispatcher(opts = {}) {
     assert(agendas.reduce((acc, obj) => acc && isObservable(obj), true), `Agendas can only be represented by Observables.`)
 
     if (agendas.length === 1) {
-      next(Observable.create(agendas[0]))
+      next(agendas[0])
     } else if (agendas.length > 1) {
       next(Observable.concat(...agendas))
     }
