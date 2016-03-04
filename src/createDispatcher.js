@@ -37,6 +37,7 @@ export default function createDispatcher(opts = {}) {
   // Question: what is this intended for? I see it used below in
   // ways that make it seem like the Symbol is for scope hiding
   // (as they were defined for), not sure what the intention is though
+  // Ah, this gets used to provide hidden annotations on a function the caller provided
   const identifier = Symbol()
   const cache = []
   const state = []
@@ -71,6 +72,11 @@ export default function createDispatcher(opts = {}) {
   }
 
   function dispatch(action) {
+    // Really enjoying the forced assertion pattern here, it's what we use in zmq.
+    // Fail fast and hard at the level of library
+    //
+    // People will inevitably have errors that crop up in userland. How should
+    // they handle these thrown errors for display to user?
     assert((
       typeof action === 'function' ||
       typeof action === 'object'
@@ -94,7 +100,8 @@ export default function createDispatcher(opts = {}) {
   }
 
   function schedule(...agendas) {
-    assert(agendas.reduce((acc, obj) => acc && isObservable(obj), true), `Agendas can only be represented by Observables.`)
+    assert(agendas.reduce((acc, obj) => acc && isObservable(obj), true),
+           `Agendas can only be represented by Observables.`)
 
     if (agendas.length === 1) {
       next(agendas[0])
