@@ -34,11 +34,16 @@ const kickstart = { type: '_INIT_' }
 export default function createDispatcher(opts = {}) {
   const dispatcher = new Subject()
 
+  // Question: what is this intended for? I see it used below in
+  // ways that make it seem like the Symbol is for scope hiding
+  // (as they were defined for), not sure what the intention is though
   const identifier = Symbol()
   const cache = []
   const state = []
 
   let scheduler
+  // Now this is interesting, you're letting folks pick the scheduler
+  // Does this pick up derivative schedulers like the requestAnimationFrameScheduler
   switch (opts.scheduler) {
     case Scheduler.asap:
     case Scheduler.queue: {
@@ -50,13 +55,16 @@ export default function createDispatcher(opts = {}) {
 
   const logging = parseOpts(opts.logging)
   if (logging.agendas) {
+    // Seems like this means that middlewares are effectively an attachment on dispatchers
     logAgendas(dispatcher)
   }
 
   function next(agenda) {
     const obs = agenda
       .subscribeOn(scheduler)
-      .publishReplay()
+      .publishReplay() // Would this make all my actions replayable?
+                       // What if they are expensive or can't be performed again?
+                       // I definitely need to look up publishReplay when I have internet again
       .refCount()
 
     dispatcher.next(obs)
@@ -209,4 +217,3 @@ export default function createDispatcher(opts = {}) {
     wrapActions
   })
 }
-
