@@ -310,7 +310,7 @@ Instead of being dispatched they are scheduled on the dispatcher:
 
 ```js
 dispatcher.schedule(agenda)
-dispatcher.scheudle(agendaCreator())
+dispatcher.schedule(agendaCreator())
 ```
 
 **So now you're thinking: Why is this easier than thunks?**
@@ -360,15 +360,17 @@ Let's say you're adding a todo to your server:
 function addTodo(id, text) {
   return Observable
     .fromPromise(fetch('/add-todo', { method: 'POST' }))
-    .ignoreElements()
+    .map(() => null)
 }
 ```
 
-Now, why is this stupid observable discarding its results?
-
 In this example we don't care about the actual result of
-the request, if it succeeds. So we use the Rx operator `ignoreElements`
-so that the dispatcher will ignore them.
+the request, as long as it succeeds. So we can replace
+every emitted event with `null`.
+
+*Note:* The RxJS `ignoreElements` method might be suitable as
+well in some cases, but will fail when the resulting
+Observable doesn't emit any items.
 
 This is a clean side effect, that doesn't emit any actions
 on its own.
