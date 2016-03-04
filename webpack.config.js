@@ -32,10 +32,7 @@ var conf = {
   output: {
     library: 'fluorine',
     libraryTarget: 'umd'
-  },
-  plugins: [
-    new webpack.optimize.OccurenceOrderPlugin()
-  ]
+  }
 }
 
 if (process.env.NODE_ENV === 'production') {

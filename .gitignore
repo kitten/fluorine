@@ -1,7 +1,9 @@
 # Node
 node_modules
 *.log
-lib
+lib/
+es/
+dist/
 npm-debug.log
 
 # Mac
