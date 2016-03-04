@@ -54,7 +54,7 @@ A store is just an observable which emits new states of your store.
   signature is `function (state, action)`, where state is the previous state
   of your store.
 
-1. `init`: The initial value of the store. This is useful if you're cached
+1. `init`: The initial value of the store. This is useful if you've cached
   a previous state somewhere and want to restore it. By default the initial
   state is `undefined`.
 
@@ -241,4 +241,3 @@ obj.boundAddTodo
 const arr = dispatcher.wrapActions([ addTodo ])
 arr[0]
 ```
-
