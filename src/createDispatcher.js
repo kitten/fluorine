@@ -54,12 +54,7 @@ export default function createDispatcher(opts = {}) {
   }
 
   function next(agenda) {
-    assert(isObservable(agenda), `Agendas can only be represented by Observables.`)
-    if (!agenda.isPrototypeOf(Observable)) {
-      agenda = Observable.create(agenda)
-    }
-
-    const obs = Observable.create(agenda)
+    const obs = agenda
       .subscribeOn(scheduler)
       .publishReplay()
       .refCount()
@@ -91,8 +86,10 @@ export default function createDispatcher(opts = {}) {
   }
 
   function schedule(...agendas) {
+    assert(agendas.reduce((acc, obj) => acc && isObservable(obj), true), `Agendas can only be represented by Observables.`)
+
     if (agendas.length === 1) {
-      next(agendas[0])
+      next(Observable.create(agendas[0]))
     } else if (agendas.length > 1) {
       next(Observable.concat(...agendas))
     }
