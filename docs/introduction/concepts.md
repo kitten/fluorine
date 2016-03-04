@@ -1,9 +1,10 @@
 # Concepts
 
-This is an extensive document, describing Fluorine's concepts and patterns.
+This document describes every major part of Fluorine's structure, ideas, and
+concepts while providing examples for each pattern so you can apply them yourself.
 
-- It will explain every major part of Fluorine's structure, ideas and concepts
-- It will also give examples for each pattern, so you know how to apply these
+As much as possible, Fluorine tries to be lightweight and encourage good
+patterns. If it gets in your way, post an issue!
 
 ## Index
 
@@ -17,11 +18,10 @@ This is an extensive document, describing Fluorine's concepts and patterns.
 
 ## <a id='flux-and-unidirectional-dataflow'></a>[Flux and Unidirectional Dataflow](#flux-and-unidirectional-dataflow)
 
-Fluorine stands in the "tradition" of a lot of other Flux frameworks. By that
-specifically we're referring to the unidirectional data flow, and some other
-properties of Flux.
+Fluorine stands in the "tradition" of a lot of other Flux frameworks. In particular,
+we're referring to the unidirectional data flow, and some other properties of Flux.
 
-But even if you haven't worked with other Flux frameworks before, **fear not!**
+Even if you haven't worked with other Flux frameworks before, **fear not!**
 Fluorine isn't difficult to use or understand. On the contrary, it was designed
 to be reasonable and as simple as possible, by adhering to the
 [KISS principle](https://en.wikipedia.org/wiki/KISS_principle).
@@ -35,7 +35,7 @@ The basic **state manager** uses:
 ![The basic Flux data flow][flux-simple-diagram]
 
 The "View" part of your app is in most cases your React components. We do not
-want to refer to this as a necessity, though. Flurine can and will support more
+want to refer to this as a necessity, though. Fluorine can and will support more
 UI libraries in the future.
 
 Your app's view is presented to the user and will be interactable, of course.
@@ -534,4 +534,3 @@ you wish and with whatever UI library you prefer.
 
 The next part in the introduction is on how to write your first Fluorine store:
 [Your First Store](your-first-store.md)
-
