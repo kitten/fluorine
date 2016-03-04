@@ -19,7 +19,14 @@ import {
 import assert from './util/assert'
 
 function isPromise(obj) {
-  return !!obj && typeof obj.then === 'function'
+  return typeof obj === 'object' && typeof obj.then === 'function'
+}
+
+function isObservable(obj) {
+  return (
+    typeof obj === 'object' &&
+    typeof obj.subscribe === 'function'
+  )
 }
 
 const kickstart = { type: '_INIT_' }
@@ -47,9 +54,12 @@ export default function createDispatcher(opts = {}) {
   }
 
   function next(agenda) {
-    assert(agenda instanceof Observable, `Agendas can only be represented by Observables.`)
+    assert(isObservable(agenda), `Agendas can only be represented by Observables.`)
+    if (!agenda.isPrototypeOf(Observable)) {
+      agenda = Observable.create(agenda)
+    }
 
-    const obs = agenda
+    const obs = Observable.create(agenda)
       .subscribeOn(scheduler)
       .publishReplay()
       .refCount()
