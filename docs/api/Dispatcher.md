@@ -208,7 +208,7 @@ the action creators in functions that dispatch the return values.
 
 ### Arguments
 
-1. `actions`: This can either be:
+1. `actions`: This can be:
   - a single action creator
   - an object containing only action creators
   - an array containing action creators
