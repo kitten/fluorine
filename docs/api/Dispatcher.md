@@ -123,11 +123,11 @@ Unlike `.dispatch()` this method doesn't return a promise. You should rely on
 RxJS's side effects to react to completion or a certain state. Check out the
 [`do` operator](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/do.md).
 
-If you're using this to send requests to an API, then you can reverse the
-standard order of doing things. You would POST a new resource and dispatch the
-create action if that succeeds? Try dispatching first. If the POST request
-fails you can let Fluorine revert the action automatically. In calls that'll
-likely succeed this is a big win for UI smoothness.
+When using this to send requests to an API, you can reverse the standard order
+of doing things. If you would normally `POST` a new resource and dispatch the
+create action if that succeeds, try dispatching first. If the `POST` request
+fails, you can let Fluorine revert the action automatically. In calls that will
+likely succeed, this is a big win for UI smoothness.
 
 ### Example
 
