@@ -110,8 +110,8 @@ to keep your actions consistent and well-tested.
 
 ## <a id='actions-and-thunks'></a>[Actions and Thunks](#actions-and-thunks)
 
-As you've just read, actions abstract mutations to our data.
-In Flux frameworks actions are plain objects.
+As you've just read, actions abstract mutations to our data. They are plain
+objects that describe our intent to mutate data.
 
 Traditionally they carry a *key* that allows reducers to identify the action
 that should be carried out.
