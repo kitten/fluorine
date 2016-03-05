@@ -63,9 +63,7 @@ More on the dispatcher and the stores will follow in
 
 ## <a id='functional-additions-to-flux'></a>[Functional Additions to Flux](#functional-additions-to-flux)
 
-With Redux some new properties have made their way into Flux. They concern
-the stores and action creators.
-Fluorine builds on these functional properties.
+Two functional additions to Flux, that came by way of Redux are stores and action creators.
 
 ### Stores
 
