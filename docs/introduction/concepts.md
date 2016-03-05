@@ -225,9 +225,10 @@ dispatcher.dispatch(fetchTodos())
 
 #### Thunks
 
-Redux introduced **thunks** to handle side effects.
-They're by far the most common side effect abstraction
-at the moment.
+Thunks are a function that wraps some behavior for later execution (functions
+returning functions!).
+
+For Fluorine, these are functions you return in your action creators:
 
 A thunk is a function that you return in your action
 creators and are fully supported by Fluorine. An action
@@ -235,21 +236,22 @@ creator using a thunk for the example above may look
 like this:
 
 ```js
+
 function fetchTodos() {
+  return fetch('/todo-list')
+    .then(res => res.json())
+    .then(todos => addTodos(todos))
+}
+
+function thunkedTodos() {
   return dispatch => {
-    return fetch('/todo-list')
-      .then(res => res.json())
-      .then(todos => {
-        dispatch(addTodos(todos))
-        return todos
-      })
+    dispatch(fetchTodos)
   }
 }
 ```
 
-They of course easily allow a wide variety of iterative
-logic to execute side effects and dispatch multiple
-actions unlike promises.
+They allow a wide variety of iterative logic to execute side effects and
+dispatch multiple actions unlike promises.
 
 The [`dispatcher.dispatch`](../api/dispatcher.md#dispatch)
 method will inject a dispatch method into a thunk's first
