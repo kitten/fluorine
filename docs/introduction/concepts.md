@@ -261,7 +261,7 @@ argument automatically:
 dispatcher.dispatch(fetchTodos())
 ```
 
-The usage thus hasn't changed compared to promises.
+The usage hasn't changed compared to promises.
 
 Another nice detail is, that the dispatch method always tries to
 return a promise resolving to the dispatched action.
@@ -280,13 +280,11 @@ manage side effects and are really a pain to use.
 
 In highly complex apps action creators can stay relatively
 small as they just transform their input to better suit
-the store. **But** side effects in more complex actions
-can get very confusing and long. A nightmare for projects
+the store. **Side effects** in more complex actions
+can get very confusing and long. This is a nightmare for projects
 that will grow very large over time.
 
-To solve this problems Fluorine introduces **Agendas**.
-More about them in the next section: [Abstracting side effects as Agendas](#abstracting-side-effects-as-agendas)
-
+To solve these problems Fluorine introduces **Agendas**.
 
 ## <a id='abstracting-side-effects-as-agendas'></a>[Abstracting Side effects as Agendas](#abstracting-side-effects-as-agendas)
 
