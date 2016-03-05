@@ -311,7 +311,7 @@ to represent a stream of actions with a set of side effects.
 Side effects might influence actions, but sometimes they
 don't.
 
-Let's list all tricks and features that are possible with Agendas:
+Let's list all tricks and features that are possible with Agendas.
 
 ### Composing actions
 
