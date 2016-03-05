@@ -33,28 +33,28 @@ The basic **state manager** uses:
 
 ![The basic Flux data flow][flux-simple-diagram]
 
-The "View" part of your app is in most cases your React components. We do not
-want to refer to this as a necessity, though. Fluorine can and will support more
-UI libraries in the future.
+The "view" is what a user sees. With React and other virtual DOM libraries, this
+is the manifestation of what ends up on the real Document Object Model (DOM).
 
-Your app's view is presented to the user and will be interactive, of course.
-Interactions that need to mutate our managed state will need to dispatch new
-actions:
+When a user interacts with that view, those interactions need to mutate the
+managed state. Those interactions need to trigger changes to the state by
+dispatching actions.
 
 ![Dispatching new actions][flux-dispatch-diagram]
 
 In other words, actions describe mutations to our data, while the data itself
 is stored in the stores.
 
-Furthermore, as you can see on the two diagrams, all actions are dispatched
-on the Dispatcher. Think about it as your app's central event stream, that
-schedules tasks. If you talk about state and side effect management then
-the manager in that case is your Dispatcher.
+As you can see on the two diagrams, all actions are dispatched
+on the `Dispatcher`. Think about it as your app's central event stream, scheduling
+tasks for you.
+
+*The manager of your state and side effects is your Dispatcher.*
 
 The Dispatcher is the **single source of truth**. All stores are directly
 derived from it and react to its actions.
 
-More on the dispatcher and the stores will follow below:
+More on the dispatcher and the stores will follow in
 [Fully Reactive Dispatchers and Stores](#fully-reactive-dispatchers-and-stores)
 
 [flux-simple-diagram]: ../img/flux-simple-diagram.jpg
