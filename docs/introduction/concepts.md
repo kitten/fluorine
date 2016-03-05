@@ -95,31 +95,26 @@ More on the dispatcher and the stores will follow in
 Check out the [reducer in our Todo MVC Example](https://github.com/philpl/fluorine/blob/master/examples/todo/src/reducers/todo.js)
  to see a store in action.
 
-### Actions
+### Action Creators
 
-You can read more about this in the next section: [Actions and Thunks](#actions-and-thunks)
-
-But to break it down, actions are created by pure functions as well,
-with the signature:
+Actions are created by pure functions with the signature:
 
 ```js
 (...args) => action
 ```
 
-This is then called an action creator.
-It's not something new, but it is worth noting in this context.
+This is then called an action creator. This is a simplified design pattern
+to keep your actions consistent and well-tested.
 
-Check out the actions in our Todo MVC Example to see actions in action:
-[Todo MVC Example actions](https://github.com/philpl/fluorine/blob/master/examples/todo/src/actions/todo.js)
-
+**Example**: Check out the [actions in the Todo MVC Example](https://github.com/philpl/fluorine/blob/master/examples/todo/src/actions/todo.js).
 
 ## <a id='actions-and-thunks'></a>[Actions and Thunks](#actions-and-thunks)
 
 As you've just read, actions abstract mutations to our data.
 In Flux frameworks actions are plain objects.
 
-Traditionally they should carry a *key*, that allows reducers
-to identify the action, that should be carried out.
+Traditionally they carry a *key* that allows reducers to identify the action
+that should be carried out.
 
 An action might look something like this:
 
