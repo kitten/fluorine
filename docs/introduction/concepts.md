@@ -1,9 +1,10 @@
 # Concepts
 
-This is an extensive document, describing Fluorine's concepts and patterns.
+This document describes every major part of Fluorine's structure, ideas, and
+concepts while providing examples for each pattern so you can apply them yourself.
 
-- It will explain every major part of Fluorine's structure, ideas and concepts
-- It will also give examples for each pattern, so you know how to apply these
+As much as possible, Fluorine tries to be lightweight and encourage good
+patterns. If it gets in your way, post an issue!
 
 ## Index
 
@@ -17,14 +18,12 @@ This is an extensive document, describing Fluorine's concepts and patterns.
 
 ## <a id='flux-and-unidirectional-dataflow'></a>[Flux and Unidirectional Dataflow](#flux-and-unidirectional-dataflow)
 
-Fluorine stands in the "tradition" of a lot of other Flux frameworks. By that
-specifically we're referring to the unidirectional data flow, and some other
-properties of Flux.
+Fluorine stands in the "tradition" of a lot of other Flux frameworks. In particular,
+we're referring to the unidirectional data flow, and some other properties of Flux.
 
-But even if you haven't worked with other Flux frameworks before, **fear not!**
-Fluorine isn't difficult to use or understand. On the contrary, it was designed
-to be reasonable and as simple as possible, by adhering to the
-[KISS principle](https://en.wikipedia.org/wiki/KISS_principle).
+If you haven't worked with other Flux frameworks before, **fear not!** This
+guide is here to help you and others along in your journey to building maintainable
+asynchronous data flows as well as pleasing users and yourself.
 
 The basic **state manager** uses:
 
@@ -34,28 +33,28 @@ The basic **state manager** uses:
 
 ![The basic Flux data flow][flux-simple-diagram]
 
-The "View" part of your app is in most cases your React components. We do not
-want to refer to this as a necessity, though. Flurine can and will support more
-UI libraries in the future.
+The "view" is what a user sees. With React and other virtual DOM libraries, this
+is the manifestation of what ends up on the real Document Object Model (DOM).
 
-Your app's view is presented to the user and will be interactable, of course.
-Interactions that need to mutate our managed state will need to dispatch new
-actions:
+When a user interacts with that view, those interactions need to mutate the
+managed state. Those interactions need to trigger changes to the state by
+dispatching actions.
 
 ![Dispatching new actions][flux-dispatch-diagram]
 
 In other words, actions describe mutations to our data, while the data itself
 is stored in the stores.
 
-Furthermore, as you can see on the two diagrams, all actions are dispatched
-on the Dispatcher. Think about it as your app's central event stream, that
-schedules tasks. If you talk about state and side effect management then
-the manager in that case is your Dispatcher.
+As you can see on the two diagrams, all actions are dispatched
+on the `Dispatcher`. Think about it as your app's central event stream, scheduling
+tasks for you.
+
+*The manager of your state and side effects is your Dispatcher.*
 
 The Dispatcher is the **single source of truth**. All stores are directly
 derived from it and react to its actions.
 
-More on the dispatcher and the stores will follow below:
+More on the dispatcher and the stores will follow in
 [Fully Reactive Dispatchers and Stores](#fully-reactive-dispatchers-and-stores)
 
 [flux-simple-diagram]: ../img/flux-simple-diagram.jpg
@@ -64,64 +63,58 @@ More on the dispatcher and the stores will follow below:
 
 ## <a id='functional-additions-to-flux'></a>[Functional Additions to Flux](#functional-additions-to-flux)
 
-With Redux some new properties have made their way into Flux. They concern
-the stores and action creators.
-Fluorine builds on these functional properties.
+Two functional additions to Flux, that came by way of Redux are stores and action creators.
 
 ### Stores
 
-Stores are computed using **reducers**. They are basically pure functions,
-without side effects. With them we create stores, with the function
+Stores are computed using **reducers**. They must be pure functions,
+without side effects. They have the function
 signature:
 
 ```js
 (lastState, action) => nextState
 ```
 
-To explain the arguments:
-
 - `lastState` is the last state, that was emitted by your store.
 - `action` describes the mutation that should be made to your state.
 
-This reducer returns the next state of your store.
-This has made it very easy to describe the states that your store emits
-and to generate the states. The dispatcher just has to compute
-consecutive results of the reducer method.
+This reducer returns the next state of your store based on the prior state. It's
+up to the dispatcher to compute the consecutive states with each reduction.
+
+```js
+actions = [action1, action2, action3]
+newState = actions.reduce(reducer, originalState)
+```
 
 This is very similar to RxJS's `scan` method.
 [More info](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/scan.md)
 
-More on the dispatcher and the stores will follow below:
+More on the dispatcher and the stores will follow in
 [Fully Reactive Dispatchers and Stores](#fully-reactive-dispatchers-and-stores)
 
-Check out the reducer in our Todo MVC Example to see a store in action:
-[Todo MVC Example store](https://github.com/philpl/fluorine/blob/master/examples/todo/src/reducers/todo.js)
+Check out the [reducer in our Todo MVC Example](https://github.com/philpl/fluorine/blob/master/examples/todo/src/reducers/todo.js)
+ to see a store in action.
 
-### Actions
+### Action Creators
 
-You can read more about this in the next section: [Actions and Thunks](#actions-and-thunks)
-
-But to break it down, actions are created by pure functions as well,
-with the signature:
+Actions are created by pure functions with the signature:
 
 ```js
 (...args) => action
 ```
 
-This is then called an action creator.
-It's not something new, but it is worth noting in this context.
+This is then called an action creator. This is a simplified design pattern
+to keep your actions consistent and well-tested.
 
-Check out the actions in our Todo MVC Example to see actions in action:
-[Todo MVC Example actions](https://github.com/philpl/fluorine/blob/master/examples/todo/src/actions/todo.js)
-
+**Example**: Check out the [actions in the Todo MVC Example](https://github.com/philpl/fluorine/blob/master/examples/todo/src/actions/todo.js).
 
 ## <a id='actions-and-thunks'></a>[Actions and Thunks](#actions-and-thunks)
 
-As you've just read, actions abstract mutations to our data.
-In Flux frameworks actions are plain objects.
+As you've just read, actions abstract mutations to our data. They are plain
+objects that describe our intent to mutate data.
 
-Traditionally they should carry a *key*, that allows reducers
-to identify the action, that should be carried out.
+Traditionally they carry a *key* that allows reducers to identify the action
+that should be carried out.
 
 An action might look something like this:
 
@@ -148,9 +141,9 @@ For each action you will be writing an **action creator**.
 > into a semantic helper method which sends the action to the
 > dispatcher." - Flux Documentation
 
-As described in the section before, action creators are just
-pure functions returning a new action object.
-For the action above it thus might look like this:
+As described in the section before, action creators are pure functions that
+return a new action object. Here's the matching action creator for the action
+above.
 
 ```js
 function updateTodo(id, text) {
@@ -162,15 +155,15 @@ function updateTodo(id, text) {
 }
 ```
 
-This action creator can then be used together with the
-dispatcher's `dispatch` method:
+Pairing the action creator with the dispatcher's `dispatch` method now puts
+it all together.
 
 ```js
 dispatcher.dispatch(updateTodo(0, 'Hello World!'))
 ```
 
-More about the dispatcher method in the API docs:
-[Dispatcher.dispatch](../api/dispatcher.md#dispatch)
+Feel free to read more about
+[`Dispatcher.dispatch` in the API documentation](../api/dispatcher.md#dispatch)
 
 In your actual app, this can be easily abstracted away
 by wrapping the action creator in a function calling
@@ -185,13 +178,14 @@ Example app:
 
 ### Side effect management
 
-Now in your application you will certainly have **side effects**.
-The most common of them will probably be *RESTful requests*.
+Your application will certainly have **side effects**. State from the outside,
+`POST`ing to update a database, communicating over websockets, and other
+useful bits that make the web fun.
 
 #### Promises
 
-If you're already using promises for your requests, it's easy
-to use them.
+If you're already using promises for your requests, it's tempting to start with
+simply dispatching after a promise resolves
 
 ```js
 function addTodos(todos) {
@@ -210,11 +204,9 @@ function fetchTodos() {
 }
 ```
 
-Now, this is of course doesn't abstract the side effect
-cleanly. But still you'd be pulling your requests directly
-in and dispatching an action as a result.
-
-To use a promise as a side effect do this instead:
+The primary problems with the above code is that it's coupled to the dispatcher
+and doesn't allow the dispatcher to reason about the any rejections in promises.
+Instead, write a function that returns a promise for an action creator:
 
 ```js
 function fetchTodos() {
@@ -224,9 +216,8 @@ function fetchTodos() {
 }
 ```
 
-Fluorine allows you to use promises directly in the
-dispatch method to allow a side effect with a single
-action:
+Fluorine will accept this promise directly via the dispatch method
+to allow a side effect with a single action:
 
 ```js
 dispatcher.dispatch(fetchTodos())
@@ -234,9 +225,10 @@ dispatcher.dispatch(fetchTodos())
 
 #### Thunks
 
-Redux introduced **thunks** to handle side effects.
-They're by far the most common side effect abstraction
-at the moment.
+Thunks are a function that wraps some behavior for later execution (functions
+returning functions!).
+
+For Fluorine, these are functions you return in your action creators:
 
 A thunk is a function that you return in your action
 creators and are fully supported by Fluorine. An action
@@ -244,21 +236,22 @@ creator using a thunk for the example above may look
 like this:
 
 ```js
+
 function fetchTodos() {
+  return fetch('/todo-list')
+    .then(res => res.json())
+    .then(todos => addTodos(todos))
+}
+
+function thunkedTodos() {
   return dispatch => {
-    return fetch('/todo-list')
-      .then(res => res.json())
-      .then(todos => {
-        dispatch(addTodos(todos))
-        return todos
-      })
+    dispatch(fetchTodos)
   }
 }
 ```
 
-They of course easily allow a wide variety of iterative
-logic to execute side effects and dispatch multiple
-actions unlike promises.
+They allow a wide variety of iterative logic to execute side effects and
+dispatch multiple actions unlike promises.
 
 The [`dispatcher.dispatch`](../api/dispatcher.md#dispatch)
 method will inject a dispatch method into a thunk's first
@@ -268,7 +261,7 @@ argument automatically:
 dispatcher.dispatch(fetchTodos())
 ```
 
-The usage thus hasn't changed compared to promises.
+The usage hasn't changed compared to promises.
 
 Another nice detail is, that the dispatch method always tries to
 return a promise resolving to the dispatched action.
@@ -287,23 +280,19 @@ manage side effects and are really a pain to use.
 
 In highly complex apps action creators can stay relatively
 small as they just transform their input to better suit
-the store. **But** side effects in more complex actions
-can get very confusing and long. A nightmare for projects
+the store. **Side effects** in more complex actions
+can get very confusing and long. This is a nightmare for projects
 that will grow very large over time.
 
-To solve this problems Fluorine introduces **Agendas**.
-More about them in the next section: [Abstracting side effects as Agendas](#abstracting-side-effects-as-agendas)
-
+To solve these problems Fluorine introduces **Agendas**.
 
 ## <a id='abstracting-side-effects-as-agendas'></a>[Abstracting Side effects as Agendas](#abstracting-side-effects-as-agendas)
 
 Agendas are a new way to manage your side effects and internally
-abstract every single action already.
-Think about agendas as descriptions of tasks. They are
-scheduled on the dispatcher and describe a stream of
-actions.
+abstract every single action. Think about agendas as descriptions of tasks.
+They are scheduled on the dispatcher and describe a stream of actions.
 
-What that means is, that Agendas are **Observables** emitting
+If you came here as a happy RxJS user, Agendas are **Observables** emitting
 actions.
 
 Instead of being dispatched they are scheduled on the dispatcher:
@@ -313,19 +302,20 @@ dispatcher.schedule(agenda)
 dispatcher.schedule(agendaCreator())
 ```
 
-**So now you're thinking: Why is this easier than thunks?**
+<!-- TODO: Define Observable -->
+
+**What makes this easier than thunks?**
 
 The properties of Observable perfectly fit our problem. We need
 to represent a stream of actions with a set of side effects.
 Side effects might influence actions, but sometimes they
 don't.
 
-Let's list all tricks and features that are possible with Agendas:
+Let's list all tricks and features that are possible with Agendas.
 
 ### Composing actions
 
-This is simple, but let's say you've got two agendas, representing
-two tasks:
+Let's say you have two agendas, representing two tasks:
 
 ```js
 const clearTodos = Observable.of({ type: TODO_CLEAR_TODOS })
@@ -341,9 +331,8 @@ dispatcher.schedule(fusion)
 ```
 
 Concatenating agendas is very common and that's why the
-concatenation is baked into the schedule method. Just
-pass multiple agendas as arguments and they will be
-concatenated:
+concatenation is baked into the schedule method. Pass multiple agendas as
+arguments and they will be concatenated:
 
 ```js
 dispatcher.schedule(clearTodos, makeCookies)
@@ -534,4 +523,3 @@ you wish and with whatever UI library you prefer.
 
 The next part in the introduction is on how to write your first Fluorine store:
 [Your First Store](your-first-store.md)
-

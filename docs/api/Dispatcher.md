@@ -54,7 +54,7 @@ A store is just an observable which emits new states of your store.
   signature is `function (state, action)`, where state is the previous state
   of your store.
 
-1. `init`: The initial value of the store. This is useful if you're cached
+1. `init`: The initial value of the store. This is useful if you've cached
   a previous state somewhere and want to restore it. By default the initial
   state is `undefined`.
 
@@ -123,11 +123,11 @@ Unlike `.dispatch()` this method doesn't return a promise. You should rely on
 RxJS's side effects to react to completion or a certain state. Check out the
 [`do` operator](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/do.md).
 
-If you're using this to send requests to an API, then you can reverse the
-standard order of doing things. You would POST a new resource and dispatch the
-create action if that succeeds? Try dispatching first. If the POST request
-fails you can let Fluorine revert the action automatically. In calls that'll
-likely succeed this is a big win for UI smoothness.
+When using this to send requests to an API, you can reverse the standard order
+of doing things. If you would normally `POST` a new resource and dispatch the
+create action if that succeeds, try dispatching first. If the `POST` request
+fails, you can let Fluorine revert the action automatically. In calls that will
+likely succeed, this is a big win for UI smoothness.
 
 ### Example
 
@@ -203,12 +203,12 @@ store.getState() // ['Hello World!']
 
 ## <a id='wrapActions'></a>[`wrapActions(actions)`](#wrapActions)
 
-Takes actions and "binds" them to the dispatcher, in the sense that it wraps
-the action creators in functions, that dispatch the return values.
+Takes actions and "binds" them to the dispatcher. It wraps
+the action creators in functions that dispatch the return values.
 
 ### Arguments
 
-1. `actions`: This can either be:
+1. `actions`: This can be:
   - a single action creator
   - an object containing only action creators
   - an array containing action creators
@@ -241,4 +241,3 @@ obj.boundAddTodo
 const arr = dispatcher.wrapActions([ addTodo ])
 arr[0]
 ```
-

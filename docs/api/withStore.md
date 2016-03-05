@@ -3,8 +3,8 @@
 This is a decorator that can be used to insert a store's state into your
 component.
 
-This decorator just injects values of an observable into a prop of your choice
-and updates it. Thus your component will always receive the store's latest state
+This decorator injects values of an observable into a prop of your choice
+and updates it. Your component will always receive the store's latest state
 through a top-level component.
 
 ## Arguments
