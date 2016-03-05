@@ -178,13 +178,14 @@ Example app:
 
 ### Side effect management
 
-Now in your application you will certainly have **side effects**.
-The most common of them will probably be *RESTful requests*.
+Your application will certainly have **side effects**. State from the outside,
+`POST`ing to update a database, communicating over websockets, and other
+useful bits that make the web fun.
 
 #### Promises
 
-If you're already using promises for your requests, it's easy
-to use them.
+If you're already using promises for your requests, it's tempting to start with
+simply dispatching after a promise resolves
 
 ```js
 function addTodos(todos) {
@@ -203,11 +204,9 @@ function fetchTodos() {
 }
 ```
 
-Now, this is of course doesn't abstract the side effect
-cleanly. But still you'd be pulling your requests directly
-in and dispatching an action as a result.
-
-To use a promise as a side effect do this instead:
+The primary problems with the above code is that it's coupled to the dispatcher
+and doesn't allow the dispatcher to reason about the any rejections in promises.
+Instead, write a function that returns a promise for an action creator:
 
 ```js
 function fetchTodos() {
@@ -217,9 +216,8 @@ function fetchTodos() {
 }
 ```
 
-Fluorine allows you to use promises directly in the
-dispatch method to allow a side effect with a single
-action:
+Fluorine will accept this promise directly via the dispatch method
+to allow a side effect with a single action:
 
 ```js
 dispatcher.dispatch(fetchTodos())
