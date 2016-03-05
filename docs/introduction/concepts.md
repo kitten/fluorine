@@ -302,6 +302,8 @@ dispatcher.schedule(agenda)
 dispatcher.schedule(agendaCreator())
 ```
 
+<!-- TODO: Define Observable -->
+
 **What makes this easier than thunks?**
 
 The properties of Observable perfectly fit our problem. We need
@@ -313,8 +315,7 @@ Let's list all tricks and features that are possible with Agendas:
 
 ### Composing actions
 
-This is simple, but let's say you've got two agendas, representing
-two tasks:
+Let's say you have two agendas, representing two tasks:
 
 ```js
 const clearTodos = Observable.of({ type: TODO_CLEAR_TODOS })
