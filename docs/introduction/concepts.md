@@ -289,12 +289,10 @@ To solve these problems Fluorine introduces **Agendas**.
 ## <a id='abstracting-side-effects-as-agendas'></a>[Abstracting Side effects as Agendas](#abstracting-side-effects-as-agendas)
 
 Agendas are a new way to manage your side effects and internally
-abstract every single action already.
-Think about agendas as descriptions of tasks. They are
-scheduled on the dispatcher and describe a stream of
-actions.
+abstract every single action. Think about agendas as descriptions of tasks.
+They are scheduled on the dispatcher and describe a stream of actions.
 
-What that means is, that Agendas are **Observables** emitting
+If you came here as a happy RxJS user, Agendas are **Observables** emitting
 actions.
 
 Instead of being dispatched they are scheduled on the dispatcher:
@@ -304,7 +302,7 @@ dispatcher.schedule(agenda)
 dispatcher.schedule(agendaCreator())
 ```
 
-**So now you're thinking: Why is this easier than thunks?**
+**What makes this easier than thunks?**
 
 The properties of Observable perfectly fit our problem. We need
 to represent a stream of actions with a set of side effects.
