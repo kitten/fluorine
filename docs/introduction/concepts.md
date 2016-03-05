@@ -21,10 +21,9 @@ patterns. If it gets in your way, post an issue!
 Fluorine stands in the "tradition" of a lot of other Flux frameworks. In particular,
 we're referring to the unidirectional data flow, and some other properties of Flux.
 
-Even if you haven't worked with other Flux frameworks before, **fear not!**
-Fluorine isn't difficult to use or understand. On the contrary, it was designed
-to be reasonable and as simple as possible, by adhering to the
-[KISS principle](https://en.wikipedia.org/wiki/KISS_principle).
+If you haven't worked with other Flux frameworks before, **fear not!** This
+guide is here to help you and others along in your journey to building maintainable
+asynchronous data flows as well as pleasing users and yourself.
 
 The basic **state manager** uses:
 
