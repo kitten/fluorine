@@ -331,9 +331,8 @@ dispatcher.schedule(fusion)
 ```
 
 Concatenating agendas is very common and that's why the
-concatenation is baked into the schedule method. Just
-pass multiple agendas as arguments and they will be
-concatenated:
+concatenation is baked into the schedule method. Pass multiple agendas as
+arguments and they will be concatenated:
 
 ```js
 dispatcher.schedule(clearTodos, makeCookies)
