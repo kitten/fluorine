@@ -205,7 +205,7 @@ function fetchTodos() {
 ```
 
 The primary problems with the above code is that it's coupled to the dispatcher
-and doesn't allow the dispatcher to reason about the any rejections in promises.
+and doesn't allow the dispatcher to reason about any rejections in promises.
 Instead, write a function that returns a promise for an action creator:
 
 ```js
