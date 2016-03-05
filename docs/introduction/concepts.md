@@ -141,9 +141,9 @@ For each action you will be writing an **action creator**.
 > into a semantic helper method which sends the action to the
 > dispatcher." - Flux Documentation
 
-As described in the section before, action creators are just
-pure functions returning a new action object.
-For the action above it thus might look like this:
+As described in the section before, action creators are pure functions that
+return a new action object. Here's the matching action creator for the action
+above.
 
 ```js
 function updateTodo(id, text) {
@@ -155,15 +155,15 @@ function updateTodo(id, text) {
 }
 ```
 
-This action creator can then be used together with the
-dispatcher's `dispatch` method:
+Pairing the action creator with the dispatcher's `dispatch` method now puts
+it all together.
 
 ```js
 dispatcher.dispatch(updateTodo(0, 'Hello World!'))
 ```
 
-More about the dispatcher method in the API docs:
-[Dispatcher.dispatch](../api/dispatcher.md#dispatch)
+Feel free to read more about
+[`Dispatcher.dispatch` in the API documentation](../api/dispatcher.md#dispatch)
 
 In your actual app, this can be easily abstracted away
 by wrapping the action creator in a function calling
