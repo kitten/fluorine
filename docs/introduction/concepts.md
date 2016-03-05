@@ -37,7 +37,7 @@ The "View" part of your app is in most cases your React components. We do not
 want to refer to this as a necessity, though. Fluorine can and will support more
 UI libraries in the future.
 
-Your app's view is presented to the user and will be interactable, of course.
+Your app's view is presented to the user and will be interactive, of course.
 Interactions that need to mutate our managed state will need to dispatch new
 actions:
 
