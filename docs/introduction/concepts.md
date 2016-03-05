@@ -67,32 +67,33 @@ Two functional additions to Flux, that came by way of Redux are stores and actio
 
 ### Stores
 
-Stores are computed using **reducers**. They are basically pure functions,
-without side effects. With them we create stores, with the function
+Stores are computed using **reducers**. They must be pure functions,
+without side effects. They have the function
 signature:
 
 ```js
 (lastState, action) => nextState
 ```
 
-To explain the arguments:
-
 - `lastState` is the last state, that was emitted by your store.
 - `action` describes the mutation that should be made to your state.
 
-This reducer returns the next state of your store.
-This has made it very easy to describe the states that your store emits
-and to generate the states. The dispatcher just has to compute
-consecutive results of the reducer method.
+This reducer returns the next state of your store based on the prior state. It's
+up to the dispatcher to compute the consecutive states with each reduction.
+
+```js
+actions = [action1, action2, action3]
+newState = actions.reduce(reducer, originalState)
+```
 
 This is very similar to RxJS's `scan` method.
 [More info](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/scan.md)
 
-More on the dispatcher and the stores will follow below:
+More on the dispatcher and the stores will follow in
 [Fully Reactive Dispatchers and Stores](#fully-reactive-dispatchers-and-stores)
 
-Check out the reducer in our Todo MVC Example to see a store in action:
-[Todo MVC Example store](https://github.com/philpl/fluorine/blob/master/examples/todo/src/reducers/todo.js)
+Check out the [reducer in our Todo MVC Example](https://github.com/philpl/fluorine/blob/master/examples/todo/src/reducers/todo.js)
+ to see a store in action.
 
 ### Actions
 
