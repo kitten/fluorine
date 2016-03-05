@@ -34,11 +34,17 @@ const kickstart = { type: '_INIT_' }
 export default function createDispatcher(opts = {}) {
   const dispatcher = new Subject()
 
+  // Question: what is this intended for? I see it used below in
+  // ways that make it seem like the Symbol is for scope hiding
+  // (as they were defined for), not sure what the intention is though
+  // Ah, this gets used to provide hidden annotations on a function the caller provided
   const identifier = Symbol()
   const cache = []
   const state = []
 
   let scheduler
+  // Now this is interesting, you're letting folks pick the scheduler
+  // Does this pick up derivative schedulers like the requestAnimationFrameScheduler
   switch (opts.scheduler) {
     case Scheduler.asap:
     case Scheduler.queue: {
@@ -50,19 +56,27 @@ export default function createDispatcher(opts = {}) {
 
   const logging = parseOpts(opts.logging)
   if (logging.agendas) {
+    // Seems like this means that middlewares are effectively an attachment on dispatchers
     logAgendas(dispatcher)
   }
 
   function next(agenda) {
     const obs = agenda
       .subscribeOn(scheduler)
-      .publishReplay()
+      .publishReplay() // Would this make all my actions replayable?
+                       // What if they are expensive or can't be performed again?
+                       // I definitely need to look up publishReplay when I have internet again
       .refCount()
 
     dispatcher.next(obs)
   }
 
   function dispatch(action) {
+    // Really enjoying the forced assertion pattern here, it's what we use in zmq.
+    // Fail fast and hard at the level of library
+    //
+    // People will inevitably have errors that crop up in userland. How should
+    // they handle these thrown errors for display to user?
     assert((
       typeof action === 'function' ||
       typeof action === 'object'
@@ -86,7 +100,8 @@ export default function createDispatcher(opts = {}) {
   }
 
   function schedule(...agendas) {
-    assert(agendas.reduce((acc, obj) => acc && isObservable(obj), true), `Agendas can only be represented by Observables.`)
+    assert(agendas.reduce((acc, obj) => acc && isObservable(obj), true),
+           `Agendas can only be represented by Observables.`)
 
     if (agendas.length === 1) {
       next(agendas[0])
@@ -209,4 +224,3 @@ export default function createDispatcher(opts = {}) {
     wrapActions
   })
 }
-
