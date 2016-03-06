@@ -3,7 +3,7 @@
 <strong>Flexible state and side effect manager using <a href="https://github.com/Reactive-Extensions/RxJS">RxJS</a> for <a href="https://facebook.github.io/react/">React</a>.</strong>
 <br><br>
 <img alt="TravisCI" src="https://travis-ci.org/philpl/fluorine.svg">
-<a href="https://gitter.im/philpl/fluorine"><img alt="Gitter" src="https://img.shields.io/gitter/room/philpl/fluorine.svg"></a>
+<a href="http://fluorinejs.org/"><img alt="Join Fluorine's Slack!" src="http://fluorinejs.org/badge.svg"></a>
 </p>
 
 ## About
