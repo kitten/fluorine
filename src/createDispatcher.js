@@ -37,8 +37,10 @@ export default function createDispatcher(opts = {}) {
   const identifier = Symbol()
   const cache = []
 
-  const scheduler = opts.scheduler || Scheduler.asap
+  // Options: Scheduler
+  const scheduler = opts.scheduler || Scheduler.queue
 
+  // Options: Logging
   const logging = parseOpts(opts.logging)
   if (logging.agendas) {
     logAgendas(dispatcher)
@@ -86,24 +88,18 @@ export default function createDispatcher(opts = {}) {
     }
   }
 
-  function getState(fn) {
-    if (typeof fn[identifier] === 'number') {
-      return cache[fn[identifier]].store.getValue()
-    }
-
-    console.error(`Function wasn't yet reduced and is therefore unknown.`)
-    return undefined
-  }
-
   function reduce(fn, init) {
     if (typeof fn[identifier] === 'number') {
       return cache[fn[identifier]].store
     }
 
+    // Generate cache index and set it on the reducer
+    const index = cache.length
+    fn[identifier] = index
+
     // Create cursor pointing to the state history
     let cursor = createState(fn, fn(init, KICKSTART_ACTION))
-
-    const initialState = Observable.of(cursor.state)
+    const initialState = cursor.state
 
     // Describe states using the series of agendas
     const scan = dispatcher
@@ -112,7 +108,7 @@ export default function createDispatcher(opts = {}) {
         const anchor = cursor
 
         // Prepare agenda logger if necessary
-        const logger = logging.stores ? logStore(fn.name, agenda) : null
+        const logger = logging.stores ? logStore(fn.name || index, agenda) : null
 
         // Map Agenda to consecutive states and catch errors
         return agenda
@@ -147,13 +143,13 @@ export default function createDispatcher(opts = {}) {
           })
       })
       .distinctUntilChanged()
+
+    const store = Observable
+      .of(initialState)
+      .concat(scan)
       .publish()
 
-    // Concat initialState with the actual store
-    const store = initialState.concat(scan)
-
     // Cache the store
-    fn[identifier] = cache.length
     cache.push({
       store
     })
@@ -193,7 +189,6 @@ export default function createDispatcher(opts = {}) {
   return Object.assign(dispatcher.mergeAll(), {
     dispatch,
     schedule,
-    getState,
     reduce,
     wrapActions
   })
