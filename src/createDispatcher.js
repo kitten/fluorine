@@ -29,7 +29,7 @@ function isObservable(obj) {
   )
 }
 
-const kickstart = { type: '_INIT_' }
+const KICKSTART_ACTION = { type: '_INIT_' }
 
 export default function createDispatcher(opts = {}) {
   const dispatcher = new Subject()
@@ -100,66 +100,62 @@ export default function createDispatcher(opts = {}) {
       return cache[fn[identifier]].store
     }
 
-    let anchor = createState(fn, fn(init, kickstart))
+    // Create cursor pointing to the state history
+    let cursor = createState(fn, fn(init, KICKSTART_ACTION))
 
-    const store = new BehaviorSubject(anchor.state)
+    const initialState = Observable.of(cursor.state)
+
+    // Describe states using the series of agendas
+    const scan = dispatcher
+      .flatMap(agenda => {
+        // Reference agenda's root state
+        const anchor = cursor
+
+        // Prepare agenda logger if necessary
+        const logger = logging.stores ? logStore(fn.name, agenda) : null
+
+        // Map Agenda to consecutive states and catch errors
+        return agenda
+          .filter(action => !!action)
+          .map(action => {
+            cursor = cursor.doNext(action)
+
+            if (logger) {
+              logger.change(action, cursor.state) // Logging new state by action
+            }
+
+            return cursor.state
+          })
+          .catch(err => {
+            if (!logger) {
+              console.error(err)
+            }
+
+            return agenda
+              .reduce((acc, x) => [ ...acc, x ], [])
+              .map(actions => {
+                // Filter past actions by all of the failed agenda
+                const previousState = cursor.state
+                filterActions(anchor, x => actions.indexOf(x) === -1)
+
+                if (logger) {
+                  logger.revert([ previousState, cursor.state ], err, actions) // Logging reversion
+                }
+
+                return cursor.state
+              })
+          })
+      })
+      .distinctUntilChanged()
+      .publish()
+
+    // Concat initialState with the actual store
+    const store = initialState.concat(scan)
 
     // Cache the store
     fn[identifier] = cache.length
     cache.push({
       store
-    })
-
-    dispatcher.subscribe(agenda => {
-      let pastAnchor = null
-      const bucket = []
-
-      let logger
-      if (logging.stores) {
-        const name = fn.name || `#${fn[identifier]}`
-        logger = logStore(name, agenda)
-      }
-
-      agenda.subscribe(action => {
-        if (!pastAnchor) {
-          pastAnchor = anchor
-        }
-
-        if (action) {
-          bucket.push(action)
-
-          const newAnchor = anchor.doNext(action)
-
-          if (anchor !== newAnchor) {
-            anchor = newAnchor
-            store.next(anchor.state)
-
-            if (logging.stores && logger) {
-              logger.change(action, anchor.state)
-            }
-          }
-        }
-      }, err => {
-        if (!logging.stores || !logger) {
-          console.error(err)
-        }
-
-        // Only revert if there were actions emitted and a past state
-        if (pastAnchor && bucket.length > 0) {
-          const prevState = anchor.state
-
-          filterActions(pastAnchor, x => bucket.indexOf(x) === -1)
-
-          // Only emit and log if it actually changed something
-          if (prevState !== anchor.state) {
-            store.next(anchor.state)
-
-            if (logging.stores && logger) {
-              logger.revert([ prevState, anchor.state ], err, bucket)
-            }
-          }
-        }
-      })
     })
 
     return store
