@@ -1,5 +1,4 @@
 import {
-  BehaviorSubject,
   Subject,
   Scheduler,
   Observable
