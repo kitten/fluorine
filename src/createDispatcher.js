@@ -36,7 +36,6 @@ export default function createDispatcher(opts = {}) {
 
   const identifier = Symbol()
   const cache = []
-  const state = []
 
   const scheduler = opts.scheduler || Scheduler.asap
 
@@ -88,24 +87,28 @@ export default function createDispatcher(opts = {}) {
   }
 
   function getState(fn) {
-    if (typeof fn[identifier] === 'number')
-      return state[fn[identifier]]()
-
+    if (typeof fn[identifier] === 'number') {
+      return cache[fn[identifier]].store.getValue()
+    }
 
     console.error(`Function wasn't yet reduced and is therefore unknown.`)
+    return undefined
   }
 
   function reduce(fn, init) {
-    if (typeof fn[identifier] === 'number')
-      return cache[fn[identifier]]
-
-    // Index and name
-    fn[identifier] = cache.length
-    const name = fn.name || `#${fn[identifier]}`
+    if (typeof fn[identifier] === 'number') {
+      return cache[fn[identifier]].store
+    }
 
     let anchor = createState(fn, fn(init, kickstart))
 
     const store = new BehaviorSubject(anchor.state)
+
+    // Cache the store
+    fn[identifier] = cache.length
+    cache.push({
+      store
+    })
 
     dispatcher.subscribe(agenda => {
       let pastAnchor = null
@@ -113,6 +116,7 @@ export default function createDispatcher(opts = {}) {
 
       let logger
       if (logging.stores) {
+        const name = fn.name || `#${fn[identifier]}`
         logger = logStore(name, agenda)
       }
 
@@ -157,9 +161,6 @@ export default function createDispatcher(opts = {}) {
         }
       })
     })
-
-    state.push(store.getValue.bind(store))
-    cache.push(store)
 
     return store
   }
