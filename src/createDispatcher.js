@@ -38,15 +38,7 @@ export default function createDispatcher(opts = {}) {
   const cache = []
   const state = []
 
-  let scheduler
-  switch (opts.scheduler) {
-    case Scheduler.asap:
-    case Scheduler.queue: {
-      scheduler = opts.scheduler
-      break
-    }
-    default: scheduler = Scheduler.asap
-  }
+  const scheduler = opts.scheduler || Scheduler.asap
 
   const logging = parseOpts(opts.logging)
   if (logging.agendas) {
