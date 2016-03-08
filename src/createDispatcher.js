@@ -45,7 +45,7 @@ export default function createDispatcher(opts = {}) {
     logAgendas(dispatcher)
   }
 
-  function next(agenda) {
+  function nextAgenda(agenda) {
     const obs = agenda
       .subscribeOn(scheduler)
       .publishReplay()
@@ -58,10 +58,10 @@ export default function createDispatcher(opts = {}) {
     assert((
       typeof action === 'function' ||
       typeof action === 'object'
-    ), `Method 'dispatch' only takes thunks and actions as arguments.`)
+    ), 'Expected a thunk, promise or action as argument.')
 
     if (isPromise(action)) {
-      next(Observable.fromPromise(action))
+      nextAgenda(Observable.fromPromise(action))
       return action
     }
 
@@ -78,12 +78,12 @@ export default function createDispatcher(opts = {}) {
   }
 
   function schedule(...agendas) {
-    assert(agendas.reduce((acc, obj) => acc && isObservable(obj), true), `Agendas can only be represented by Observables.`)
+    assert(agendas.reduce((acc, obj) => acc && isObservable(obj), true), 'Agendas can only be represented by Observables.')
 
     if (agendas.length === 1) {
-      next(agendas[0])
+      nextAgenda(agendas[0])
     } else if (agendas.length > 1) {
-      next(Observable.concat(...agendas))
+      nextAgenda(Observable.concat(...agendas))
     }
   }
 
@@ -182,7 +182,7 @@ export default function createDispatcher(opts = {}) {
       }, {})
     }
 
-    throw `Method 'wrapActions' expects either an action creator or an array/object containing some as arguments.`
+    throw new Error('Expected either an action creator or an array/object containing some as arguments.')
   }
 
   return Object.assign(dispatcher.mergeAll(), {
