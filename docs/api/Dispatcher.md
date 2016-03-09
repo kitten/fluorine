@@ -8,7 +8,7 @@ of using it is, read: [Concepts > Dispatcher](../concepts/dispatcher.md)
 * [dispatch(action)](#dispatch)
 * [reduce(reducer, init)](#reduce)
 * [schedule(agenda)](#schedule)*
-* [getState(reducer)](#getState)
+* [getState(reducer) *deprecated*](#getState)
 * [wrapActions(actions)](#wrapActions)
 
 --------------------------------------------------------------------------------
@@ -155,9 +155,11 @@ dispatcher.schedule(Observable
 
 --------------------------------------------------------------------------------
 
-## <a id='getState'></a>[`getState(reducer)`](#getState)
+## <a id='getState'></a>[`getState(reducer)` *deprecated*](#getState)
 
 Takes a reducer and returns the corresponding state's store.
+
+**Deprecated!** The method was removed in the `v2.0.0` release.
 
 ### Arguments
 

@@ -32,6 +32,6 @@ var createDispatcher = require('fluorine-lib/lib/createDispatcher');
   * [dispatch(action)](dispatcher.md#dispatch)
   * [reduce(reducer, init)](dispatcher.md#reduce)
   * [schedule(agenda)](dispatcher.md#schedule)
-  * [getState(reducer)](dispatcher.md#getState)
+  * [getState(reducer) *deprecated*](dispatcher.md#getState)
   * [wrapActions(actions)](dispatcher.md#wrapActions)
 
