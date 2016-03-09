@@ -56,7 +56,9 @@ export default function withStore(store, prop = 'data') {
     }
 
     render() {
-      if (this.state.data === undefined) return null
+      if (this.state.data === undefined) {
+        return null
+      }
 
       return (
         <Child {...this.props} {...{

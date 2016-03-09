@@ -71,11 +71,14 @@ describe('withStore', () => {
     const tree = renderIntoDocument(<Switcher/>)
     const node = findDOMNode(tree)
 
-    expect(node.textContent).toBe('a')
-
-    tree.setState({ id: 'b' })
-
-    expect(node.textContent).toBe('b')
+    dispatcher
+      .reduce(reducer)
+      .first()
+      .subscribe(() => {
+        expect(node.textContent).toBe('a')
+        tree.setState({ id: 'b' })
+        expect(node.textContent).toBe('b')
+      })
   })
 })
 

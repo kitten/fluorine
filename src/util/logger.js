@@ -40,14 +40,18 @@ export function logAgendas(dispatcher) {
       .last()
       .subscribe(actions => {
         logStart()
-        actions.map(action => {
+
+        actions.forEach(action => {
           console.log('%c action', 'color: #03a9f4; font-weight: bold;', action)
         })
+
         console.groupEnd()
       }, error => {
         logStart('Error ')
+
         console.log('%c error', 'color: #f20404; font-weight: bold;', error)
         console.log('%c dispatched actions', 'color: #03a9f4; font-weight: bold;', errBucket)
+
         console.groupEnd()
       })
   })
@@ -61,7 +65,7 @@ export const logStore = (name, agenda) => ({
     console.groupCollapsed(`%c ${title}`, 'color: #111111;')
     console.log('%c agenda', 'color: #9e9e9e; font-weight: bold;', agenda)
     console.log('%c action', 'color: #03a9f4; font-weight: bold;', action)
-    console.log(`%c change`, 'color: #4caf50; font-weight: bold;', state)
+    console.log('%c change', 'color: #4caf50; font-weight: bold;', state)
     console.groupEnd()
   },
   revert(states, error, bucket) {
@@ -72,9 +76,10 @@ export const logStore = (name, agenda) => ({
 
     console.groupCollapsed(`%c ${title}`, 'color: #f20404;')
     console.log('%c agenda', 'color: #9e9e9e; font-weight: bold;', agenda)
-    console.log(`%c previous`, 'color: #4caf50; font-weight: bold;', prevState)
-    console.log(`%c state`, 'color: #4caf50; font-weight: bold;', state)
-    console.log(`%c error`, 'color: #f20404; font-weight: bold;', error)
+    console.log('%c previous', 'color: #4caf50; font-weight: bold;', prevState)
+    console.log('%c state', 'color: #4caf50; font-weight: bold;', state)
+
+    console.log('%c error', 'color: #f20404; font-weight: bold;', error)
     console.log('%c bucket', 'color: #03a9f4; font-weight: bold;', bucket)
     console.groupEnd()
   }

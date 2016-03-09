@@ -50,7 +50,12 @@ describe('withActions', () => {
     }
 
     // Keep track of reducer state
-    dispatcher.reduce(reducer)
+    dispatcher
+      .reduce(reducer)
+      .bufferCount(2)
+      .subscribe(x => {
+        expect(x).toEqual([ false, true ])
+      })
 
     const Wrapper = withActions(dispatcher, {
       doSomething
@@ -58,12 +63,9 @@ describe('withActions', () => {
 
     const tree = renderIntoDocument(<Wrapper/>)
     const child = findRenderedComponentWithType(tree, Child)
-    expect(dispatcher.getState(reducer)).toBe(false)
 
     // Dispatch action returned by doSomething
     child.props.actions.doSomething()
-
-    expect(dispatcher.getState(reducer)).toBe(true)
   })
 })
 
