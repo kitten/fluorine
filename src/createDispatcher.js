@@ -185,7 +185,14 @@ export default function createDispatcher(opts = {}) {
     throw new Error('Expected either an action creator or an array/object containing some as arguments.')
   }
 
-  return Object.assign(dispatcher.mergeAll(), {
+  return Object.assign(Object.create(dispatcher), {
+    next(obj) {
+      if (isObservable(obj)) {
+        schedule(obj)
+      } else {
+        dispatch(obj)
+      }
+    },
     dispatch,
     schedule,
     reduce,
