@@ -1,9 +1,7 @@
 import createDispatcher from '../../src/createDispatcher'
+import isPromise from '../../src/util/isPromise'
 import { Observable } from 'rxjs'
 
-function isPromise(obj) {
-  return Promise.prototype.isPrototypeOf(obj)
-}
 
 function AdderStore(state = 0, action) {
   switch (action.type) {

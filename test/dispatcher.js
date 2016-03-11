@@ -1,14 +1,8 @@
 import createDispatcher from '../src/createDispatcher'
+import isObservable from '../src/util/isObservable'
 import { Observable } from '@reactivex/rxjs'
 
 const action = { type: 'Test' }
-
-function isObservable(obj) {
-  return (
-    typeof obj === 'object' &&
-    typeof obj.subscribe === 'function'
-  )
-}
 
 describe('Dispatcher', () => {
   it('is an Observable emitting agendas', () => {

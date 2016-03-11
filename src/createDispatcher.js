@@ -16,17 +16,8 @@ import {
 } from './util/logger'
 
 import assert from './util/assert'
-
-function isPromise(obj) {
-  return typeof obj === 'object' && typeof obj.then === 'function'
-}
-
-function isObservable(obj) {
-  return (
-    typeof obj === 'object' &&
-    typeof obj.subscribe === 'function'
-  )
-}
+import isPromise from './util/isPromise'
+import isObservable from './util/isObservable'
 
 const KICKSTART_ACTION = { type: '_INIT_' }
 
