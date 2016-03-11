@@ -10,6 +10,7 @@ describe('Dispatcher.wrapActions', () => {
     const dispatcher = createDispatcher()
 
     dispatcher
+      .mergeAll()
       .bufferCount(1)
       .subscribe(x => {
         expect(x).toEqual([ action ])
@@ -22,6 +23,7 @@ describe('Dispatcher.wrapActions', () => {
     const dispatcher = createDispatcher()
 
     dispatcher
+      .mergeAll()
       .bufferCount(1)
       .subscribe(x => {
         expect(x).toEqual([ action ])
@@ -38,6 +40,7 @@ describe('Dispatcher.wrapActions', () => {
     const dispatcher = createDispatcher()
 
     dispatcher
+      .mergeAll()
       .bufferCount(1)
       .subscribe(x => {
         expect(x).toEqual([ action ])

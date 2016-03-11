@@ -1,8 +1,5 @@
 import createDispatcher from '../../src/createDispatcher'
-
-function isPromise(obj) {
-  return Promise.prototype.isPrototypeOf(obj)
-}
+import isPromise from '../../src/util/isPromise'
 
 const init = { type: '_INIT_' }
 const action = { type: 'Test' }

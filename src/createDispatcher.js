@@ -16,17 +16,8 @@ import {
 } from './util/logger'
 
 import assert from './util/assert'
-
-function isPromise(obj) {
-  return typeof obj === 'object' && typeof obj.then === 'function'
-}
-
-function isObservable(obj) {
-  return (
-    typeof obj === 'object' &&
-    typeof obj.subscribe === 'function'
-  )
-}
+import isPromise from './util/isPromise'
+import isObservable from './util/isObservable'
 
 const KICKSTART_ACTION = { type: '_INIT_' }
 
@@ -185,7 +176,14 @@ export default function createDispatcher(opts = {}) {
     throw new Error('Expected either an action creator or an array/object containing some as arguments.')
   }
 
-  return Object.assign(dispatcher.mergeAll(), {
+  return Object.assign(Object.create(dispatcher), {
+    next(obj) {
+      if (isObservable(obj)) {
+        schedule(obj)
+      } else {
+        dispatch(obj)
+      }
+    },
     dispatch,
     schedule,
     reduce,
