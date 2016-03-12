@@ -9,3 +9,4 @@ export default function withStore(store, prop = 'data') {
 
   return connect(store, prop)
 }
+

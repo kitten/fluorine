@@ -6,18 +6,18 @@ import isDispatcher from './util/isDispatcher'
 export default function connect(selector, prop = 'data') {
   return Child => class Connector extends Component {
     static contextTypes = {
-      observable: React.PropTypes.object.isRequired
+      observable: React.PropTypes.object
     }
 
     constructor(props) {
       super(props)
 
-      const { observable } = this.context
-      assert(isObservable(observable), 'Expected context to contain an observable.')
-
+      this.observable = this.context ? this.context.observable : undefined
       this.store = typeof selector === 'function' ?
-        selector(observable, props) :
+        selector(this.observable, props) :
         selector
+
+      this.state = {}
     }
 
     subscribe = () => {
@@ -50,8 +50,7 @@ export default function connect(selector, prop = 'data') {
 
     componentWillReceiveProps(props) {
       if (typeof selector === 'function') {
-        const { observable } = this.context
-        const _store = selector(observable, props)
+        const _store = selector(this.observable, props)
 
         if (this.store !== _store) {
           this.store = _store
@@ -66,7 +65,6 @@ export default function connect(selector, prop = 'data') {
     }
 
     render() {
-      const { observable } = this.context
       const { data } = this.state
 
       if (data === undefined) {
@@ -77,10 +75,10 @@ export default function connect(selector, prop = 'data') {
         [prop]: data
       }
 
-      if (isDispatcher(obervable)) {
-        props.dispatcher = observable
-        props.schedule = observable.schedule
-        props.dispatch = observable.dispatch
+      if (isDispatcher(this.obervable)) {
+        props.dispatcher = this.observable
+        props.schedule = this.observable.schedule
+        props.dispatch = this.observable.dispatch
       }
 
       return (
