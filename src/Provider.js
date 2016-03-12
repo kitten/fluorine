@@ -12,8 +12,9 @@ export default class Provider extends Component {
   };
 
   getChildContext() {
-    assert(isObservable(this.props.observable), 'Expect prop observable to be an observable.')
-    return { observable: this.props.observable }
+    const { observable } = this.props
+    assert(isObservable(observable), 'Expected prop observable to be an Observable.')
+    return { observable }
   }
 
   render() {
