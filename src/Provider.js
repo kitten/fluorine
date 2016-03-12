@@ -1,20 +1,10 @@
 import React, { Component } from 'react'
-
 import assert from './util/assert'
-import createDispatcher from './createDispatcher'
-
-function isDispatcher(obj) {
-  return (
-    typeof obj === 'object' &&
-    typeof obj.subscribe === 'function' &&
-    typeof obj.reduce === 'function' &&
-    typeof obj.schedule === 'function'
-  )
-}
+import isObservable from './util/isObservable'
 
 export default class Provider extends Component {
   static propTypes = {
-    dispatcher: React.PropTypes.object
+    observable: React.PropTypes.object.isRequired
   };
 
   static childContextTypes = {
@@ -22,16 +12,8 @@ export default class Provider extends Component {
   };
 
   getChildContext() {
-    if (this.props.dispatcher) {
-      assert(isDispatcher(this.props.dispatcher), 'Expected a Dispatcher to be passed in the dispatcher prop.')
-      return { dispatcher: this.props.dispatcher }
-    }
-
-    if (!this.dispatcher) {
-      this.dispatcher = createDispatcher()
-    }
-
-    return { dispatcher: this.dispatcher }
+    assert(isObservable(this.props.observable), 'Expect prop observable to be an observable.')
+    return { observable: this.props.observable }
   }
 
   render() {
