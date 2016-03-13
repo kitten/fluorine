@@ -1,70 +1,67 @@
-import createDispatcher from '../../src/createDispatcher'
-import isPromise from '../../src/util/isPromise'
+import test from 'ava'
+
+import createDispatcher from '../../lib/createDispatcher'
+import isPromise from '../../lib/util/isPromise'
 
 const init = { type: '_INIT_' }
 const action = { type: 'Test' }
 
-describe('Dispatcher.dispatch', () => {
-  it('accepts actions', () => {
-    const dispatcher = createDispatcher()
+test('accepts actions', t => {
+  const dispatcher = createDispatcher()
 
-    dispatcher
-      .bufferCount(2)
-      .subscribe(x => {
-        expect(x).toEqual([ init, action ])
-      })
-
-    const res = dispatcher.dispatch(action)
-
-    // Check whether the dispatcher returns a Promise
-    expect(isPromise(res)).toBeTruthy()
-    res.then(x => {
-      expect(x).toEqual(action)
+  dispatcher
+    .bufferCount(2)
+    .subscribe(x => {
+      t.same(x, [ init, action ])
     })
 
+  const res = dispatcher.dispatch(action)
 
+  t.ok(isPromise(res))
+  res.then(x => {
+    t.is(x, action)
   })
+})
 
-  it('accepts thunks', () => {
-    const dispatcher = createDispatcher()
+test('accepts thunks', t => {
+  const dispatcher = createDispatcher()
 
-    dispatcher
-      .bufferCount(2)
-      .subscribe(x => {
-        expect(x).toEqual([ init, action ])
-      })
-
-    const res = dispatcher.dispatch(dispatch => {
-      setTimeout(() => {
-        dispatch(action)
-      })
+  dispatcher
+    .bufferCount(2)
+    .subscribe(x => {
+      t.same(x, [ init, action ])
     })
 
-    expect(isPromise(res)).toBeTruthy()
+  const res = dispatcher.dispatch(dispatch => {
+    setTimeout(() => {
+      dispatch(action)
+    })
   })
 
-  it('accepts promises', () => {
-    const dispatcher = createDispatcher()
+  t.ok(isPromise(res))
+  res.then(x => {
+    t.is(x, action)
+  })
+})
 
-    dispatcher
-      .bufferCount(2)
-      .subscribe(x => {
-        expect(x).toEqual([ init, action ])
-      })
+test('accepts promises', t => {
+  const dispatcher = createDispatcher()
 
-    const res = dispatcher.dispatch(new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(action)
-      })
-    }))
-
-    expect(isPromise(res)).toBeTruthy()
-    res.then(x => {
-      expect(x).toEqual(action)
+  dispatcher
+    .bufferCount(2)
+    .subscribe(x => {
+      t.same(x, [ init, action ])
     })
 
+  const res = dispatcher.dispatch(new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(action)
+    })
+  }))
 
+  t.ok(isPromise(res))
+  res.then(x => {
+    t.is(x, action)
   })
-
 })
 

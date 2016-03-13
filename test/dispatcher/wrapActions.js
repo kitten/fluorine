@@ -1,52 +1,52 @@
-import createDispatcher from '../../src/createDispatcher'
+import test from 'ava'
+
+import createDispatcher from '../../lib/createDispatcher'
 
 const action = { type: 'ACTION' }
 function createAction() {
   return action
 }
 
-describe('Dispatcher.wrapActions', () => {
-  it('wraps an action creator', () => {
-    const dispatcher = createDispatcher()
+test('wraps an action creator', t => {
+  const dispatcher = createDispatcher()
 
-    dispatcher
-      .mergeAll()
-      .bufferCount(1)
-      .subscribe(x => {
-        expect(x).toEqual([ action ])
-      })
-
-    dispatcher.wrapActions(createAction)()
-  })
-
-  it('wraps action creators in objects', () => {
-    const dispatcher = createDispatcher()
-
-    dispatcher
-      .mergeAll()
-      .bufferCount(1)
-      .subscribe(x => {
-        expect(x).toEqual([ action ])
-      })
-
-    const obj = dispatcher.wrapActions({
-      action: createAction
+  dispatcher
+    .mergeAll()
+    .first()
+    .subscribe(x => {
+      t.is(x, action)
     })
 
-    obj.action()
+  dispatcher.wrapActions(createAction)()
+})
+
+test('wraps action creators in objects', t => {
+  const dispatcher = createDispatcher()
+
+  dispatcher
+    .mergeAll()
+    .first()
+    .subscribe(x => {
+      t.is(x, action)
+    })
+
+  const obj = dispatcher.wrapActions({
+    action: createAction
   })
 
-  it('wraps an action creators in arrays', () => {
-    const dispatcher = createDispatcher()
+  obj.action()
+})
 
-    dispatcher
-      .mergeAll()
-      .bufferCount(1)
-      .subscribe(x => {
-        expect(x).toEqual([ action ])
-      })
+test('wraps action creators in arrays', t => {
+  const dispatcher = createDispatcher()
 
-    dispatcher.wrapActions([createAction])[0]()
-  })
+  dispatcher
+    .mergeAll()
+    .first()
+    .subscribe(x => {
+      t.is(x, action)
+    })
+
+  dispatcher.wrapActions([createAction])[0]()
 })
 
