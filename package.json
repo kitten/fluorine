@@ -26,13 +26,6 @@
     "version": "npm run build",
     "postversion": "git push && git push --tags"
   },
-  "jest": {
-    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
-    "testDirectoryName": "test",
-    "unmockedModulePathPatterns": [
-      "."
-    ]
-  },
   "author": "Phil Plückthun <phil@plckthn.me> (https://github.com/philplckthun)",
   "bugs": {
     "url": "https://github.com/philplckthun/fluorine/issues"
@@ -57,7 +50,6 @@
     "ava": "^0.13.0",
     "babel-cli": "^6.2.0",
     "babel-eslint": "^6.0.0-beta.5",
-    "babel-jest": "^6.0.1",
     "babel-loader": "^6.2.4",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.7.0",
     "babel-plugin-transform-runtime": "^6.6.0",
@@ -66,7 +58,6 @@
     "eslint": "~2.2.0",
     "eslint-config-excellence": "^1.11.0",
     "eslint-plugin-react": "^4.2.1",
-    "jest-cli": "^0.8.2",
     "jsdom": "^8.1.0",
     "react": "^0.14.7",
     "react-addons-test-utils": "^0.14.7",
