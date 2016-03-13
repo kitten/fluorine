@@ -1,8 +1,9 @@
+import test from 'ava'
 import React, { Component } from 'react'
-import { renderIntoDocument, findRenderedComponentWithType } from 'react-addons-test-utils'
+import { mount } from 'enzyme'
 
-import withActions from '../src/withActions'
-import createDispatcher from '../src/createDispatcher'
+import withActions from '../lib/withActions'
+import createDispatcher from '../lib/createDispatcher'
 
 const doSomething = () => ({
   type: 'DO_SOMETHING'
@@ -14,58 +15,46 @@ class Child extends Component {
   }
 }
 
-describe('withActions', () => {
-  it('passes wrapped actions in props', t => {
-    const dispatcher = createDispatcher()
-    const Wrapper = withActions(dispatcher, {
-      doSomething
-    })(Child)
+test('passes wrapped actions in props', t => {
+  const dispatcher = createDispatcher()
 
-    const tree = renderIntoDocument(<Wrapper/>)
-    const child = findRenderedComponentWithType(tree, Child)
+  const Tester = withActions(dispatcher, {
+    doSomething
+  })(Child)
 
-    // Check for actions prop
-    expect(
-      child.props.actions &&
-      typeof child.props.actions === 'object' &&
-      child.props.actions.hasOwnProperty('doSomething') &&
-      typeof child.props.actions.doSomething === 'function'
-    ).toBeTruthy()
+  const wrapper = mount(<Tester/>)
+  const child = wrapper.find(Child).first()
 
-    // Check that actions only contains what we've passed
-    expect(Object.keys(child.props.actions)).toEqual([ 'doSomething' ])
-  })
+  t.same(Object.keys(child.prop('actions')), [ 'doSomething' ])
+  t.is(typeof child.prop('actions').doSomething, 'function')
+})
 
-  it('wraps actions to correctly dispatch', t => {
-    const dispatcher = createDispatcher()
-    const reducer = (state, action) => {
-      if (state === null || state === undefined) {
-        state = false
-      }
-
-      switch (action.type) {
-        case 'DO_SOMETHING': return true
-        default: return state
-      }
+test('wraps actions to correctly dispatch', t => {
+  const dispatcher = createDispatcher()
+  const reducer = (state, action) => {
+    if (state === null || state === undefined) {
+      state = false
     }
 
-    // Keep track of reducer state
-    dispatcher
-      .reduce(reducer)
-      .bufferCount(2)
-      .subscribe(x => {
-        expect(x).toEqual([ false, true ])
-      })
+    switch (action.type) {
+      case 'DO_SOMETHING': return true
+      default: return state
+    }
+  }
 
-    const Wrapper = withActions(dispatcher, {
-      doSomething
-    })(Child)
+  // Keep track of reducer state
+  dispatcher
+    .reduce(reducer)
+    .bufferCount(2)
+    .subscribe(x => {
+      t.same(x, [ false, true ])
+    })
 
-    const tree = renderIntoDocument(<Wrapper/>)
-    const child = findRenderedComponentWithType(tree, Child)
+  const Tester = withActions(dispatcher, {
+    doSomething
+  })(Child)
 
-    // Dispatch action returned by doSomething
-    child.props.actions.doSomething()
-  })
+  const wrapper = mount(<Tester/>)
+  wrapper.find(Child).first().prop('actions').doSomething()
 })
 

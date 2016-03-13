@@ -1,7 +1,8 @@
-import createDispatcher from '../../src/createDispatcher'
-import isPromise from '../../src/util/isPromise'
-import { Observable } from 'rxjs'
+import test from 'ava'
+import { Observable } from '@reactivex/rxjs'
 
+import createDispatcher from '../../lib/createDispatcher'
+import isPromise from '../../lib/util/isPromise'
 
 function AdderStore(state = 0, action) {
   switch (action.type) {
@@ -28,90 +29,88 @@ function SubtractorStore(state = 0, action) {
 const add = { type: 'ADD' }
 const subtract = { type: 'SUBTRACT' }
 
-describe('Dispatcher.schedule', () => {
-  it('accepts observables to schedule an agenda', () => {
-    const dispatcher = createDispatcher()
+test('accepts observables to schedule an agenda', t => {
+  const dispatcher = createDispatcher()
 
-    const addThree = Observable
-      .interval(200)
-      .take(3)
-      .map(() => add)
+  const addThree = Observable
+    .interval(200)
+    .take(3)
+    .map(() => add)
 
-    dispatcher.schedule(addThree)
-    dispatcher.schedule(Observable.of(subtract), Observable.of(subtract))
+  dispatcher.schedule(addThree)
+  dispatcher.schedule(Observable.of(subtract), Observable.of(subtract))
 
-    dispatcher
-      .reduce(AdderStore)
-      .bufferCount(6)
-      .subscribe(x => {
-        expect(x).toEqual([ 0, 1, 2, 3, 2, 1 ])
-      })
-  })
+  dispatcher
+    .reduce(AdderStore)
+    .bufferCount(6)
+    .subscribe(x => {
+      t.same(x, [ 0, 1, 2, 3, 2, 1 ])
+    })
+})
 
-  it('accepts connectable observables properly', () => {
-    const dispatcher = createDispatcher()
+test('accepts connectable observables properly', t => {
+  const dispatcher = createDispatcher()
 
-    const obs = Observable
-      .interval(200)
-      .take(3)
-      .map(() => add)
-      .share()
+  const obs = Observable
+    .interval(200)
+    .take(3)
+    .map(() => add)
+    .share()
 
-    dispatcher.schedule(obs)
-    dispatcher.schedule(obs)
+  dispatcher.schedule(obs)
+  dispatcher.schedule(obs)
 
-    dispatcher
-      .reduce(AdderStore)
-      .bufferCount(4)
-      .subscribe(x => {
-        expect(x).toEqual([ 0, 1, 2, 3 ])
-      })
-  })
+  dispatcher
+    .reduce(AdderStore)
+    .bufferCount(4)
+    .subscribe(x => {
+      t.same(x, [ 0, 1, 2, 3 ])
+    })
+})
 
-  it('reverts changes if an agenda fails', () => {
-    const dispatcher = createDispatcher()
+test('reverts changes if an agenda fails', t => {
+  const dispatcher = createDispatcher()
 
-    dispatcher.schedule(Observable
-      .interval(200)
-      .take(2)
-      .map(() => add)
-      .concat(Observable.throw()))
+  dispatcher.schedule(Observable
+    .interval(200)
+    .take(2)
+    .map(() => add)
+    .concat(Observable.throw()))
 
-    dispatcher
-      .reduce(AdderStore)
-      .bufferCount(4)
-      .subscribe(x => {
-        expect(x).toEqual([ 0, 1, 2, 0 ])
-      })
-  })
+  dispatcher
+    .reduce(AdderStore)
+    .bufferCount(4)
+    .subscribe(x => {
+      t.same(x, [ 0, 1, 2, 0 ])
+    })
+})
 
-  it('reverts without touching unaffected states', () => {
-    const dispatcher = createDispatcher()
+test('reverts without touching unaffected states', t => {
+  const dispatcher = createDispatcher()
 
-    dispatcher.schedule(Observable
-      .interval(250)
-      .take(2)
-      .map(() => add)
-      .concat(Observable.throw()))
+  dispatcher.schedule(Observable
+    .interval(250)
+    .take(2)
+    .map(() => add)
+    .concat(Observable.throw()))
 
-    dispatcher.schedule(Observable
-      .interval(100)
-      .take(5)
-      .map(() => subtract))
+  dispatcher.schedule(Observable
+    .interval(100)
+    .take(5)
+    .map(() => subtract))
 
-    dispatcher
-      .reduce(AdderStore)
-      .bufferCount(4)
-      .subscribe(x => {
-        expect(x).toEqual([ 0, 1, 2, 0 ])
-      })
+  dispatcher
+    .reduce(AdderStore)
+    .bufferCount(4)
+    .subscribe(x => {
+      t.same(x, [ 0, 1, 2, 0 ])
+    })
 
-    dispatcher
-      .reduce(SubtractorStore)
-      .bufferCount(6)
-      .subscribe(x => {
-        expect(x).toEqual([ 0, -1, -2, -3, -4, -5 ])
-      })
-  })
+  dispatcher
+    .reduce(SubtractorStore)
+    .bufferCount(6)
+    .subscribe(x => {
+      t.same(x, [ 0, -1, -2, -3, -4, -5 ])
+    })
 })
 
