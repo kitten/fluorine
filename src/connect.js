@@ -77,10 +77,11 @@ export default function connect(selector, prop = 'data') {
       if (
         this.context &&
         this.context.observable &&
-        isDispatcher(this.context.obervable)
+        isDispatcher(this.context.observable)
       ) {
         props.schedule = this.context.observable.schedule
         props.dispatch = this.context.observable.dispatch
+        props.next = this.context.observable.next
       }
 
       return (
