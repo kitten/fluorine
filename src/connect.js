@@ -9,12 +9,11 @@ export default function connect(selector, prop = 'data') {
       observable: React.PropTypes.object
     }
 
-    constructor(props) {
-      super(props)
+    constructor(props, context = {}) {
+      super(props, context)
 
-      this.observable = this.context ? this.context.observable : undefined
       this.store = typeof selector === 'function' ?
-        selector(this.observable, props) :
+        selector(this.context.observable, props) :
         selector
 
       this.state = {}
@@ -50,7 +49,7 @@ export default function connect(selector, prop = 'data') {
 
     componentWillReceiveProps(props) {
       if (typeof selector === 'function') {
-        const _store = selector(this.observable, props)
+        const _store = selector(this.context.observable, props)
 
         if (this.store !== _store) {
           this.store = _store
@@ -75,10 +74,13 @@ export default function connect(selector, prop = 'data') {
         [prop]: data
       }
 
-      if (isDispatcher(this.obervable)) {
-        props.dispatcher = this.observable
-        props.schedule = this.observable.schedule
-        props.dispatch = this.observable.dispatch
+      if (
+        this.context &&
+        this.context.observable &&
+        isDispatcher(this.context.obervable)
+      ) {
+        props.schedule = this.context.observable.schedule
+        props.dispatch = this.context.observable.dispatch
       }
 
       return (

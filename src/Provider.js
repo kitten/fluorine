@@ -8,7 +8,7 @@ export default class Provider extends Component {
   };
 
   static childContextTypes = {
-    dispatcher: React.PropTypes.object
+    observable: React.PropTypes.object
   };
 
   getChildContext() {
