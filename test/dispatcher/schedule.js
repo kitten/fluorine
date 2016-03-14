@@ -45,6 +45,10 @@ test('accepts observables to schedule an agenda', t => {
     .bufferCount(6)
     .subscribe(x => {
       t.same(x, [ 0, 1, 2, 3, 2, 1 ])
+    }, err => {
+      t.fail()
+    }, () => {
+      t.end()
     })
 })
 
@@ -65,28 +69,53 @@ test('accepts connectable observables properly', t => {
     .bufferCount(4)
     .subscribe(x => {
       t.same(x, [ 0, 1, 2, 3 ])
+    }, err => {
+      t.fail()
+    }, () => {
+      t.end()
     })
 })
 
 test('reverts changes if an agenda fails', t => {
   const dispatcher = createDispatcher()
 
-  dispatcher.schedule(Observable
-    .interval(200)
-    .take(2)
-    .map(() => add)
-    .concat(Observable.throw()))
-
   dispatcher
     .reduce(AdderStore)
     .bufferCount(4)
     .subscribe(x => {
       t.same(x, [ 0, 1, 2, 0 ])
+    }, err => {
+      t.fail()
+    }, () => {
+      t.end()
     })
+
+  dispatcher.schedule(Observable
+    .interval(200)
+    .take(2)
+    .map(() => add)
+    .concat(Observable.throw()))
 })
 
 test('reverts without touching unaffected states', t => {
   const dispatcher = createDispatcher()
+
+  Observable.zip([
+    dispatcher
+      .reduce(AdderStore)
+      .bufferCount(4),
+    dispatcher
+      .reduce(SubtractorStore)
+      .bufferCount(6)
+  ])
+    .subscribe(([ x, y ]) => {
+      t.same(x, [ 0, 1, 2, 0 ])
+      t.same(y, [ 0, -1, -2, -3, -4, -5 ])
+    }, err => {
+      t.fail()
+    }, () => {
+      t.end()
+    })
 
   dispatcher.schedule(Observable
     .interval(250)
@@ -98,19 +127,5 @@ test('reverts without touching unaffected states', t => {
     .interval(100)
     .take(5)
     .map(() => subtract))
-
-  dispatcher
-    .reduce(AdderStore)
-    .bufferCount(4)
-    .subscribe(x => {
-      t.same(x, [ 0, 1, 2, 0 ])
-    })
-
-  dispatcher
-    .reduce(SubtractorStore)
-    .bufferCount(6)
-    .subscribe(x => {
-      t.same(x, [ 0, -1, -2, -3, -4, -5 ])
-    })
 })
 
