@@ -8,6 +8,7 @@ function createAction() {
 }
 
 test('wraps an action creator', t => {
+  t.plan(1)
   const dispatcher = createDispatcher()
 
   dispatcher
@@ -21,6 +22,7 @@ test('wraps an action creator', t => {
 })
 
 test('wraps action creators in objects', t => {
+  t.plan(1)
   const dispatcher = createDispatcher()
 
   dispatcher
@@ -38,6 +40,7 @@ test('wraps action creators in objects', t => {
 })
 
 test('wraps action creators in arrays', t => {
+  t.plan(1)
   const dispatcher = createDispatcher()
 
   dispatcher
