@@ -9,43 +9,10 @@ function Child({data}) {
   return <div>{data}</div>
 }
 
-test('passes the correct reductions', t => {
-  const something = {
-    type: 'DO_SOMETHING'
-  }
+// Basically an identical test to one in the connect
+// tests but with the withStore signature
 
-  const reducer = (state, action) => {
-    if (!state) {
-      state = 'NOTHING'
-    }
-
-    switch (action.type) {
-      case 'DO_SOMETHING': return 'SOMETHING'
-      default: return state
-    }
-  }
-
-  const dispatcher = createDispatcher()
-  const Tester = withStore(dispatcher.reduce(reducer))(Child)
-
-  const wrapper = mount(<Tester/>)
-
-  dispatcher
-    .reduce(reducer)
-    .take(2)
-    .subscribe(x => {
-      t.is(wrapper.text(), x)
-      t.is(wrapper.state('data'), x)
-    }, err => {
-      t.fail()
-    }, () => {
-      t.end()
-    })
-
-  dispatcher.dispatch(something)
-})
-
-test('recompute dynamically generated observables', t => {
+test('wraps around connect correctly', t => {
   const reducer = () => {
     return { a: 'a', b: 'b' }
   }
@@ -57,20 +24,7 @@ test('recompute dynamically generated observables', t => {
     .map(x => x[id]))
     (Child)
 
-  class Switcher extends Component {
-    constructor(props) {
-      super(props)
-      this.state = {
-        id: 'a'
-      };
-    }
-
-    render() {
-      return <Tester id={this.state.id}/>
-    }
-  }
-
-  const wrapper = mount(<Switcher/>)
+  const wrapper = mount(<Tester id='a'/>)
 
   dispatcher
     .reduce(reducer)
@@ -78,7 +32,7 @@ test('recompute dynamically generated observables', t => {
     .subscribe(() => {
       t.is(wrapper.text(), 'a')
 
-      tree.setState({ id: 'b' })
+      wrapper.setProps({ id: 'b' })
       t.is(wrapper.text(), 'b')
     }, err => {
       t.fail()
