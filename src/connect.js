@@ -3,7 +3,7 @@ import assert from './util/assert'
 import isObservable from './util/isObservable'
 import isDispatcher from './util/isDispatcher'
 
-export default function connect(selector, prop = 'data') {
+export default function connect(selector) {
   return Child => class Connector extends Component {
     static contextTypes = {
       observable: React.PropTypes.object
@@ -70,10 +70,6 @@ export default function connect(selector, prop = 'data') {
         return null
       }
 
-      const props = {
-        [prop]: data
-      }
-
       if (
         this.context &&
         this.context.observable &&
@@ -83,7 +79,7 @@ export default function connect(selector, prop = 'data') {
       }
 
       return (
-        <Child {...this.props} {...props}/>
+        <Child {...this.props} {...data}/>
       )
     }
   }

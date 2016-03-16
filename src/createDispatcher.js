@@ -170,11 +170,13 @@ export default function createDispatcher(opts = {}) {
       if (isObservable(res)) {
         nextAgenda(res)
       }
+
+      return res
     }
   }
 
   function wrapActions(arg) {
-    const transform = fn => (...args) => dispatch(fn(...args))
+    const transform = fn => (...args) => next(fn(...args))
 
     if (typeof arg === 'function') {
       return transform(arg)
