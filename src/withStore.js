@@ -1,8 +1,11 @@
 import connect from './connect'
+import warn from './util/warn'
 
-// The withStore decorator is deprecated and will be deleted in favor
-// for the connect decorator soon
+const _withStoreNotice = warn('The `withStore` decorator is deprecated. Please use `connect` instead.')
+
 export default function withStore(store, prop = 'data') {
+  _withStoreNotice()
+
   if (typeof store === 'function') {
     return connect((_, props) => store(props), prop)
   }
