@@ -166,12 +166,14 @@ export default function createDispatcher(opts = {}) {
     } else if (isPromise(arg)) {
       nextAgenda(Observable.fromPromise(arg))
     } else if (typeof arg === 'function') {
-      const res = arg((...x) => next(...x), reduce)
+      const res = arg(x => next(x), reduce)
       if (isObservable(res)) {
         nextAgenda(res)
       }
 
       return res
+    } else {
+      dispatcher.next(Observable.of(arg))
     }
   }
 
