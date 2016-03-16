@@ -1,5 +1,6 @@
 import {
   Subject,
+  BehaviorSubject,
   Scheduler,
   Observable
 } from '@reactivex/rxjs'
@@ -92,56 +93,58 @@ export default function createDispatcher(opts = {}) {
     const initialState = cursor.state
 
     // Describe states using the series of agendas
-    const scan = dispatcher
-      .flatMap(agenda => {
-        // Reference agenda's root state
-        const anchor = cursor
+    const store = Observable.of(initialState)
+      .concat(dispatcher
+        .map(agenda => {
+          // Reference agenda's root state
+          const anchor = cursor
 
-        // Prepare agenda logger if necessary
-        const logger = logging.stores ? logStore(fn.name || index, agenda) : null
+          // Collect agenda's actions
+          const actions = []
 
-        // Map Agenda to consecutive states and catch errors
-        return agenda
-          .filter(action => !!action)
-          .map(action => {
-            cursor = cursor.doNext(action)
+          // Prepare agenda logger if necessary
+          const logger = logging.stores ? logStore(fn.name || index, agenda) : null
 
-            if (logger) {
-              logger.change(action, cursor.state) // Logging new state by action
-            }
+          // Map Agenda to consecutive states and catch errors
+          return agenda
+            .filter(Boolean)
+            .map(action => {
+              cursor = cursor.doNext(action)
+              actions.push(action)
 
-            return cursor.state
-          })
-          .catch(err => {
-            if (!logger) {
-              console.error(err)
-            }
+              if (logger) {
+                logger.change(action, cursor.state) // Logging new state by action
+              }
 
-            return agenda
-              .reduce((acc, x) => [ ...acc, x ], [])
-              .map(actions => {
-                // Filter past actions by all of the failed agenda
-                const previousState = cursor.state
-                filterActions(anchor, x => actions.indexOf(x) === -1)
+              return cursor.state
+            })
+            .catch(err => {
+              if (!logger) {
+                console.error(err)
+              }
 
-                if (logger) {
-                  logger.revert([ previousState, cursor.state ], err, actions) // Logging reversion
-                }
+              // Filter past actions by all of the failed agenda
+              const previousState = cursor.state
+              filterActions(anchor, x => actions.indexOf(x) === -1)
 
-                return cursor.state
-              })
-          })
-      })
+              if (logger) {
+                logger.revert([ previousState, cursor.state ], err, actions) // Logging reversion
+              }
+
+              return Observable.of(cursor.state)
+            })
+        })
+        .mergeAll()
+      )
       .distinctUntilChanged()
+      .publishReplay(1)
 
-    const store = Observable
-      .of(initialState)
-      .concat(scan)
-      .publish()
+    const subscription = store.connect()
 
     // Cache the store
     cache.push({
-      store
+      store,
+      subscription
     })
 
     return store
