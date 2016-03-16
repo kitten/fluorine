@@ -12,7 +12,7 @@
   "description": "Reactive state and side effect management for React using a single stream of actions",
   "scripts": {
     "pretest": "npm run build:commonjs",
-    "test": "echo 'No tests for now.' && eslint src",
+    "test": "NODE_ENV=production ava && npm run lint",
     "lint": "eslint src",
     "check": "npm run test && npm run build",
     "clean": "rm -rf lib es dist",

@@ -3,18 +3,32 @@ import assert from './util/assert'
 import isObservable from './util/isObservable'
 import isDispatcher from './util/isDispatcher'
 
-export default function connect(selector, prop = 'data') {
+export default function connect(selector, actions) {
   return Child => class Connector extends Component {
     static contextTypes = {
-      observable: React.PropTypes.object
+      observable: React.PropTypes.object,
+      wrapActions: React.PropTypes.func
     }
 
     constructor(props, context = {}) {
       super(props, context)
+      const { wrapActions, observable } = context
 
-      this.store = typeof selector === 'function' ?
-        selector(this.context.observable, props) :
+      this.store = (
+        typeof selector === 'function' ?
+        selector(observable, props) :
         selector
+      )
+
+      if (wrapActions && typeof actions === 'function') {
+        this.actions = actions(wrapActions)
+      } else if (wrapActions) {
+        this.actions = wrapActions(actions)
+      } else if (typeof actions === 'function') {
+        throw new Error('Selector function was passed to connect, but there is no Provider')
+      } else {
+        this.actions = wrapActions(actions)
+      }
 
       this.state = {}
     }
@@ -70,22 +84,16 @@ export default function connect(selector, prop = 'data') {
         return null
       }
 
-      const props = {
-        [prop]: data
-      }
-
       if (
         this.context &&
         this.context.observable &&
         isDispatcher(this.context.observable)
       ) {
-        props.schedule = this.context.observable.schedule
-        props.dispatch = this.context.observable.dispatch
-        props.next = this.context.observable.next
+        props.dispatcher = this.context.observable
       }
 
       return (
-        <Child {...this.props} {...props}/>
+        <Child {...this.props} {...this.actions} {...data}/>
       )
     }
   }

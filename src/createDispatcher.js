@@ -19,6 +19,10 @@ import {
 import assert from './util/assert'
 import isPromise from './util/isPromise'
 import isObservable from './util/isObservable'
+import warn from './util/warn'
+
+const _scheduleNotice = warn('Dispatcher method `schedule` is deprecated. Please use `next` instead.')
+const _dispatchNotice = warn('Dispatcher method `dispatch` is deprecated. Please use `next` instead.')
 
 const KICKSTART_ACTION = { type: '_INIT_' }
 
@@ -46,38 +50,6 @@ export default function createDispatcher(opts = {}) {
     dispatcher.next(obs)
   }
 
-  function dispatch(action) {
-    assert((
-      typeof action === 'function' ||
-      typeof action === 'object'
-    ), 'Expected a thunk, promise or action as argument.')
-
-    if (isPromise(action)) {
-      nextAgenda(Observable.fromPromise(action))
-      return action
-    }
-
-    if (typeof action === 'function') {
-      const res = action(x => {
-        dispatcher.next(Observable.of(x))
-      })
-
-      return Promise.resolve(res)
-    }
-
-    dispatcher.next(Observable.of(action))
-    return Promise.resolve(action)
-  }
-
-  function schedule(...agendas) {
-    assert(agendas.reduce((acc, obj) => acc && isObservable(obj), true), 'Agendas can only be represented by Observables.')
-
-    if (agendas.length === 1) {
-      nextAgenda(agendas[0])
-    } else if (agendas.length > 1) {
-      nextAgenda(Observable.concat(...agendas))
-    }
-  }
 
   function reduce(fn, init) {
     if (typeof fn[identifier] === 'number') {
@@ -150,8 +122,61 @@ export default function createDispatcher(opts = {}) {
     return store
   }
 
+
+  // DEPRECATED: dispatch will soon be removed in favor of next
+  function dispatch(action) {
+    _dispatchNotice()
+    assert(typeof action === 'function' || typeof action === 'object',
+      'Expected a thunk, promise or action as argument.')
+
+    if (isPromise(action)) {
+      nextAgenda(Observable.fromPromise(action))
+      return action
+    }
+
+    if (typeof action === 'function') {
+      const res = action(x => {
+        dispatcher.next(Observable.of(x))
+      })
+
+      return Promise.resolve(res)
+    }
+
+    dispatcher.next(Observable.of(action))
+    return Promise.resolve(action)
+  }
+
+  // DEPRECATED: dispatch will soon be removed in favor of next
+  function schedule(...agendas) {
+    _scheduleNotice()
+    assert(agendas.reduce((acc, obj) => acc && isObservable(obj), true),
+      'Agendas can only be represented by Observables.')
+
+    if (agendas.length === 1) {
+      nextAgenda(agendas[0])
+    } else if (agendas.length > 1) {
+      nextAgenda(Observable.concat(...agendas))
+    }
+  }
+
+  // TODO: Does this need a return value?
+  function next(arg) {
+    if (isObservable(arg)) {
+      nextAgenda(arg)
+    } else if (isPromise(arg)) {
+      nextAgenda(Observable.fromPromise(arg))
+    } else if (typeof arg === 'function') {
+      const res = arg((...x) => next(...x), reduce)
+      if (isObservable(res)) {
+        nextAgenda(res)
+      }
+
+      return res
+    }
+  }
+
   function wrapActions(arg) {
-    const transform = fn => (...args) => dispatch(fn(...args))
+    const transform = fn => (...args) => next(fn(...args))
 
     if (typeof arg === 'function') {
       return transform(arg)
@@ -180,13 +205,7 @@ export default function createDispatcher(opts = {}) {
   }
 
   return Object.assign(Object.create(dispatcher), {
-    next(obj) {
-      if (isObservable(obj)) {
-        schedule(obj)
-      } else {
-        dispatch(obj)
-      }
-    },
+    next,
     dispatch,
     schedule,
     reduce,
