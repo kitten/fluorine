@@ -79,9 +79,7 @@ export default function connect(selector, prop = 'data') {
         this.context.observable &&
         isDispatcher(this.context.observable)
       ) {
-        props.schedule = this.context.observable.schedule
-        props.dispatch = this.context.observable.dispatch
-        props.next = this.context.observable.next
+        props.dispatcher = this.context.observable
       }
 
       return (
