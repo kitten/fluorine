@@ -4,7 +4,10 @@ import assert from './util/assert'
 import isObservable from './util/isObservable'
 import isDispatcher from './util/isDispatcher'
 
-export default function connect(selector, propName) {
+export default function connectStore(selector, prop = 'data') {
+  assert(typeof selector === 'function' || isObservable(selector),
+    'Expected selector to be either a function or an observable.')
+
   return Child => class Connector extends Component {
     static contextTypes = {
       observable: React.PropTypes.object,
@@ -14,9 +17,6 @@ export default function connect(selector, propName) {
     constructor(props, context = {}) {
       super(props, context)
       const { observer, observable } = context
-
-      assert(typeof selector === 'function' || isObservable(selector),
-        'Expected selector to be either a function or an observable.')
 
       this.store = (
         typeof selector === 'function' ?
@@ -77,7 +77,7 @@ export default function connect(selector, propName) {
         return null
       }
 
-      const props = { [propName]: data }
+      const props = { [prop]: data }
 
       return (
         <Child
