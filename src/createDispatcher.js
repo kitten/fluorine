@@ -17,6 +17,7 @@ import {
 } from './util/logger'
 
 import assert from './util/assert'
+import wrapActions from './util/wrapActions'
 import isPromise from './util/isPromise'
 import isObservable from './util/isObservable'
 import warn from './util/warn'
@@ -177,41 +178,12 @@ export default function createDispatcher(opts = {}) {
     }
   }
 
-  function wrapActions(arg) {
-    const transform = fn => (...args) => next(fn(...args))
-
-    if (typeof arg === 'function') {
-      return transform(arg)
-    }
-
-    if (Array.isArray(arg)) {
-      return arg.map(fn => {
-        assert(typeof fn === 'function', 'Expected array to contain exclusively functions.')
-        return transform(fn)
-      })
-    }
-
-    if (typeof arg === 'object') {
-      return Object.keys(arg).reduce((prev, key) => {
-        if (arg.hasOwnProperty(key)) {
-          const fn = arg[key]
-          assert(typeof fn === 'function', 'Expected object to contain exclusively functions.')
-          prev[key] = transform(fn)
-        }
-
-        return prev
-      }, {})
-    }
-
-    throw new Error('Expected either an action creator or an array/object containing some as arguments.')
-  }
-
   return Object.assign(Object.create(dispatcher), {
     next,
     dispatch,
     schedule,
     reduce,
-    wrapActions
+    wrapActions: wrapActions.bind(null, dispatcher)
   })
 }
 

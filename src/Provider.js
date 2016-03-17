@@ -1,33 +1,54 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
+
 import assert from './util/assert'
 import isObservable from './util/isObservable'
+import isDispatcher from './util/isDispatcher'
+
 import createDispatcher from './createDispatcher'
 
 export default class Provider extends Component {
   static propTypes = {
-    dispatcher: React.PropTypes.object,
-    transform: React.PropTypes.func
+    dispatcher: PropTypes.object,
+    observable: PropTypes.oneOfType([
+      PropTypes.func,
+      PropTypes.object
+    ])
   };
 
   static childContextTypes = {
-    wrapActions: React.PropTypes.func,
+    observer: React.PropTypes.object,
     observable: React.PropTypes.object
   };
 
   constructor(props) {
     super(props)
+    let { dispatcher, observable } = props
+    if (!dispatcher) {
+      dispatcher = createDispatcher()
+    } else {
+      assert(isDispatcher(dispatcher), 'Expected prop dispatcher to be a Dispatcher.')
+    }
 
-    const dispatcher = props.dispatcher ? props.dispatcher : createDispatcher()
+    this.observer = {
+      next: dispatcher.next,
+      error: dispatcher.error,
+      complete: dispatcher.complete
+    }
 
-    this.wrapActions = dispatcher.wrapActions
-    this.observable = props.transform ? props.transform(dispatcher.reduce) : dispatcher
+    if (observable && typeof observable === 'function') {
+      this.observable = observable(dispatcher)
+    } else if (isObservable(observable)) {
+      this.observable = observable
+    } else {
+      this.observable = dispatcher
+    }
+
+    assert(isObservable(this.observable), 'Expected provided observable to be an Observable.')
   }
 
   getChildContext() {
-    const { wrapActions, observable } = this
-
-    assert(isObservable(observable), 'Expected context.observable to be an Observable.')
-    return { observable, wrapActions }
+    const { observer, observable } = this
+    return { observer, observable }
   }
 
   render() {
