@@ -4,7 +4,6 @@ import { addTodo } from '../actions/todo'
 import { dispatch } from '../dispatcher'
 
 export default class HeaderComp extends Component {
-
   handleSave = (text) => {
     if (text.length !== 0) {
       dispatch(addTodo(text))
@@ -16,8 +15,8 @@ export default class HeaderComp extends Component {
       <header className="header">
           <h1>todos</h1>
           <TodoTextInput newTodo
-                         onSave={this.handleSave}
-                         placeholder="What needs to be done?" />
+            onSave={this.handleSave}
+            placeholder="What needs to be done?" />
       </header>
     )
   }
