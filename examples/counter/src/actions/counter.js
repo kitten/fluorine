@@ -1,9 +1,7 @@
 import { Observable } from '@reactivex/rxjs'
 
 import { INCREMENT_COUNTER, DECREMENT_COUNTER } from '../constants/counter'
-
 import counter from '../reducers/counter'
-import { reduce } from '../dispatcher'
 
 export function increment() {
   return {
@@ -34,7 +32,7 @@ export const incrementDelayedAgenda = (delay = 1000) => Observable
 
 // We don't need to write a factory for this observable as
 // it doesn't need any outside variables
-export const incrementIfOdd = reduce(counter)
+export const incrementIfOdd = (_, reduce) => reduce(counter)
   .first()
   .map(val => (val % 2 !== 0) ? increment() : null)
 

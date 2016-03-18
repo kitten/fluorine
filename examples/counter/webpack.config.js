@@ -8,11 +8,11 @@ module.exports = {
   ],
   devtool: 'cheap-module-eval-source-map',
   resolve: {
-    extensions: ['', '.js', '.jsx']
+    extensions: ['', '.js', '.jsx'],
+    alias: {
+      'fluorine-lib': path.join(__dirname, '../..')
+    }
   },
-  plugins: [
-    new webpack.optimize.OccurenceOrderPlugin()
-  ],
   module: {
     loaders: [
       {

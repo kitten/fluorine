@@ -1,7 +1,6 @@
-import React, { Component } from 'react'
-import { withStore, withActions } from 'fluorine-lib'
+import React, { Component, PropTypes } from 'react'
+import { connectStore, wrapActions } from 'fluorine-lib'
 
-import dispatcher, { reduce, schedule } from '../dispatcher'
 import counter from '../reducers/counter'
 
 import {
@@ -13,25 +12,19 @@ import {
   incrementDelayedRollback
 } from '../actions/counter'
 
-@withStore(reduce(counter), 'counter')
-@withActions(dispatcher, {
-  increment,
-  decrement,
-  incrementDelayedThunk
-})
-
+@connectStore(({ reduce }) => reduce(counter), 'counter')
 export default class Counter extends Component {
   render() {
     const {
-      counter,
-      actions
+      observer,
+      counter
     } = this.props
 
-    const {
+    const action = wrapActions(observer, {
       increment,
       decrement,
       incrementDelayedThunk
-    } = actions
+    })
 
     return (
       <div>
@@ -40,29 +33,29 @@ export default class Counter extends Component {
         </p>
 
         <div>
-          <button onClick={() => increment()}>
+          <button onClick={() => action.increment()}>
             +
           </button>
 
-          <button onClick={() => decrement()}>
+          <button onClick={() => action.decrement()}>
             -
           </button>
 
-          <button onClick={() => incrementDelayedThunk()}>
+          <button onClick={() => action.incrementDelayedThunk()}>
             Increment async (thunk)
           </button>
 
           <br/>
 
-          <button onClick={() => schedule(incrementDelayedAgenda())}>
+          <button onClick={() => observer.next(incrementDelayedAgenda())}>
             Increment async (agenda)
           </button>
 
-          <button onClick={() => schedule(incrementIfOdd)}>
+          <button onClick={() => observer.next(incrementIfOdd)}>
             Increment if odd
           </button>
 
-          <button onClick={() => schedule(incrementDelayedRollback)}>
+          <button onClick={() => observer.next(incrementDelayedRollback)}>
             Increment async and rollback
           </button>
 
