@@ -4,43 +4,29 @@ import React, { Component } from 'react'
 import { Observable } from '@reactivex/rxjs'
 import { mount } from 'enzyme'
 
-import connect from '../lib/connect'
+import connectStore from '../lib/connectStore'
 import createDispatcher from '../lib/createDispatcher'
 
 function Child({data}) {
   return <div>{data}</div>
 }
 
-// connect tested in combination with the Provider is in
-// the Provider test file
-
 test('passes the correct static observable value', t => {
-  const Tester = connect(
-    Observable
-      .of('test')
-      .map(x => ({ data: x }))
-  )(Child)
-
+  const Tester = connectStore(Observable.of('test'))(Child)
   const wrapper = mount(<Tester/>)
 
   t.is(wrapper.text(), 'test')
-  t.is(wrapper.find(Child).first().prop('data'), 'test')
 })
 
 test('passes selector-applied observable value based on props', t => {
-  const Tester = connect((_, { test }) => Observable
-    .of(test)
-    .map(x => ({ data: x }))
-  )(Child)
-
+  const Tester = connectStore((_, { test }) => Observable.of(test))(Child)
   const wrapper = mount(<Tester test='hello world'/>)
 
   t.is(wrapper.text(), 'hello world')
-  t.is(wrapper.find(Child).first().props(), 'hello world')
 })
 
 test.cb('subscribes to state and updates children', t => {
-  t.plan(6)
+  t.plan(3)
 
   const something = { type: 'DO_SOMETHING' }
   const reducer = (state = 'NOTHING', action) => {
@@ -51,8 +37,7 @@ test.cb('subscribes to state and updates children', t => {
   }
 
   const dispatcher = createDispatcher()
-  const Tester = connect(() => dispatcher.reduce(reducer).map(x => ({ data: x })))(Child)
-
+  const Tester = connectStore(() => dispatcher.reduce(reducer))(Child)
   const wrapper = mount(<Tester/>)
 
   dispatcher
@@ -60,7 +45,6 @@ test.cb('subscribes to state and updates children', t => {
     .take(3)
     .subscribe(x => {
       t.is(wrapper.text(), x)
-      t.is(wrapper.find(Child).first().prop('data'), x)
     }, err => {
       t.fail()
     }, () => {
@@ -73,9 +57,7 @@ test.cb('subscribes to state and updates children', t => {
 
 test('recomputes selector-applied observables on changing props', t => {
   const data = { a: 'a', b: 'b' }
-
-  const Tester = connect((_, {id}) => Observable.of(data[id]).map(x => ({ data: x })))(Child)
-
+  const Tester = connectStore((_, {id}) => Observable.of(data[id]))(Child)
   const wrapper = mount(<Tester id='a'/>)
 
   t.is(wrapper.text(), 'a')
