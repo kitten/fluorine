@@ -49,7 +49,6 @@ export default function createDispatcher(opts = {}) {
       .refCount()
 
     dispatcher.next(obs)
-    return obs.last().toPromise()
   }
 
 
@@ -163,19 +162,17 @@ export default function createDispatcher(opts = {}) {
 
   function next(arg) {
     if (isObservable(arg)) {
-      return nextAgenda(arg)
+      nextAgenda(arg)
     } else if (isPromise(arg)) {
-      return nextAgenda(Observable.fromPromise(arg))
+      nextAgenda(Observable.fromPromise(arg))
     } else if (typeof arg === 'function') {
       const res = arg(x => next(x), reduce)
       if (isObservable(res)) {
         nextAgenda(res)
       }
-
-      return res
+    } else {
+      nextAgenda(Observable.of(arg))
     }
-
-    return nextAgenda(Observable.of(arg))
   }
 
   return Object.assign(Object.create(dispatcher), {
