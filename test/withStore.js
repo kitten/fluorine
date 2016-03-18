@@ -12,7 +12,7 @@ function Child({data}) {
 // Basically an identical test to one in the connect
 // tests but with the withStore signature
 
-test('wraps around connect correctly', t => {
+test.cb('wraps around connect correctly', t => {
   const reducer = () => {
     return { a: 'a', b: 'b' }
   }

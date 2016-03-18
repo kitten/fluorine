@@ -29,32 +29,3 @@ test('passes wrapped actions in props', t => {
   t.is(typeof child.prop('actions').doSomething, 'function')
 })
 
-test('wraps actions to correctly dispatch', t => {
-  const dispatcher = createDispatcher()
-  const reducer = (state, action) => {
-    if (state === null || state === undefined) {
-      state = false
-    }
-
-    switch (action.type) {
-      case 'DO_SOMETHING': return true
-      default: return state
-    }
-  }
-
-  // Keep track of reducer state
-  dispatcher
-    .reduce(reducer)
-    .bufferCount(2)
-    .subscribe(x => {
-      t.same(x, [ false, true ])
-    })
-
-  const Tester = withActions(dispatcher, {
-    doSomething
-  })(Child)
-
-  const wrapper = mount(<Tester/>)
-  wrapper.find(Child).first().prop('actions').doSomething()
-})
-
