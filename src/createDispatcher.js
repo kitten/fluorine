@@ -49,6 +49,7 @@ export default function createDispatcher(opts = {}) {
       .refCount()
 
     dispatcher.next(obs)
+    return obs.last().toPromise()
   }
 
 
@@ -160,12 +161,11 @@ export default function createDispatcher(opts = {}) {
     }
   }
 
-  // TODO: Does this need a return value?
   function next(arg) {
     if (isObservable(arg)) {
-      nextAgenda(arg)
+      return nextAgenda(arg)
     } else if (isPromise(arg)) {
-      nextAgenda(Observable.fromPromise(arg))
+      return nextAgenda(Observable.fromPromise(arg))
     } else if (typeof arg === 'function') {
       const res = arg(x => next(x), reduce)
       if (isObservable(res)) {
@@ -173,9 +173,9 @@ export default function createDispatcher(opts = {}) {
       }
 
       return res
-    } else {
-      dispatcher.next(Observable.of(arg))
     }
+
+    return nextAgenda(Observable.of(arg))
   }
 
   return Object.assign(Object.create(dispatcher), {

@@ -22,7 +22,9 @@ export default class Provider extends Component {
 
   constructor(props) {
     super(props)
-    let { dispatcher, observable } = props
+    let { dispatcher } = props
+    const { observable } = props
+
     if (!dispatcher) {
       dispatcher = createDispatcher()
     } else {
