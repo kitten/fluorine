@@ -180,7 +180,9 @@ export default function createDispatcher(opts = {}) {
     dispatch,
     schedule,
     reduce,
-    wrapActions: wrapActions.bind(null, dispatcher)
+    wrapActions(arg) {
+      return wrapActions({ next }, arg)
+    }
   })
 }
 
