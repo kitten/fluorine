@@ -1,44 +1,18 @@
 # Dispatcher
 
-For a description on how the dispatcher works, what it is and what the concept
-of using it is, read: [Concepts > Dispatcher](../concepts/dispatcher.md)
+A Dispatcher is the central hub for your actions and agendas.
+
+It is usable like a normal subject. You can call next to schedule new agendas,
+or dispatch actions. You can also directly subscribe to it to get the raw
+stream of agendas.
 
 ## Methods
 
-* [dispatch(action)](#dispatch)
 * [reduce(reducer, init)](#reduce)
-* [schedule(agenda)](#schedule)*
-* [getState(reducer) *deprecated*](#getState)
+* [next(agenda)](#dispatch)
 * [wrapActions(actions)](#wrapActions)
-
---------------------------------------------------------------------------------
-
-## <a id='dispatch'></a>[`dispatch(action)`](#dispatch)
-
-Takes a thunk, a promise, or a plain action; converts it into an agenda and
-schedules it.
-
-### Arguments
-
-1. `action`: This can either be:
-  - a plain *action* object
-  - a promise resolving to an *action*
-  - or a thunk (function)
-
-The *thunk* has the signature: `function (dispatch)`, where dispatch is
-a method taking a plain action object.
-
-### Returns
-
-A Promise resolving to the dispatched action.
-
-In the case of a *thunk* it returns a promise wrapping the value
-that the *thunk* has returned.
-
-### Notes
-
-Instead of using this directly you'd probably use the [`wrapActions`](#wrapActions)
-method or the [`withActions`](withActions.md) decorator.
+* [schedule(agenda) *deprecated*](#schedule)
+* [dispatch(agenda) *deprecated*](#dispatch)
 
 --------------------------------------------------------------------------------
 
@@ -92,7 +66,83 @@ store.subscribe(x => {
 
 --------------------------------------------------------------------------------
 
+## <a id='wrapActions'></a>[`wrapActions(actions)`](#wrapActions)
+
+Takes actions and "binds" them to the dispatcher. It wraps
+the action creators in functions that dispatch the return values.
+
+### Arguments
+
+1. `actions`: This can be:
+  - a single action creator
+  - an object containing only action creators
+  - an array containing action creators
+
+### Returns
+
+Depending on what you passed as `actions` it will return the same type, but
+with the action creators wrapped in a function that passes the result into
+the dispatch method.
+
+The wrapper function is: `(...args) => dispatch(action(...args))`
+
+### Example
+
+```js
+import dispatcher from './dispatcher'
+
+function addTodo(str) {
+  return {
+    type: 'ADD_TODO',
+    payload: str
+  }
+}
+
+const boundAddTodo = dispatcher.wrapActions(addTodo)
+
+const obj = dispatcher.wrapActions({ addTodo })
+obj.boundAddTodo
+
+const arr = dispatcher.wrapActions([ addTodo ])
+arr[0]
+```
+
+--------------------------------------------------------------------------------
+
+## <a id='dispatch'></a>[`dispatch(action)`](#dispatch)
+
+**Deprecated**
+
+Takes a thunk, a promise, or a plain action; converts it into an agenda and
+schedules it.
+
+### Arguments
+
+1. `action`: This can either be:
+  - a plain *action* object
+  - a promise resolving to an *action*
+  - or a thunk (function)
+
+The *thunk* has the signature: `function (dispatch)`, where dispatch is
+a method taking a plain action object.
+
+### Returns
+
+A Promise resolving to the dispatched action.
+
+In the case of a *thunk* it returns a promise wrapping the value
+that the *thunk* has returned.
+
+### Notes
+
+Instead of using this directly you'd probably use the [`wrapActions`](#wrapActions)
+method or the [`withActions`](withActions.md) decorator.
+
+--------------------------------------------------------------------------------
+
 ## <a id='schedule'></a>[`schedule(agenda)`](#schedule)
+
+**Deprecated**
 
 Schedule a new Agenda. This is an alternative to [`.dispatch()`](#dispatch) that
 takes observables instead of actions or action creators. Instead this observable
@@ -153,93 +203,3 @@ dispatcher.schedule(Observable
   )
 ```
 
---------------------------------------------------------------------------------
-
-## <a id='getState'></a>[`getState(reducer)` *deprecated*](#getState)
-
-Takes a reducer and returns the corresponding state's store.
-
-**Deprecated!** The method was removed in the `v2.0.0` release.
-
-### Arguments
-
-1. `reducer`: See reduce method. This identifies the store, as it's generated
-  by this very function.
-
-### Returns
-
-The current state of the store.
-
-### Notes
-
-This method should only be used for non-reactive parts of your application where
-consecutive states don't matter. Otherwise you should always find a way to
-integrate RxJS Observables into your app's logic.
-
-### Example
-
-```js
-import dispatcher from './dispatcher'
-
-function TodoStore(state = [], action) {
-  switch (action.type) {
-    type 'ADD_TODO':
-      return state.concat([
-        action.payload
-      ])
-    default:
-      return state
-  }
-}
-
-const store = dispatcher.reduce(TodoStore)
-dispatcher.dispatch({
-  type: 'ADD_TODO',
-  payload: 'Hello World!'
-})
-
-store.getState() // ['Hello World!']
-```
-
---------------------------------------------------------------------------------
-
-## <a id='wrapActions'></a>[`wrapActions(actions)`](#wrapActions)
-
-Takes actions and "binds" them to the dispatcher. It wraps
-the action creators in functions that dispatch the return values.
-
-### Arguments
-
-1. `actions`: This can be:
-  - a single action creator
-  - an object containing only action creators
-  - an array containing action creators
-
-### Returns
-
-Depending on what you passed as `actions` it will return the same type, but
-with the action creators wrapped in a function that passes the result into
-the dispatch method.
-
-The wrapper function is: `(...args) => dispatch(action(...args))`
-
-### Example
-
-```js
-import dispatcher from './dispatcher'
-
-function addTodo(str) {
-  return {
-    type: 'ADD_TODO',
-    payload: str
-  }
-}
-
-const boundAddTodo = dispatcher.wrapActions(addTodo)
-
-const obj = dispatcher.wrapActions({ addTodo })
-obj.boundAddTodo
-
-const arr = dispatcher.wrapActions([ addTodo ])
-arr[0]
-```
