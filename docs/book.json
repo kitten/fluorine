@@ -1,0 +1,21 @@
+{
+  "title": "Fluorine",
+  "gitbook": "2.x.x",
+  "structure": {
+    "readme": "INTRO.md",
+    "summary": "README.md"
+  },
+  "plugins": [
+    "collapsible-menu",
+    "github",
+    "heading-anchors",
+    "-sharing",
+    "-fontsettings",
+    "-search"
+  ],
+  "pluginsConfig": {
+    "github": {
+      "url": "https://github.com/philpl/fluorine"
+    }
+  }
+}

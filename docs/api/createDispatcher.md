@@ -26,10 +26,22 @@ import {
 const dispatcher = createDispatcher()
 
 export const reduce = dispatcher.reduce
-export const schedule = dispatcher.schedule
+export const next = dispatcher.schedule
 export const wrapActions = dispatcher.wrapActions
 export default dispatcher
 ```
+
+## Usage with a Provider
+
+A dispatcher can be distributed via a Provider. This ensures that
+your components don't rely on local singletons and are easily testable.
+
+The Provider passes a dispatcher down via the context, optionally
+with a observable. This means that this is ell suited for mono-store
+as well as multi-store setups.
+
+Check out the [**Provider**](provider.md) for more information on
+this.
 
 ## Options
 
@@ -48,3 +60,4 @@ Available options:
   you can either pass `true` to enable all logging or pass an object to only
   enable specific logging. This object has the form:
   `{ agendas: true, stores: true }`
+

@@ -1,25 +1,18 @@
-# Documentation
+# Summary
 
-## Introduction
+* [Getting Started](getting-started/README.md)
+  * [Installation](getting-started/installation.md)
+  * [Recommended Structure](getting-started/recommended-structure.md)
+  * [RxJS](getting-started/rxjs.md)
+* [Concepts](concepts/README.md)
+  * [Flux and Unidirectional Dataflow](concepts/flux-and-unidirectional-dataflow.md)
+  * [Functional Additions to Flux](concepts/functional-additions-to-flux.md)
+  * [Actions and Thunks](concepts/actions-and-thunks.md)
+  * [Abstracting Side effects as Agendas](concepts/abstracting-side-effects-as-agendas.md)
+  * [Fully Reactive Dispatchers and Stores](concepts/fully-reactive-dispatchers-and-stores.md)
+* [API Reference](api/README.md)
+  * [createDispatcher](api/createDispatcher.md)
+  * [Dispatcher](api/dispatcher.md)
+  * [withActions](api/withActions.md)
+  * [withStore](api/withStore.md)
 
-* [Index and Requirements](introduction/README.md)
-  * [Getting Started](introduction/getting-started.md)
-  * [Structure](introduction/structure.md)
-  * [Concepts](introduction/concepts.md)
-  * [Your First Store](introduction/your-first-store.md)
-
-It is advised, that you at least read the
-[Concepts](docs/introduction/concepts.md)
-document, that describes all the concepts, basics and
-patterns that you need to get started.
-
-## Glossary
-
-TBD
-
-## [API Reference](api/README.md)
-
-* [createDispatcher](api/createDispatcher.md)
-* [Dispatcher](api/dispatcher.md)
-* [withActions](api/withActions.md)
-* [withStore](api/withStore.md)

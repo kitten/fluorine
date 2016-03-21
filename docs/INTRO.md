@@ -1,0 +1,18 @@
+<p align="center"><img src="https://raw.githubusercontent.com/philpl/fluorine/master/docs/fluorine-flasky-2x.gif" width=400></p>
+<p align="center">
+<strong>Flexible state and side effect manager using <a href="https://github.com/Reactive-Extensions/RxJS">RxJS</a> for <a href="https://facebook.github.io/react/">React</a>.</strong>
+</p>
+<br>
+
+Fluorine provides you with easy, reactive state and side effect management,
+accumulating stores from streams of actions and side effects.
+
+It builds on the ideas of Redux, while preserving a Flux-like Dispatcher
+as the single source of truth.
+
+- Your stores are directly reduced from the dispatcher and actions are dispatched on it
+- Manage your side effect as Observables ("Agendas") with automatic rollbacks on error
+- Unopinionated and simple API
+
+This is the ultimate way to use RxJS for state and side effect management!
+
