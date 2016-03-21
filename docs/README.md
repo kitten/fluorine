@@ -2,8 +2,8 @@
 
 * [Getting Started](getting-started/README.md)
   * [Installation](getting-started/installation.md)
+  * [Recommended Structure](getting-started/recommended-structure.md)
   * [RxJS](getting-started/rxjs.md)
-* [Recommended Structure](recommended-structure.md)
 * [Concepts](concepts/README.md)
   * [Flux and Unidirectional Dataflow](concepts/flux-and-unidirectional-dataflow.md)
   * [Functional Additions to Flux](concepts/functional-additions-to-flux.md)

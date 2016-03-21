@@ -2,8 +2,7 @@
 <p align="center">
 <strong>Flexible state and side effect manager using <a href="https://github.com/Reactive-Extensions/RxJS">RxJS</a> for <a href="https://facebook.github.io/react/">React</a>.</strong>
 </p>
-
-## About
+<br>
 
 Fluorine provides you with easy, reactive state and side effect management,
 accumulating stores from streams of actions and side effects.
