@@ -19,6 +19,5 @@ Some links to learn RxJS:
 
 * [Getting Started](getting-started.md)
 * [Structure](structure.md)
-* [Concepts](concepts.md)
 * [Your First Store](your-first-store.md)
 
