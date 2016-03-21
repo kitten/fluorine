@@ -1,4 +1,4 @@
-# Structure
+# Recommended Structure
 
 Before you jump in and use Fluorine here's some advices on how to
 structure your React projects to perfectly use it.
@@ -87,9 +87,4 @@ plan not to use the `withStore` and `withActions` decorators.
 
 For more information and help on the decorators and the pros and cons
 consult the concepts page for them: Decorators
-
-## Continue to read
-
-The next part in the introduction is on the basic concepts of Fluorine
-[Concepts](concepts.md)
 

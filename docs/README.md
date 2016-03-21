@@ -1,10 +1,9 @@
 # Summary
 
-* [Introduction](introduction/README.md)
-  * [Getting Started](introduction/getting-started.md)
-  * [Structure](introduction/structure.md)
-  * [Concepts](introduction/concepts.md)
-  * [Your First Store](introduction/your-first-store.md)
+* [Getting Started](getting-started/README.md)
+  * [Installation](getting-started/installation.md)
+  * [RxJS](getting-started/rxjs.md)
+* [Recommended Structure](recommended-structure.md)
 * [Concepts](concepts/README.md)
   * [Flux and Unidirectional Dataflow](concepts/flux-and-unidirectional-dataflow.md)
   * [Functional Additions to Flux](concepts/functional-additions-to-flux.md)
