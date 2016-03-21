@@ -20,28 +20,12 @@ as the single source of truth.
 
 This is the ultimate way to use RxJS for state and side effect management!
 
-## Getting Started
+## Documentation
 
-To install the latest stable version:
+You can find the [Documentation](docs/README.md) here on Github.
 
-```sh
-npm install --save fluorine-lib
-```
-
-It will install the `babel-runtime` and `@reactivex/rxjs` as dependencies.
-
-It furthermore needs React as a peer dependency to work:
-
-```sh
-npm install --save react
-```
-
-If you wish to use the dispatcher without the decorators for a *non-React* project
-then just import the `createDispatcher` method, without anything else:
-
-```
-import createDispatcher from 'fluorine-lib/lib/createDispatcher'
-```
+In there you can find a guide on Getting Started, some basic concepts, and more
+for learning Fluorine.
 
 ## Short Demo
 
@@ -119,13 +103,6 @@ operators.
 On top of that we've got a new way of handling side effects: Agendas. This enables
 you to schedule observables as streams of actions, which roll back all their changes
 if they fail. This makes it easy to design exceedingly complex side effects.
-
-## Documentation
-
-You can find the [Documentation](docs/README.md) here on Github.
-
-It is advised, that you read the [Concepts](docs/introduction/concepts.md) document,
-that describes all the concepts, basics and patterns that you need to get started.
 
 ## Frequently Asked Questions
 
