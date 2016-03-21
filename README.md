@@ -27,7 +27,7 @@ You can find the [Documentation](docs/README.md) here on Github.
 In there you can find a guide on Getting Started, some basic concepts, and more
 for learning Fluorine.
 
-## Short Demo
+## Quick Intro
 
 This is just a short example that quickly presents all features of the Dispatcher.
 It is of course not representetive for how to use it in real React projects.
@@ -132,10 +132,7 @@ to Flux and its unidirectional data-flow.
 
 ## Thanks to
 
-* The ReactiveX, all the RxJS developers and the ReactiveX community
+* The ReactiveX team, all the RxJS developers and the ReactiveX community
 * Dan Abramov for Redux that is a big influence to Fluorine
 * The React team
 
-## License
-
-MIT
