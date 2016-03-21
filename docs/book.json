@@ -10,7 +10,8 @@
     "github",
     "heading-anchors",
     "-sharing",
-    "-fontsettings"
+    "-fontsettings",
+    "-search"
   ],
   "pluginsConfig": {
     "github": {
