@@ -6,6 +6,7 @@
     "summary": "README.md"
   },
   "plugins": [
+    "collapsible-menu",
     "github",
     "heading-anchors",
     "-sharing",

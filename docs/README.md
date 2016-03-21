@@ -15,5 +15,4 @@
   * [Dispatcher](api/dispatcher.md)
   * [withActions](api/withActions.md)
   * [withStore](api/withStore.md)
-* [Glossary](GLOSSARY.md)
 
