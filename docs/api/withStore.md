@@ -8,10 +8,10 @@ Internally it uses [connectStore](connectStore.md).
 
 ## Arguments
 
-1. `store`: An observable, typically a store; or a function that receives props and
+- `store`: Either an observable, typically a store; or a function that receives props and
   returns an observable.
 
-1. [`propName`]: The name of the prop that is passed to the child component.
+- [`propName`]: The name of the prop that is passed to the child component.
   Defaults to "data".
 
 ## Returns

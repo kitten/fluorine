@@ -9,6 +9,7 @@ has itself bound to this function as the first argument.
 ## Arguments
 
 - `observer`: An Observer.
+
 - `actions`: Either an action creator; or an array, or object containing
   action creators.
 
