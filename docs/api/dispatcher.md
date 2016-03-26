@@ -12,7 +12,7 @@ Take a look at [createDispatcher](createDispatcher.md) to learn how to create ne
 ## Methods
 
 * [reduce](#reduce)
-* [next](#dispatch)
+* [next](#next)
 * [schedule *deprecated*](#schedule)
 * [dispatch *deprecated*](#dispatch)
 * [wrapActions(actions)](#wrapActions)
