@@ -22,12 +22,11 @@ as the single source of truth.
 
 This is the ultimate way to use RxJS for state and side effect management!
 
-## Documentation
+## [Documentation](https://fluorinejs.org)
 
-You can find the [Documentation](docs/README.md) here on Github.
-
-In there you can find a guide on Getting Started, some basic concepts, and more
-for learning Fluorine.
+* [Getting Started](https://fluorinejs.org/getting-started/index.html)
+* [Concepts](https://fluorinejs.org/concepts/index.html)
+* [API Reference](https://fluorinejs.org/api/index.html)
 
 ## Quick Intro
 
