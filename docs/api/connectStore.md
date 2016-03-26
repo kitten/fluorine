@@ -54,7 +54,7 @@ structure on your project.
 import React, { Component } from 'react'
 import { connectStore } from 'fluorine-lib'
 
-@connectStore(store => store.pluck('text), 'data')
+@connectStore(store => store.pluck('text), 'text')
 class App extends Component {
   render() {
     return <div>{this.props.text}</div>
