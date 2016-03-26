@@ -13,6 +13,9 @@
 * [API Reference](api/README.md)
   * [createDispatcher](api/createDispatcher.md)
   * [Dispatcher](api/dispatcher.md)
+  * [wrapActions](api/wrapActions.md)
   * [withActions](api/withActions.md)
   * [withStore](api/withStore.md)
+  * [Provider](api/provider.md)
+  * [connectStore](api/connectStore.md)
 
