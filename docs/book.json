@@ -9,6 +9,8 @@
     "collapsible-menu",
     "github",
     "heading-anchors",
+    "prism",
+    "-highlight",
     "-sharing",
     "-fontsettings",
     "-search"

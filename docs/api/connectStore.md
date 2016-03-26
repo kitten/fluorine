@@ -41,7 +41,7 @@ argument to a specific store.
 ## Example
 
 We will provide two examples that correspond to the examples, that you can find on the
-[Provider examples](Provider.md#example). You have to read these in parallel to make sense of
+[Provider examples](provider.md#example). You have to read these in parallel to make sense of
 them.
 
 The example below are written so that their results are identical, which should give you
