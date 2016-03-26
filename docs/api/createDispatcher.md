@@ -35,7 +35,7 @@ To enable logging for both agendas and stores pass `true`.
 You can enable/disable logging for agendas and stores separately by passing an
 object to the option.
 
-```
+```js
 {
   logging: {
     agendas: true,
@@ -56,7 +56,7 @@ the `scheduler` option a scheduler of your choice.
 If you don't want to unit test components, that use the dispatcher, then you can
 create your dispatcher as a singleton.
 
-```
+```js
 import { createDispatcher } from 'fluorine-lib'
 
 const dispatcher = createDispatcher()
@@ -75,7 +75,7 @@ has `Provider` and the `connectStore` decorators.
 The `Provider` creates a dispatcher automatically, but feel free to pass it
 your own dispatcher, when your app starts.
 
-```
+```js
 import React, { Component } from 'react'
 import { createDispatcher } from 'fluorine-lib'
 
