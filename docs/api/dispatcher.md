@@ -195,7 +195,7 @@ is a function that dispatches an action.
 
 --------------------------------------------------------------------------------
 
-## <a id='schedule'></a>[`schedule(agenda)`](#schedule)
+## schedule()
 
 **Deprecated**
 
