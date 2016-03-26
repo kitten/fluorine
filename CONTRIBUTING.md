@@ -53,7 +53,7 @@ If you run into any problems, that don't concern every user, if you need
 some help getting started, if you've got some smaller questions, or
 if you need help solving a special problem, then...
 
-[**Join our Slack**](http://fluorinejs.org)
+[**Join our Slack**](https://slack.fluorinejs.org)
 
 We're always trying to help. Slack gives us the possibilty to communicate
 efficently as a community, as well as chatting in groups.
