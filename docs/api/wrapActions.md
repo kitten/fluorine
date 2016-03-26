@@ -42,3 +42,28 @@ have an observer then.
 In case you use agendas exclusively you wouldn't have to wrap action creators
 at all. You'd of course still use it if you use agenda creators.
 
+## Example
+
+```js
+import React, { Component, PropTypes } from 'react
+import { wrapActions } from 'fluorine-lib'
+
+import {
+  addTodo
+} from '../actions/todos'
+import dispatcher from './dispatcher'
+
+export default class YourComponent extends Component {
+  render() {
+    const _addTodo = wrapActions(dispatcher, addTodo)
+    // or: dispatcher.wrapActions(addTodo)
+
+    return (
+      <button onClick={_addTodo}>
+        Do something!
+      </button>
+    )
+  }
+}
+```
+

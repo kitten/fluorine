@@ -1,45 +1,49 @@
-# `withActions(dispatcher, actions, [prop])`
+# [withActions](withActions.md)
 
-This is a decorator that can be used to insert ready-to-use actions into your
-component.
-
-Actions are supposed to be written as pure functions for composability. However, the
-result needs to be dispatched somehow. `withActions` is a decorator that injects an
-object containing actions into your component as a prop and wraps them in a
-function that injects the result into the [`dispatch`](Dispatcher.md#dispatch)
-method.
+A decorator that wraps a React component. It takes a dispatcher and
+passes action creators through to [wrapActions](wrapActions.md), whose
+result is given to the React component as a prop.
 
 ## Arguments
 
-1. `dispatcher`: This is the dispatcher that you want to dispatch your actions
-  on.
+- `dispatcher`: A dispatcher.
 
-1. `actions`: This is your object containing pure functions, that return your
-  plain object actions.
+- `actions`: Either an action creator; or an array, or object containing
+  action creators.
 
-1. `prop` (Optional): This is the prop where the wrapped actions are going to be
-  passed into your child component. Defaults to: `actions`
+- [`propName`]: The name of the prop that is passed to the child component.
+  Defaults to "actions".
 
 ## Returns
 
-A function that takes the child component and returns a top-level component
-that wraps it.
+As all decorators a function that takes a child component and returns a
+top level component wrapping it.
 
 ## Example
 
-### ES6 with Decorator Syntax
-
 ```js
-// ...
+import React, { Component, PropTypes } from 'react
 import { withActions } from 'fluorine-lib'
-import * as actions from './actions'
+
+import {
+  addTodo
+} from '../actions/todos'
 import dispatcher from './dispatcher'
 
-@withActions(dispatcher, actions)
-export default class YourComponent extends React.Component {
+@withActions(dispatcher, {
+  addTodo
+}, 'actions')
+
+export default class YourComponent extends Component {
+  static propTypes = {
+    actions: PropTypes.objectOf(PropTypes.func)
+  }
+
   render() {
+    const { addTodo } = this.props.actions
+
     return (
-      <button onClick={this.props.actions.doSomething}>
+      <button onClick={addTodo}>
         Do something!
       </button>
     )
@@ -47,55 +51,6 @@ export default class YourComponent extends React.Component {
 }
 ```
 
-The actions used in this example might look something like this:
+> Note: To use decorators in Babel with the "@-Syntax" you need to add a
+> legacy decorator plugin. http://babeljs.io/docs/plugins/syntax-decorators/
 
-```
-export function doSomething() {
-  return {
-    type: 'DO_SOMETHING'
-  }
-}
-```
-
-Note that the import instruction `* as actions` transforms all of the exports
-into a single object.
-
-## ES5
-
-```js
-// ...
-var withActions = require('fluorine-lib').withActions
-var actions = require('./actions')
-var dispatcher = require('./dispatcher')
-
-var YourComponent = React.createClass({
-  render: function() {
-    return (
-      <button onClick={this.props.actions.doSomething}>
-        Do something!
-      </button>
-    )
-  }
-})
-
-module.exports = withActions(dispatcher, actions)(YourComponent)
-```
-
-With the actions for the ES5 example looking something like this:
-
-```js
-module.exports = {
-  doSomething: function() {
-    return {
-      type: 'DO_SOMETHING'
-    }
-  }
-}
-```
-
-## A note on Babel
-
-To use decorators in Babel you need to enable them. You can find instructions on
-how to enable a decorator plugin here:
-
-http://babeljs.io/docs/plugins/syntax-decorators/
