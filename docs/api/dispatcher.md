@@ -2,42 +2,52 @@
 
 A Dispatcher is the central hub for your actions and agendas.
 
-It is usable like a normal subject. You can call next to schedule new agendas,
-or dispatch actions. You can also directly subscribe to it to get the raw
-stream of agendas.
+It is usable like a normal subject, meaning it is an observable that emits agendas, and an
+observer that dispatches agendas, promises, thunks and actions on the dispatcher.
+
+Take a look at [createDispatcher](createDispatcher.md) to learn how to create new dispatchers.
+
+[Learn more about the concept of a dispatcher in the Concepts documentation.](../concepts/fully-reactive-dispatchers-and-stores.md)
 
 ## Methods
 
-* [reduce(reducer, init)](#reduce)
-* [next(agenda)](#dispatch)
+* [reduce](#reduce)
+* [next](#dispatch)
+* [schedule *deprecated*](#schedule)
+* [dispatch *deprecated*](#dispatch)
 * [wrapActions(actions)](#wrapActions)
-* [schedule(agenda) *deprecated*](#schedule)
-* [dispatch(agenda) *deprecated*](#dispatch)
 
 --------------------------------------------------------------------------------
 
-## <a id='reduce'></a>[`reduce(reducer, [init])`](#reduce)
-
-Takes a reducer and returns a Fluorine store.
+## reduce()
 
 A store is just an observable which emits new states of your store.
+Reduces the dispatcher to a store, which uses a reducer function to reduce all agendas
+on the dispatcher stream to consecutive values, describing the store's state.
 
 ### Arguments
 
-1. `reducer`: A reducing function that returns the next state. The reducer's
-  signature is `function (state, action)`, where state is the previous state
-  of your store.
+- `reducer`: A reducer function that takes the current store state and an action and
+  returns the next state. The signature is `(state, action) => nextState`.
 
-1. `init`: The initial value of the store. This is useful if you've cached
-  a previous state somewhere and want to restore it. By default the initial
-  state is `undefined`.
+- [`init`]: An initial value that is passed to the reducer. By default this is `undefined`.
 
 ### Returns
 
-A [BehaviorSubject](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/behaviorsubject.md)
-emitting your store's state.
+An observable, which emits values, describing the store's state.
+
+### Discussion
+
+A store's state is only reduced from the agendas that were emitted after reduce
+was called. This is so that memory can be released after agendas complete.
+
+The initial value is useful to restore a store's state.
 
 ### Example
+
+This is an example demonstrating what `reduce` does, not how you should use it in your app.
+Take a look at [withStore](withStore.md) to see an examples on how to inject a store's
+state into a component.
 
 ```js
 import dispatcher from './dispatcher'
@@ -54,7 +64,7 @@ function TodoStore(state = [], action) {
 }
 
 const store = dispatcher.reduce(TodoStore)
-dispatcher.dispatch({
+dispatcher.next({
   type: 'ADD_TODO',
   payload: 'Hello World!'
 })
@@ -66,65 +76,110 @@ store.subscribe(x => {
 
 --------------------------------------------------------------------------------
 
-## <a id='wrapActions'></a>[`wrapActions(actions)`](#wrapActions)
+## next()
 
-Takes actions and "binds" them to the dispatcher. It wraps
-the action creators in functions that dispatch the return values.
+Dispatches agendas, thunks, promises and actions on the dispatcher stream.
+This is the method with which you want to modify your stores' states.
+
+This is part of the Dispatcher's observer, since it can be used like a normal
+observer.
 
 ### Arguments
 
-1. `actions`: This can be:
-  - a single action creator
-  - an object containing only action creators
-  - an array containing action creators
+- `input`: Either an agenda, a thunk, a promise, or an action.
 
 ### Returns
 
-Depending on what you passed as `actions` it will return the same type, but
-with the action creators wrapped in a function that passes the result into
-the dispatch method.
+*Nothing.* :flags:
 
-The wrapper function is: `(...args) => dispatch(action(...args))`
+### Resulting Agenda
+
+Depending on what you pass to next, an agenda is scheduled on the dispatcher's
+event stream. Internally the dispatcher doesn't work with actions anymore, but
+exclusively with agendas.
+
+[Read more about the agendas in the Concepts documentation](../concepts/abstracting-side-effects-as-agendas.md)
+
+#### Agenda
+
+In case you've passed an agenda (Observable) it is directly dispatched on the
+dispatcher's event stream.
+
+#### Promise
+
+In case you've passed a promise, the promise is converted into an observable. This
+observable is dispatched on the dispatcher's event stream. It is converted using the
+following RxJS method.
+
+```js
+Observable.fromPromise(input)
+```
+
+It basically just creates an observable that emits the promise's result and
+completes.
+
+#### Thunk
+
+A thunk is just a function. In case you pass a function to next, then it's automatically
+treated as a thunk. The function will receive two arguments:
+
+- `next`: A function that calls the dispatcher's `next` method using the first
+  argument.
+
+- `reduce`: The dispatcher's reduce method, to derive agendas from a store's state.
+
+These thunks are different from those that you're passing to dispatch (*deprecated*).
+
+Not only can they be used to dispatch other thunks, agendas and promises, additionally
+to actions on the dispatcher's event stream, but they can be used to derive an agenda
+from the dispatcher without using the dispatcher as a singleton.
+
+An example will follow below.
+
+#### Action
+
+If the next method can't match something else, it assumes that the argument is a pure action,
+and wraps it in an observable.
+
+```js
+Observable.of(input)
+```
+
+This emits the action and immediately completes.
+
+### Discussion
+
+This dispatches agendas on the dispatcher's event stream. This agenda is transformed a little,
+and then shared between all stores. The stores subscribe to the agenda, using a shared
+subscription, and use the emitted actions to generate their consecutive state.
+
+For the case an agenda fails, each store keeps a linked list of its state. When a store
+subscribes to an agenda it saves an the current state in a variable as an 'anchor'.
+
+If an agenda fails, from this anchor on the linked list of states is traversed and the state
+is regenerated, skipping actions that the failed agenda emitted. This effectively reverses
+all changes that an agenda made.
+
+Due to the fact that only a reference to the most current state and an anchor for each
+running agenda is kept, old state is garbage collected.
 
 ### Example
 
-```js
-import dispatcher from './dispatcher'
-
-function addTodo(str) {
-  return {
-    type: 'ADD_TODO',
-    payload: str
-  }
-}
-
-const boundAddTodo = dispatcher.wrapActions(addTodo)
-
-const obj = dispatcher.wrapActions({ addTodo })
-obj.boundAddTodo
-
-const arr = dispatcher.wrapActions([ addTodo ])
-arr[0]
-```
+From taking a look at the [Counter example](https://github.com/philpl/fluorine/blob/master/examples/counter/src/actions/counter.js),
+you can find most of the different things that can be passed to next.
 
 --------------------------------------------------------------------------------
 
-## <a id='dispatch'></a>[`dispatch(action)`](#dispatch)
+## dispatch()
 
 **Deprecated**
 
-Takes a thunk, a promise, or a plain action; converts it into an agenda and
-schedules it.
+This is a specialised version of [next] that only takes actions, action thunks
+and promises.
 
 ### Arguments
 
-1. `action`: This can either be:
-  - a plain *action* object
-  - a promise resolving to an *action*
-  - or a thunk (function)
-
-The *thunk* has the signature: `function (dispatch)`, where dispatch is
-a method taking a plain action object.
+- `action`: Either a thunk, promise or action.
 
 ### Returns
 
@@ -133,10 +188,10 @@ A Promise resolving to the dispatched action.
 In the case of a *thunk* it returns a promise wrapping the value
 that the *thunk* has returned.
 
-### Notes
+### Discussion
 
-Instead of using this directly you'd probably use the [`wrapActions`](#wrapActions)
-method or the [`withActions`](withActions.md) decorator.
+The thunks are different from the ones in next. The only pass a single argument. Which
+is a function that dispatches an action.
 
 --------------------------------------------------------------------------------
 
@@ -144,62 +199,32 @@ method or the [`withActions`](withActions.md) decorator.
 
 **Deprecated**
 
-Schedule a new Agenda. This is an alternative to [`.dispatch()`](#dispatch) that
-takes observables instead of actions or action creators. Instead this observable
-then emits actions.
-
-This has two big advantages:
-
-* It is easy to represent an asynchronous task with an
-observable, instead of repeatedly calling the `dispatch` callback in a thunk.
-
-* If the agenda (observable) fails all its action will be rolled backed. It will
-be like you never scheduled the task.
+This is a specialised version of [next](#next) that only takes agendas.
 
 ### Arguments
 
-1. `agenda`: An observable emitting actions
-
-Optionally you can pass multiple agendas and they will be concatenated using
-`Observable.concat([])`.
+- `agenda`: An agenda
 
 ### Returns
 
-**Nothing**
+*Nothing.* :flags:
 
-### Notes
+### Discussion
 
-Unlike `.dispatch()` this method doesn't return a promise. You should rely on
-RxJS's side effects to react to completion or a certain state. Check out the
-[`do` operator](https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/do.md).
+It dispatches the agenda on the dispatcher's event stream.
 
-When using this to send requests to an API, you can reverse the standard order
-of doing things. If you would normally `POST` a new resource and dispatch the
-create action if that succeeds, try dispatching first. If the `POST` request
-fails, you can let Fluorine revert the action automatically. In calls that will
-likely succeed, this is a big win for UI smoothness.
+--------------------------------------------------------------------------------
 
-### Example
+## wrapActions()
 
-This is a rough example of the note above.
+Returns the action creators that were passed but wraps them to dispatch
+their return values.
 
-```js
-import dispatcher from './dispatcher'
+This uses the [wrapActions](wrapActions.md) function underneath. Go there to
+read all about it.
 
-dispatcher.schedule(Observable
-  .of({
-    type: 'ADD_USER',
-    payload: {
-      name: 'Leonardo'
-    }
-  })
-  .concat(Observable
-    .of('/user')
-    .flatMap(path => Observable
-      .fromPromise(fetch(path, {
-        method: 'POST'
-      }))
-    )
-  )
-```
+### Arguments
+
+- `actions`: Either an action creator; or an array, or object containing
+  action creators.
 
