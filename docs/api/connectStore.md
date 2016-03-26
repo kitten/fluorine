@@ -1,4 +1,4 @@
-### connectStore
+# connectStore
 
 A decorator that wraps a React component. It receives an observer and an
 observable from a Provider above, and gives the React component

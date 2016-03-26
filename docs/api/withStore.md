@@ -1,4 +1,4 @@
-# [withStore](withStore.md)
+# withStore
 
 A decorator that wraps a React component. It takes an observable,
 typically a store and subscribes to it. The changing value that is
