@@ -26,7 +26,8 @@
     "version": "npm run build",
     "postversion": "git push && git push --tags",
     "prebook": "gitbook install ./docs",
-    "book": "gitbook build ./docs"
+    "book": "gitbook build ./docs",
+    "book:watch": "gitbook serve ./docs"
   },
   "author": "Phil Plückthun <phil@plckthn.me> (https://github.com/philplckthun)",
   "bugs": {
