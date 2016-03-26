@@ -2,8 +2,10 @@
 <p align="center">
 <strong>Flexible state and side effect manager using <a href="https://github.com/Reactive-Extensions/RxJS">RxJS</a> for <a href="https://facebook.github.io/react/">React</a>.</strong>
 <br><br>
-<img alt="TravisCI" src="https://travis-ci.org/philpl/fluorine.svg">
+<a href="https://travis-ci.org/philpl/fluorine"><img alt="TravisCI" src="https://travis-ci.org/philpl/fluorine.svg"></a>
 <a href="http://fluorinejs.org/"><img alt="Join Fluorine's Slack!" src="http://fluorinejs.org/badge.svg"></a>
+<a href="https://npmjs.com/package/fluorine-lib"><img src="https://img.shields.io/npm/dm/fluorine-lib.svg"></a>
+<a href="https://npmjs.com/package/fluorine-lib"><img src="https://img.shields.io/npm/v/fluorine-lib.svg"></a>
 </p>
 
 ## About
