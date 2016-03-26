@@ -1,4 +1,4 @@
-# [withActions](withActions.md)
+# withActions
 
 A decorator that wraps a React component. It takes a dispatcher and
 passes action creators through to [wrapActions](wrapActions.md), whose

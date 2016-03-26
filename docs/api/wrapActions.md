@@ -1,4 +1,4 @@
-# [wrapActions()](wrapActions.md)
+# wrapActions()
 
 Returns the action creators that were passed but wraps them to dispatch
 their return values on an observer, typically a dispatcher.
