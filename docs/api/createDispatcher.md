@@ -1,63 +1,94 @@
-# `createDispatcher()`
+# createDispatcher()
 
-Creates a Dispatcher.
+Creates a new [Dispatcher](dispatcher.md).
 
-See ["Dispatcher"](dispatcher.md) for more information on the Dispatcher itself.
+See [Dispatcher](dispatcher.md) for more information on the Dispatcher itself.
 
 ## Arguments
 
-1. `options`: An object containing certain options, that change the properties
-  of the resulting dispatcher
+- [`options`]: An object containing certain options, that change the properties
+  of the resulting dispatcher.
 
 ## Returns
 
-A [**Dispatcher**](dispatcher.md)
+A new [Dispatcher](dispatcher.md)
 
-## Usage as a Singleton
+## Discussion
 
-The easiest way to use the dispatcher is as a singleton. The file holding it
-could for example be named `dispatcher.js`:
+This function creates a new dispatcher and returns it. It can be passed some
+options that change the resulting dispatcher.
 
 ```js
-import {
-  createDispatcher
-} from 'fluorine-lib'
+{
+  logging: false,
+  scheduler: Scheduler.queue
+}
+```
+
+### Logging
+
+In development you might want to log agendas, stores or both. You can change the
+logging behavior of a dispatcher using the `logging` option.
+
+To enable logging for both agendas and stores pass `true`.
+
+You can enable/disable logging for agendas and stores separately by passing an
+object to the option.
+
+```
+{
+  logging: {
+    agendas: true,
+    stores: true
+  }
+}
+```
+
+### Scheduler
+
+Normally all agendas are scheduled on the default `Scheduler.queue`. You can pass
+the `scheduler` option a scheduler of your choice.
+
+## Examples
+
+### Usage as a singleton
+
+If you don't want to unit test components, that use the dispatcher, then you can
+create your dispatcher as a singleton.
+
+```
+import { createDispatcher } from 'fluorine-lib'
 
 const dispatcher = createDispatcher()
 
+export const next = dispatcher.next
 export const reduce = dispatcher.reduce
-export const next = dispatcher.schedule
-export const wrapActions = dispatcher.wrapActions
 export default dispatcher
 ```
 
-## Usage with a Provider
+### Usage with Provider
 
-A dispatcher can be distributed via a Provider. This ensures that
-your components don't rely on local singletons and are easily testable.
+In case you need to unit test components, you will want to use the dispatcher
+dynamically and not juse import it when you need it. For that purpose Fluorine
+has `Provider` and the `connectStore` decorators.
 
-The Provider passes a dispatcher down via the context, optionally
-with a observable. This means that this is ell suited for mono-store
-as well as multi-store setups.
+The `Provider` creates a dispatcher automatically, but feel free to pass it
+your own dispatcher, when your app starts.
 
-Check out the [**Provider**](provider.md) for more information on
-this.
-
-## Options
-
-You can pass in `opts` into `createDispatcher`:
-
-```js
-createDispatcher({logging: true})
 ```
+import React, { Component } from 'react'
+import { createDispatcher } from 'fluorine-lib'
 
-Available options:
+class Main extends Component {
+  dispatcher = createDispatcher()
 
-- `scheduler`: You can pass an RxJS Scheduler to change the behavior of how
-  agendas are scheduled on the dispatcher. The default is `Rx.Scheduler.asap`
-
-- `logging`: This is very useful for development! By default this is `false` and
-  you can either pass `true` to enable all logging or pass an object to only
-  enable specific logging. This object has the form:
-  `{ agendas: true, stores: true }`
+  render() {
+    return (
+      <Provider dispatcher={this.dispatcher}>
+        <App/>
+      </Provider>
+    )
+  }
+}
+```
 

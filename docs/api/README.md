@@ -12,14 +12,14 @@ to decide for yourself how to use Fluorine.
 
 ## API
 
-### [createDispatcher](createDispatcher.md)
+### [createDispatcher()](createDispatcher.md)
 
 Returns a new [Dispatcher](dispatcher.md). A dispatcher is an applications
 central event hub. It manages state and side effects. You can dispatch
 new actions on it, and schedule agendas. Stores are derived from a
 dispatcher by reducing its event stream.
 
-### [wrapActions](wrapActions.md)
+### [wrapActions()](wrapActions.md)
 
 Returns the action creators that were passed but wraps them to dispatch
 their return values on an observer, typically a dispatcher.
