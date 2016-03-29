@@ -9,7 +9,7 @@ asynchronous data flows as well as pleasing users and yourself.
 
 The basic **state manager** uses:
 
-- actions
+- actions (agendas)
 - a dispatcher
 - and stores
 
@@ -31,10 +31,13 @@ As you can see on the two diagrams, all actions are dispatched
 on the `Dispatcher`. Think about it as your app's central event stream, scheduling
 tasks for you.
 
+In Fluorine actions are further abstracted using observables. These agendas are
+describing the tasks that eventually mutate your state.
+
 *The manager of your state and side effects is your Dispatcher.*
 
 The Dispatcher is the **single source of truth**. All stores are directly
-derived from it and react to its actions.
+derived from it and react to its agendas and actions.
 
 [flux-simple-diagram]: ../img/flux-simple-diagram.jpg
 [flux-dispatch-diagram]: ../img/flux-dispatch-diagram.jpg

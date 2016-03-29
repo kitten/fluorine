@@ -7,11 +7,11 @@ They are scheduled on the dispatcher and describe a stream of actions.
 If you came here as a happy RxJS user, Agendas are **Observables** emitting
 actions.
 
-Instead of being dispatched they are scheduled on the dispatcher:
+The usage is the same as using actions, thunks, or promises:
 
 ```js
-dispatcher.schedule(agenda)
-dispatcher.schedule(agendaCreator())
+dispatcher.next(agenda)
+dispatcher.next(agendaCreator())
 ```
 
 <!-- TODO: Define Observable -->
@@ -39,7 +39,7 @@ Just concat the observables!
 
 ```js
 const fusion = clearTodos.concat(makeCookies)
-dispatcher.schedule(fusion)
+dispatcher.next(fusion)
 ```
 
 Concatenating agendas is very common and that's why the
@@ -47,7 +47,7 @@ concatenation is baked into the schedule method. Pass multiple agendas as
 arguments and they will be concatenated:
 
 ```js
-dispatcher.schedule(clearTodos, makeCookies)
+dispatcher.next(clearTodos, makeCookies)
 ```
 
 ## Writing action-less Side effects
@@ -149,6 +149,21 @@ agendas are unaffected!
 
 This allows you to handle errors smartly and make the
 UI buttery smooth.
+
+## Agendas depending on a store's state
+
+If you need to access a store's state for creating an agenda, then
+you can use thunks for that as well.
+
+The second argument of a thunk will be the dispatcher's reduce
+method.
+
+```
+const agenda = (next, reduce) => reduce(TodoStore)
+  .map(x => x.size % 2 === 0 ? clearAllTodos() : null)
+```
+
+[Read more about the next method's capabilities in the API docs.](../api/dispatcher.md#next)
 
 ## Shared / Duplicate Tasks
 

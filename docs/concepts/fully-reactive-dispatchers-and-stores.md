@@ -39,7 +39,5 @@ A small implementation detail is, that when reducing the dispatcher subscribes t
 and then nestedly subscribes to the agendas inside.
 
 The states of your stores are then computed and stored using a special linked list,
-with roll back support and emitted on a
-[BehaviorSubject](ihttps://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/subjects/behaviorsubject.md)
-which represents your store.
+with roll back support.
 

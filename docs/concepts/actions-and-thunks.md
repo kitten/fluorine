@@ -45,26 +45,30 @@ function updateTodo(id, text) {
 }
 ```
 
-Pairing the action creator with the dispatcher's `dispatch` method now puts
-it all together.
+Pairing the action creator with the dispatcher's `next` method now dispatches
+the actual action.
 
 ```js
-dispatcher.dispatch(updateTodo(0, 'Hello World!'))
+dispatcher.next(updateTodo(0, 'Hello World!'))
 ```
 
 Feel free to read more about
-[`Dispatcher.dispatch` in the API documentation](../api/dispatcher.md#dispatch)
+[`Dispatcher.next` in the API documentation](../api/dispatcher.md#next)
 
 In your actual app, this can be easily abstracted away
-by wrapping the action creator in a function calling
-this method for you instead. More about that in the
-API docs:
-[Dispatcher.wrapActions](../api/dispatcher.md#wrapActions)
-[withActions](../api/withActions.md)
+by wrapping the action creator in a function dispatching
+the action for you instead. This has the advantage that
+it's a function that you can easily pass around, without
+passing on any knowledge about the dispatcher.
 
-See the `wrapActions` method in use in our Todo MVC
-Example app:
-[Todo MVC Example MainSection](https://github.com/philpl/fluorine/blob/master/examples/todo/src/components/MainSection.jsx)
+```js
+const _updateTodo = dispatcher.wrapActions(updateTodo)
+_updateTodo(0, 'Hello World!')
+```
+
+- More about that in the API docs under [Dispatcher.wrapActions](../api/dispatcher.md#wrapActions)
+- An alternative for using this easily with React components: [withActions](../api/withActions.md)
+- Look here to see wrapActions in action: [Todo MVC Example MainSection](https://github.com/philpl/fluorine/blob/master/examples/todo/src/components/MainSection.jsx)
 
 ## Side effect management
 
@@ -106,11 +110,11 @@ function fetchTodos() {
 }
 ```
 
-Fluorine will accept this promise directly via the dispatch method
+Fluorine will accept this promise directly via the next method
 to allow a side effect with a single action:
 
 ```js
-dispatcher.dispatch(fetchTodos())
+dispatcher.next(fetchTodos())
 ```
 
 ### Thunks
@@ -143,12 +147,12 @@ function thunkedTodos() {
 They allow a wide variety of iterative logic to execute side effects and
 dispatch multiple actions unlike promises.
 
-The [`dispatcher.dispatch`](../api/dispatcher.md#dispatch)
+The [`dispatcher.next`](../api/dispatcher.md#next)
 method will inject a dispatch method into a thunk's first
 argument automatically:
 
 ```js
-dispatcher.dispatch(fetchTodos())
+dispatcher.next(fetchTodos())
 ```
 
 The usage hasn't changed compared to promises.
