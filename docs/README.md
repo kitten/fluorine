@@ -18,4 +18,5 @@
   * [withStore](api/withStore.md)
   * [Provider](api/provider.md)
   * [connectStore](api/connectStore.md)
+  * [connectActions](api/connectActions.md)
 
