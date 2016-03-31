@@ -48,3 +48,10 @@ observable from a Provider above, and gives the React component
 the changing value from the observable (like withStore) and the
 observer.
 
+### [connectActions](connectActions.md)
+
+A decorator that wraps a React component. It receives an observer from a
+Provider above, and passes action creators through to
+[wrapActions](wrapActions.md), whose result is given to the React component
+as a prop.
+
