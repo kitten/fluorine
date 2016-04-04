@@ -51,3 +51,22 @@ test.cb('wraps action creators in arrays', t => {
   doCreateAction()
 })
 
+test.cb('wraps action creators recursively', t => {
+  t.plan(2)
+
+  const observer = {
+    next(obj) {
+      t.is(obj, action)
+      t.end()
+    }
+  }
+
+  const obj = wrapActions(observer, {
+    a: [ createActions ],
+    b: { action: createAction }
+  })
+
+  obj.a[0]()
+  obj.b.action()
+})
+
