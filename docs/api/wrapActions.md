@@ -13,6 +13,9 @@ has itself bound to this function as the first argument.
 - `actions`: Either an action creator; or an array, or object containing
   action creators.
 
+- `wrapRecursively`: Wraps action creators inside objects and arrays recursively.
+  Defaults to `false`.
+
 ## Returns
 
 In case an action creator was passed in, a function is returned that wraps the
