@@ -14,7 +14,7 @@ export default function wrapActions(observer, arg, wrapRecursively = false) {
       return input.map(x => {
 
         if (wrapRecursively) {
-          return wrap(x);
+          return wrap(x)
         }
 
         assert(typeof x === 'function', 'Expected array to contain exclusively functions. Did you intend to use wrapActions recursively?')
