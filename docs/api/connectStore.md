@@ -16,6 +16,9 @@ used in combination with a Provider, which is its primary purpose.
 - [`propName`]: The name of the prop that is passed to the child component.
   Defaults to "data".
 
+- [`pureProps`]: Whether the component should check for reference equality before
+  rendering. Defaults to `true`.
+
 ## Returns
 
 As all decorators a function that takes a child component and returns a
