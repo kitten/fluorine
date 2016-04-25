@@ -10,6 +10,7 @@
   * [Actions and Thunks](concepts/actions-and-thunks.md)
   * [Abstracting Side effects as Agendas](concepts/abstracting-side-effects-as-agendas.md)
   * [Fully Reactive Dispatchers and Stores](concepts/fully-reactive-dispatchers-and-stores.md)
+* [Glossary](GLOSSARY.md)
 * [API Reference](api/README.md)
   * [createDispatcher](api/createDispatcher.md)
   * [Dispatcher](api/dispatcher.md)
