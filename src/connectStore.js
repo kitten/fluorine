@@ -4,7 +4,7 @@ import assert from './util/assert'
 import isObservable from './util/isObservable'
 import isDispatcher from './util/isDispatcher'
 
-export default function connectStore(selector, prop = 'data') {
+export default function connectStore(selector, prop = 'data', pureProps = true) {
   assert(typeof selector === 'function' || isObservable(selector),
     'Expected selector to be either a function or an observable.')
 
@@ -42,7 +42,7 @@ export default function connectStore(selector, prop = 'data') {
     }
 
     shouldComponentUpdate(props, state) {
-      if (state.data !== this.state.data) {
+      if (!pureProps || state.data !== this.state.data) {
         return true
       }
 
