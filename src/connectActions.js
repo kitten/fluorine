@@ -13,16 +13,6 @@ export default function connectActions(actions, prop = 'actions', wrapRecursivel
       this.actions = wrapActions(observer, actions, wrapRecursively)
     }
 
-    shouldComponentUpdate(props, state) {
-      for (const key in props) {
-        if (props.hasOwnProperty(key) && props[key] !== this.props[key]) {
-          return true
-        }
-      }
-
-      return false
-    }
-
     render() {
       const props = { [prop]: this.actions }
 
