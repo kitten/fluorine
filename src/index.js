@@ -1,3 +1,7 @@
+import distinctSelector from './distinctSelector'
+import { Observable } from '@reactivex/rxjs'
+Observable.prototype.distinctSelector = distinctSelector
+
 import createDispatcher from './createDispatcher'
 import withActions from './withActions'
 import withStore from './withStore'

@@ -51,7 +51,6 @@ export default function createDispatcher(opts = {}) {
     dispatcher.next(obs)
   }
 
-
   function reduce(fn, init) {
     if (typeof fn[identifier] === 'number') {
       return cache[fn[identifier]].store
