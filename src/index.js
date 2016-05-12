@@ -9,6 +9,7 @@ import connectStore from './connectStore'
 import connectActions from './connectActions'
 import wrapActions from './util/wrapActions'
 import Provider from './Provider'
+import combineReducers from './combineReducers'
 
 export {
   createDispatcher,
@@ -18,5 +19,6 @@ export {
   connectActions,
   wrapActions,
   Provider,
-  distinctSelector
+  distinctSelector,
+  combineReducers
 }
