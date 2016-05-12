@@ -62,10 +62,9 @@ export default function createDispatcher(opts = {}) {
 
     // Create cursor pointing to the state history
     let cursor = createState(fn, fn(init, KICKSTART_ACTION))
-    const initialState = cursor.state
 
     // Describe states using the series of agendas
-    const store = Observable.of(initialState)
+    const store = Observable.of(cursor.state)
       .concat(dispatcher
         .map(agenda => {
           // Reference agenda's root state
