@@ -1,0 +1,21 @@
+{
+  "name": "counter",
+  "version": "0.1.0",
+  "private": true,
+  "description": "An example for Fluorine",
+  "license": "MIT",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "@reactivex/rxjs": "^5.0.0-beta.2"
+  },
+  "devDependencies": {
+    "babel-loader": "^6.2.0",
+    "babel-preset-philpl": "^0.1.0",
+    "webpack": "^2.1.0-beta.4",
+    "webpack-dev-server": "^2.0.0-beta"
+  }
+}
