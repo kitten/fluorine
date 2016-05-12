@@ -105,9 +105,9 @@ export default function createDispatcher(opts = {}) {
 
               return Observable.of(cursor.state)
             })
+            .distinctUntilChanged()
         })
-        .mergeAll()
-      )
+        .mergeAll())
       .distinctUntilChanged()
       .publishReplay(1)
 
