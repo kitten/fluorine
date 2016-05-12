@@ -17,5 +17,6 @@ export {
   connectStore,
   connectActions,
   wrapActions,
-  Provider
+  Provider,
+  distinctSelector
 }
