@@ -26,7 +26,7 @@ test('passes selector-applied observable value based on props', t => {
 })
 
 test.cb('subscribes to state and updates children', t => {
-  t.plan(3)
+  t.plan(2)
 
   const something = { type: 'DO_SOMETHING' }
   const reducer = (state = 'NOTHING', action) => {
@@ -42,7 +42,7 @@ test.cb('subscribes to state and updates children', t => {
 
   dispatcher
     .reduce(reducer)
-    .take(3)
+    .take(2)
     .subscribe(x => {
       t.is(wrapper.text(), x)
     }, err => {
