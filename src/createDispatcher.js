@@ -33,7 +33,7 @@ function toObservable(arg) {
   return Observable.of(arg)
 }
 
-export default function createDispatcher(opts = {}) {
+export default function createDispatcher(opts = {}, middlewares = []) {
   const dispatcher = new Subject()
 
   const identifier = Symbol()
@@ -117,9 +117,8 @@ export default function createDispatcher(opts = {}) {
     return store
   }
 
-  function next(arg) {
-    const agenda = toObservable(arg)
-      .subscribeOn(scheduler)
+  function innerNext(arg) {
+    const agenda = arg
       .filter(Boolean)
       .publishReplay()
       .refCount()
@@ -127,12 +126,23 @@ export default function createDispatcher(opts = {}) {
     dispatcher.next(agenda)
   }
 
-  return Object.assign(Object.create(dispatcher), {
+  const outerNext = next => agenda => next(toObservable(agenda)
+    .subscribeOn(scheduler))
+
+  const next = middlewares
+    .map(x => x(_dispatcher))
+    .reverse()
+    .concat(outerNext)
+    .reduce((last, middleware) => middleware(last), innerNext)
+
+  const _dispatcher = Object.assign(Object.create(dispatcher), {
     next,
     reduce,
     wrapActions(arg) {
       return wrapActions({ next }, arg)
     }
   })
+
+  return _dispatcher
 }
 
