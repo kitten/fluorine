@@ -2,7 +2,7 @@ import test from 'ava'
 import React, { Component } from 'react'
 import { mount } from 'enzyme'
 
-import withActions from '../lib/withActions'
+import withActions from '../lib/decorators/withActions'
 import createDispatcher from '../lib/createDispatcher'
 
 const doSomething = () => ({

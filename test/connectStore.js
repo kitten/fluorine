@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { Observable } from '@reactivex/rxjs'
 import { mount } from 'enzyme'
 
-import connectStore from '../lib/connectStore'
+import connectStore from '../lib/decorators/connectStore'
 import createDispatcher from '../lib/createDispatcher'
 
 function Child({data}) {

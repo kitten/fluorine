@@ -2,7 +2,7 @@ import test from 'ava'
 import React, { Component } from 'react'
 import { mount } from 'enzyme'
 
-import withStore from '../lib/withStore'
+import withStore from '../lib/decorators/withStore'
 import createDispatcher from '../lib/createDispatcher'
 
 function Child({data}) {

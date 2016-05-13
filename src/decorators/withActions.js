@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import wrapActions from './util/wrapActions'
+import wrapActions from '../util/wrapActions'
 
 export default function withActions(observer, actions, prop = 'actions', wrapRecursively = true) {
   return Child => class ActionContainer extends Component {
