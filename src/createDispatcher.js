@@ -118,7 +118,7 @@ export default function createDispatcher(opts = {}, middlewares = []) {
   }
 
   function innerNext(arg) {
-    const agenda = arg
+    const agenda = toObservable(arg)
       .filter(Boolean)
       .subscribeOn(scheduler)
       .publishReplay()

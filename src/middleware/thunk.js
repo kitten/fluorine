@@ -11,12 +11,14 @@ export function createThunkMiddleware(...extraArgs) {
       )
 
       if (isObservable(res) || isPromise(res)) {
-        next(res)
+        return next(res)
       }
-    } else {
-      next(agenda)
+
+      return undefined
     }
-  };
+
+    return next(agenda)
+  }
 }
 
 export default createThunkMiddleware()
