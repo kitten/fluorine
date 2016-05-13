@@ -120,28 +120,23 @@ export default function createDispatcher(opts = {}, middlewares = []) {
   function innerNext(arg) {
     const agenda = arg
       .filter(Boolean)
+      .subscribeOn(scheduler)
       .publishReplay()
       .refCount()
 
     dispatcher.next(agenda)
   }
 
-  const outerNext = next => agenda => next(toObservable(agenda)
-    .subscribeOn(scheduler))
+  const _dispatcher = Object.create(dispatcher)
 
-  const next = middlewares
+  _dispatcher.reduce = reduce
+  _dispatcher.wrapActions = x => wrapActions(_dispatcher, x)
+  _dispatcher.next = middlewares
     .map(x => x(_dispatcher))
     .reverse()
-    .concat(outerNext)
-    .reduce((last, middleware) => middleware(last), innerNext)
-
-  const _dispatcher = Object.assign(Object.create(dispatcher), {
-    next,
-    reduce,
-    wrapActions(arg) {
-      return wrapActions({ next }, arg)
-    }
-  })
+    .reduce((last, middleware) => middleware(x => {
+      last(toObservable(x))
+    }), innerNext)
 
   return _dispatcher
 }
