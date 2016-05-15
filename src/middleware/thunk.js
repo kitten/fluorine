@@ -1,24 +1,27 @@
+import { Observable } from '@reactivex/rxjs'
 import isObservable from '../util/isObservable'
 import isPromise from '../util/isPromise'
 
 export function createThunkMiddleware(...extraArgs) {
-  return dispatcher => next => agenda => {
+  return dispatcher => agenda => agenda.flatMap(x => {
     if (typeof agenda === 'function') {
       const res = agenda(
-        x => dispatcher.next(x),
-        x => dispatcher.reduce(x),
+        y => dispatcher.next(y),
+        y => dispatcher.reduce(y),
         ...extraArgs
       )
 
-      if (isObservable(res) || isPromise(res)) {
-        return next(res)
+      if (isObservable(res)) {
+        return res
+      } else if (isPromise(res)) {
+        return Observable.fromPromise(res)
       }
 
-      return undefined
+      return Observable.empty()
     }
 
-    return next(agenda)
-  }
+    return x
+  })
 }
 
 export default createThunkMiddleware()

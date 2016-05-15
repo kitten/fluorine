@@ -48,6 +48,27 @@ export default function createDispatcher(opts = {}, middlewares = []) {
     logAgendas(dispatcher)
   }
 
+  const res = {
+    reduce,
+    wrapActions: x => wrapActions(dispatcher, x),
+    complete: x => dispatcher.complete(x),
+    error: x => dispatcher.error(x),
+    next: x => dispatcher.next(toObservable(x)
+      .subscribeOn(scheduler)
+      .publishReplay()
+      .refCount())
+  }
+
+  const _middlewares = middlewares.map(x => x(res))
+  const pipeline = dispatcher
+    .flatMap(agenda => {
+      for (const middleware of _middlewares) {
+        agenda = middleware(agenda)
+      }
+
+      return agenda
+    })
+
   function reduce(fn, init) {
     if (typeof fn[identifier] === 'number') {
       return cache[fn[identifier]].store
@@ -62,7 +83,7 @@ export default function createDispatcher(opts = {}, middlewares = []) {
 
     // Describe states using the series of agendas
     const store = Observable.of(cursor.state)
-      .concat(dispatcher
+      .concat(pipeline
         .map(agenda => {
           // Reference agenda's root state
           const anchor = cursor
@@ -117,27 +138,6 @@ export default function createDispatcher(opts = {}, middlewares = []) {
     return store
   }
 
-  function innerNext(arg) {
-    const agenda = toObservable(arg)
-      .filter(Boolean)
-      .subscribeOn(scheduler)
-      .publishReplay()
-      .refCount()
-
-    dispatcher.next(agenda)
-  }
-
-  const _dispatcher = Object.create(dispatcher)
-
-  _dispatcher.reduce = reduce
-  _dispatcher.wrapActions = x => wrapActions(_dispatcher, x)
-  _dispatcher.next = middlewares
-    .map(x => x(_dispatcher))
-    .reverse()
-    .reduce((last, middleware) => middleware(x => {
-      last(toObservable(x))
-    }), innerNext)
-
-  return _dispatcher
+  return Object.assign(Object.create(pipeline), res)
 }
 
