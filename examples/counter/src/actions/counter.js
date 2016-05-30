@@ -38,9 +38,10 @@ export const incrementIfOdd = (_, reduce) => reduce(counter)
 
 // This uses the incremention, but concats an error. This will
 // trigger Fluorine to rollback the incremention.
-export const incrementDelayedRollback = incrementDelayedAgenda()
+export const incrementDelayedRollback = Observable.of(increment())
   .concat(Observable
-    .throw('Hello World!')
-    .delay(1000) // Delay the error so we can observe the rollback
-  )
+    .of(() => {
+      throw new Error('Hello World!')
+    })
+    .delay(1000)) // Delay the error so we can observe the rollback
 
