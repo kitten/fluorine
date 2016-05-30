@@ -12,7 +12,7 @@
   "description": "Reactive state and side effect management for React using a single stream of actions",
   "scripts": {
     "pretest": "npm run build:commonjs",
-    "test": "NODE_ENV=production ava && npm run lint",
+    "test": "NODE_ENV=production ava --verbose && npm run lint",
     "lint": "eslint src",
     "check": "npm run test && npm run build",
     "clean": "rm -rf lib es dist",
@@ -50,7 +50,7 @@
     "babel-runtime": "^6.6.1"
   },
   "devDependencies": {
-    "ava": "^0.14.0",
+    "ava": "^0.15.1",
     "babel-cli": "^6.2.0",
     "babel-eslint": "^6.0.0",
     "babel-loader": "^6.2.4",

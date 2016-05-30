@@ -2,23 +2,23 @@ import isObservable from '../util/isObservable'
 import isPromise from '../util/isPromise'
 
 export function createThunkMiddleware(...extraArgs) {
-  return dispatcher => next => agenda => {
-    if (typeof agenda === 'function') {
-      const res = agenda(
+  return dispatcher => agenda => agenda.map(thunkish => {
+    if (typeof thunkish === 'function') {
+      const res = thunkish(
         x => dispatcher.next(x),
         x => dispatcher.reduce(x),
         ...extraArgs
       )
 
       if (isObservable(res) || isPromise(res)) {
-        return next(res)
+        dispatcher.next(res)
       }
 
-      return undefined
+      return null
     }
 
-    return next(agenda)
-  }
+    return thunkish
+  })
 }
 
 export default createThunkMiddleware()

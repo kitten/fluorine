@@ -37,11 +37,8 @@ test.cb('is an Observer taking actions, promises and agendas', t => {
       t.end()
     })
 
-  Observable
-    .of(
-      action, // action
-      Promise.resolve(action), // promise
-      Observable.of(action) // agenda
-    ).subscribe(dispatcher.next)
+  dispatcher.next(action)
+  dispatcher.next(Promise.resolve(action))
+  dispatcher.next(Observable.of(action))
 })
 
