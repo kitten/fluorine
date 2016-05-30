@@ -42,8 +42,13 @@ export function Dispatcher(opts = {}, middlewares) {
   if (this.logging.agendas) {
     logAgendas(this)
   }
+
+  this.reduce = this.reduce.bind(this)
+  this.rawNext = this.rawNext.bind(this)
+  this.next = this.next.bind(this)
 }
 
+// Inherit from Rx.Subject
 Dispatcher.prototype = Object.create(Subject.prototype)
 Dispatcher.prototype.constructor = Dispatcher
 
