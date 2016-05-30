@@ -23,7 +23,7 @@ import isObservable from './util/isObservable'
 
 const KICKSTART_ACTION = { type: '_INIT_' }
 
-function Dispatcher(opts = {}, middlewares) {
+export function Dispatcher(opts = {}, middlewares) {
   if (!middlewares) {
     middlewares = []
   }
