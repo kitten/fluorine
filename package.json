@@ -46,7 +46,7 @@
     "immutable"
   ],
   "dependencies": {
-    "@reactivex/rxjs": "5.0.0-beta.6",
+    "@reactivex/rxjs": "^5.0.0-beta.8",
     "babel-runtime": "^6.6.1",
     "symbol-observable": "^0.2.4"
   },
