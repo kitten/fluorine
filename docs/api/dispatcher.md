@@ -13,8 +13,6 @@ Take a look at [createDispatcher](createDispatcher.md) to learn how to create ne
 
 * [reduce](#reduce)
 * [next](#next)
-* [schedule *deprecated*](#schedule)
-* [dispatch *deprecated*](#dispatch)
 * [wrapActions(actions)](#wrapActions)
 
 --------------------------------------------------------------------------------
@@ -168,52 +166,7 @@ running agenda is kept, old state is garbage collected.
 From taking a look at the [Counter example](https://github.com/philpl/fluorine/blob/master/examples/counter/src/actions/counter.js),
 you can find most of the different things that can be passed to next.
 
---------------------------------------------------------------------------------
-
-## dispatch()
-
-**Deprecated**
-
-This is a specialised version of [next] that only takes actions, action thunks
-and promises.
-
-### Arguments
-
-- `action`: Either a thunk, promise or action.
-
-### Returns
-
-A Promise resolving to the dispatched action.
-
-In the case of a *thunk* it returns a promise wrapping the value
-that the *thunk* has returned.
-
-### Discussion
-
-The thunks are different from the ones in next. The only pass a single argument. Which
-is a function that dispatches an action.
-
---------------------------------------------------------------------------------
-
-## schedule()
-
-**Deprecated**
-
-This is a specialised version of [next](#next) that only takes agendas.
-
-### Arguments
-
-- `agenda`: An agenda
-
-### Returns
-
-*Nothing.* :flags:
-
-### Discussion
-
-It dispatches the agenda on the dispatcher's event stream.
-
---------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
 
 ## wrapActions()
 
