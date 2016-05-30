@@ -4,8 +4,8 @@ import React, { Component } from 'react'
 import { Observable } from '@reactivex/rxjs'
 import { mount } from 'enzyme'
 
-import connectStore from '../lib/connectStore'
-import Provider from '../lib/Provider'
+import connectStore from '../lib/decorators/connectStore'
+import Provider from '../lib/components/Provider'
 
 function Child({data}) {
   return <div>{data}</div>

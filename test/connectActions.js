@@ -4,8 +4,8 @@ import React, { Component } from 'react'
 import { Observable } from '@reactivex/rxjs'
 import { mount } from 'enzyme'
 
-import connectActions from '../lib/connectActions'
-import Provider from '../lib/Provider'
+import connectActions from '../lib/decorators/connectActions'
+import Provider from '../lib/components/Provider'
 import createDispatcher from '../lib/createDispatcher'
 
 const doSomething = () => ({

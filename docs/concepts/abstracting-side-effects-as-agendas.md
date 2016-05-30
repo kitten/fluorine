@@ -42,14 +42,6 @@ const fusion = clearTodos.concat(makeCookies)
 dispatcher.next(fusion)
 ```
 
-Concatenating agendas is very common and that's why the
-concatenation is baked into the schedule method. Pass multiple agendas as
-arguments and they will be concatenated:
-
-```js
-dispatcher.next(clearTodos, makeCookies)
-```
-
 ## Writing action-less Side effects
 
 How do you represent side effects you ask? Side effects are

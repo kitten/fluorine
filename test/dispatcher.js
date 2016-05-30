@@ -23,12 +23,12 @@ test.cb('is an Observable emitting agendas', t => {
   dispatcher.next(action)
 })
 
-test.cb('is an Observer taking actions, thunks, promises and agendas', t => {
+test.cb('is an Observer taking actions, promises and agendas', t => {
   const dispatcher = createDispatcher()
 
   dispatcher
     .mergeAll()
-    .take(4)
+    .take(3)
     .subscribe(x => {
       t.is(x, action)
     }, err => {
@@ -37,12 +37,8 @@ test.cb('is an Observer taking actions, thunks, promises and agendas', t => {
       t.end()
     })
 
-  Observable
-    .of(
-      action, // action
-      next => { next(action) }, // thunk
-      Promise.resolve(action), // promise
-      Observable.of(action) // agenda
-    ).subscribe(dispatcher.next)
+  dispatcher.next(action)
+  dispatcher.next(Promise.resolve(action))
+  dispatcher.next(Observable.of(action))
 })
 

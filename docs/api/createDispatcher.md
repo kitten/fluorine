@@ -9,6 +9,8 @@ See [Dispatcher](dispatcher.md) for more information on the Dispatcher itself.
 - [`options`]: An object containing certain options, that change the properties
   of the resulting dispatcher.
 
+- [`middlewares`]: An array containing your middleware functions.
+
 ## Returns
 
 A new [Dispatcher](dispatcher.md)
@@ -48,6 +50,14 @@ object to the option.
 
 Normally all agendas are scheduled on the default `Scheduler.queue`. You can pass
 the `scheduler` option a scheduler of your choice.
+
+### Middlewares
+
+You can pass it middleware to modify agendas inside the dispatcher pipeline.
+Middleware have a `dispatcher => agenda => result` pattern. They are being
+passed the dispatcher and the agenda. The result of this function is the
+actual agenda that is being passed on to either the next middleware, or the
+stores.
 
 ## Examples
 

@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react'
 
-import assert from './util/assert'
-import isObservable from './util/isObservable'
-import isDispatcher from './util/isDispatcher'
+import assert from '../util/assert'
+import isObservable from '../util/isObservable'
+import isDispatcher from '../util/isDispatcher'
 
-import createDispatcher from './createDispatcher'
+import createDispatcher from '../createDispatcher'
 
 export default class Provider extends Component {
   static propTypes = {

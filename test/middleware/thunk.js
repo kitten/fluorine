@@ -2,15 +2,16 @@ import test from 'ava'
 import { Observable } from '@reactivex/rxjs'
 
 import createDispatcher from '../../lib/createDispatcher'
+import thunk from '../../lib/middleware/thunk'
 import isPromise from '../../lib/util/isPromise'
 
 const init = { type: '_INIT_' }
 const action = { type: 'Test' }
 
-test.cb('accepts actions', t => {
+test.cb('accepts thunks', t => {
   t.plan(1)
 
-  const dispatcher = createDispatcher()
+  const dispatcher = createDispatcher({}, [ thunk ])
   dispatcher
     .mergeAll()
     .filter(x => x === action)
@@ -23,16 +24,22 @@ test.cb('accepts actions', t => {
       t.end()
     })
 
-  dispatcher.next(action)
+  dispatcher.next(next => {
+    setTimeout(() => {
+      next(action)
+    })
+  })
 })
 
-test.cb('accepts promises', t => {
+test.cb('accepts agenda-thunks', t => {
   t.plan(1)
 
-  const dispatcher = createDispatcher()
+  const reducer = (acc = 0, action) => action.type === 'add' ? acc + 1 : acc
+
+  const dispatcher = createDispatcher({}, [ thunk ])
   dispatcher
-    .mergeAll()
-    .filter(x => x === action)
+    .reduce(reducer)
+    .filter(x => x === 1)
     .first()
     .subscribe(x => {
       t.pass()
@@ -42,25 +49,8 @@ test.cb('accepts promises', t => {
       t.end()
     })
 
-  dispatcher.next(Promise.resolve(action))
-})
-
-test.cb('accepts observables', t => {
-  t.plan(1)
-
-  const dispatcher = createDispatcher()
-  dispatcher
-    .mergeAll()
-    .filter(x => x === action)
+  dispatcher.next((_, reduce) => reduce(reducer)
     .first()
-    .subscribe(x => {
-      t.pass()
-    }, err => {
-      t.fail(err)
-    }, () => {
-      t.end()
-    })
-
-  dispatcher.next(Observable.of(action))
+    .map(x => ({ type: 'add' })))
 })
 

@@ -3,12 +3,16 @@ import { Observable } from '@reactivex/rxjs'
 Observable.prototype.distinctSelector = distinctSelector
 
 import createDispatcher from './createDispatcher'
-import withActions from './withActions'
-import withStore from './withStore'
-import connectStore from './connectStore'
-import connectActions from './connectActions'
+
+import connectStore from './decorators/connectStore'
+import connectActions from './decorators/connectActions'
+import withStore from './decorators/withStore'
+import withActions from './decorators/withActions'
+
 import wrapActions from './util/wrapActions'
-import Provider from './Provider'
+
+import Provider from './components/Provider'
+
 import combineReducers from './combineReducers'
 
 export {

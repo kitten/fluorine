@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 
-import assert from './util/assert'
-import isObservable from './util/isObservable'
-import isDispatcher from './util/isDispatcher'
+import assert from '../util/assert'
+import isObservable from '../util/isObservable'
+import isDispatcher from '../util/isDispatcher'
 
 export default function connectStore(selector, prop = 'data', pureProps = true) {
   assert(typeof selector === 'function' || isObservable(selector),

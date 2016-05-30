@@ -18,169 +18,135 @@ import {
 
 import assert from './util/assert'
 import wrapActions from './util/wrapActions'
-import isPromise from './util/isPromise'
+import toObservable from './util/toObservable'
 import isObservable from './util/isObservable'
-import warn from './util/warn'
-
-const _scheduleNotice = warn('Dispatcher method `schedule` is deprecated. Please use `next` instead.')
-const _dispatchNotice = warn('Dispatcher method `dispatch` is deprecated. Please use `next` instead.')
 
 const KICKSTART_ACTION = { type: '_INIT_' }
 
-export default function createDispatcher(opts = {}) {
-  const dispatcher = new Subject()
+export function Dispatcher(opts = {}, middlewares) {
+  if (!middlewares) {
+    middlewares = []
+  }
 
-  const identifier = Symbol()
-  const cache = []
+  Subject.call(this)
+
+  this.identifier = Symbol()
+  this.cache = []
+  this.middlewares = [].concat(middlewares).map(x => x(this))
 
   // Options: Scheduler
-  const scheduler = opts.scheduler || Scheduler.queue
+  this.scheduler = opts.scheduler || Scheduler.queue
 
   // Options: Logging
-  const logging = parseOpts(opts.logging)
-  if (logging.agendas) {
-    logAgendas(dispatcher)
+  this.logging = parseOpts(opts.logging)
+  if (this.logging.agendas) {
+    logAgendas(this)
   }
 
-  function nextAgenda(agenda) {
-    const obs = agenda
-      .subscribeOn(scheduler)
-      .publishReplay()
-      .refCount()
+  this.reduce = this.reduce.bind(this)
+  this.rawNext = this.rawNext.bind(this)
+  this.next = this.next.bind(this)
+}
 
-    dispatcher.next(obs)
+// Inherit from Rx.Subject
+Dispatcher.prototype = Object.create(Subject.prototype)
+Dispatcher.prototype.constructor = Dispatcher
+
+Dispatcher.prototype.reduce = function reduce(fn, init) {
+  const { cache, identifier, logging } = this
+
+  if (typeof fn[identifier] === 'number') {
+    return cache[fn[identifier]].store
   }
 
-  function reduce(fn, init) {
-    if (typeof fn[identifier] === 'number') {
-      return cache[fn[identifier]].store
-    }
+  // Generate cache index and set it on the reducer
+  const index = cache.length
+  fn[identifier] = index
 
-    // Generate cache index and set it on the reducer
-    const index = cache.length
-    fn[identifier] = index
+  // Create cursor pointing to the state history
+  let cursor = createState(fn, fn(init, KICKSTART_ACTION))
 
-    // Create cursor pointing to the state history
-    let cursor = createState(fn, fn(init, KICKSTART_ACTION))
+  // Describe states using the series of agendas
+  const store = Observable.of(cursor.state)
+    .concat(this
+      .map(agenda => {
+        // Reference agenda's root state
+        const anchor = cursor
 
-    // Describe states using the series of agendas
-    const store = Observable.of(cursor.state)
-      .concat(dispatcher
-        .map(agenda => {
-          // Reference agenda's root state
-          const anchor = cursor
+        // Collect agenda's actions
+        const actions = []
 
-          // Collect agenda's actions
-          const actions = []
+        // Prepare agenda logger if necessary
+        const logger = logging.stores ? logStore(fn.name || index, agenda) : null
 
-          // Prepare agenda logger if necessary
-          const logger = logging.stores ? logStore(fn.name || index, agenda) : null
+        // Map Agenda to consecutive states and catch errors
+        return agenda
+          .map(action => {
+            cursor = cursor.doNext(action)
+            actions.push(action)
 
-          // Map Agenda to consecutive states and catch errors
-          return agenda
-            .filter(Boolean)
-            .map(action => {
-              cursor = cursor.doNext(action)
-              actions.push(action)
+            if (logger) {
+              logger.change(action, cursor.state) // Logging new state by action
+            }
 
-              if (logger) {
-                logger.change(action, cursor.state) // Logging new state by action
-              }
+            return cursor.state
+          })
+          .catch(err => {
+            if (!logger) {
+              console.error(err)
+            }
 
-              return cursor.state
-            })
-            .catch(err => {
-              if (!logger) {
-                console.error(err)
-              }
+            // Filter past actions by all of the failed agenda
+            const previousState = cursor.state
+            filterActions(anchor, x => actions.indexOf(x) === -1)
 
-              // Filter past actions by all of the failed agenda
-              const previousState = cursor.state
-              filterActions(anchor, x => actions.indexOf(x) === -1)
+            if (logger) {
+              logger.revert([ previousState, cursor.state ], err, actions) // Logging reversion
+            }
 
-              if (logger) {
-                logger.revert([ previousState, cursor.state ], err, actions) // Logging reversion
-              }
-
-              return Observable.of(cursor.state)
-            })
-            .distinctUntilChanged()
-        })
-        .mergeAll())
-      .distinctUntilChanged()
-      .publishReplay(1)
-
-    const subscription = store.connect()
-
-    // Cache the store
-    cache.push({
-      store,
-      subscription
-    })
-
-    return store
-  }
-
-
-  // DEPRECATED: dispatch will soon be removed in favor of next
-  function dispatch(action) {
-    _dispatchNotice()
-    assert(typeof action === 'function' || typeof action === 'object',
-      'Expected a thunk, promise or action as argument.')
-
-    if (isPromise(action)) {
-      nextAgenda(Observable.fromPromise(action))
-      return action
-    }
-
-    if (typeof action === 'function') {
-      const res = action(x => {
-        dispatcher.next(Observable.of(x))
+            return Observable.of(cursor.state)
+          })
+          .distinctUntilChanged()
       })
+      .mergeAll())
+    .distinctUntilChanged()
+    .publishReplay(1)
 
-      return Promise.resolve(res)
-    }
+  const subscription = store.connect()
 
-    dispatcher.next(Observable.of(action))
-    return Promise.resolve(action)
-  }
-
-  // DEPRECATED: dispatch will soon be removed in favor of next
-  function schedule(...agendas) {
-    _scheduleNotice()
-    assert(agendas.reduce((acc, obj) => acc && isObservable(obj), true),
-      'Agendas can only be represented by Observables.')
-
-    if (agendas.length === 1) {
-      nextAgenda(agendas[0])
-    } else if (agendas.length > 1) {
-      nextAgenda(Observable.concat(...agendas))
-    }
-  }
-
-  function next(arg) {
-    if (isObservable(arg)) {
-      nextAgenda(arg)
-    } else if (isPromise(arg)) {
-      nextAgenda(Observable.fromPromise(arg))
-    } else if (typeof arg === 'function') {
-      const res = arg(x => next(x), reduce)
-      if (isObservable(res)) {
-        nextAgenda(res)
-      }
-    } else {
-      nextAgenda(Observable.of(arg))
-    }
-  }
-
-  return Object.assign(Object.create(dispatcher), {
-    next,
-    dispatch,
-    schedule,
-    reduce,
-    wrapActions(arg) {
-      return wrapActions({ next }, arg)
-    }
+  // Cache the store
+  cache.push({
+    store,
+    subscription
   })
+
+  return store
+}
+
+// Save subject's normal next method
+Dispatcher.prototype.rawNext = Dispatcher.prototype.next
+
+Dispatcher.prototype.next = function next(arg) {
+  const { middlewares, scheduler } = this
+  let agenda = toObservable(arg)
+
+  for (let i = 0; i < middlewares.length; i++) {
+    const middleware = middlewares[i]
+    agenda = middleware(agenda)
+
+    if (!isObservable(agenda)) {
+      return undefined
+    }
+  }
+
+  return this.rawNext(agenda
+    .filter(Boolean)
+    .subscribeOn(scheduler)
+    .publishReplay()
+    .refCount())
+}
+
+export default function createDispatcher(opts, middlewares) {
+  return new Dispatcher(opts, middlewares)
 }
 

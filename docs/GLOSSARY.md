@@ -66,3 +66,9 @@ This is your application's central event hub, your central source of truth.
 You can dispatch actions, thunks and agendas on it.
 All stores are reduced from a dispatcher.
 
+## Middleware
+
+A **middleware** is a function that transforms agendas before they reach the
+dispatcher, and thus the stores. They can transform the agenda in any given way
+as long as the result is still an observable.
+

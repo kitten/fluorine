@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { Observable } from '@reactivex/rxjs'
 import { mount } from 'enzyme'
 
-import connectStore from '../lib/connectStore'
+import connectStore from '../lib/decorators/connectStore'
 import createDispatcher from '../lib/createDispatcher'
 
 function Child({data}) {
@@ -26,9 +26,9 @@ test('passes selector-applied observable value based on props', t => {
 })
 
 test.cb('subscribes to state and updates children', t => {
-  t.plan(3)
+  t.plan(4)
 
-  const something = { type: 'DO_SOMETHING' }
+  const something = Observable.of({ type: 'DO_SOMETHING' })
   const reducer = (state = 'NOTHING', action) => {
     switch (action.type) {
       case 'DO_SOMETHING': return state + 'X'
@@ -42,24 +42,24 @@ test.cb('subscribes to state and updates children', t => {
 
   dispatcher
     .reduce(reducer)
-    .take(3)
+    .take(4)
     .subscribe(x => {
       t.is(wrapper.text(), x)
     }, err => {
-      t.fail()
+      t.fail(err)
     }, () => {
       t.end()
     })
 
-  dispatcher.next(something)
-  dispatcher.next(something)
+  dispatcher.next(something.concat(something))
+  dispatcher.next(something.concat(something))
 })
 
 test('recomputes selector-applied observables on changing props', t => {
   const data = { a: 'a', b: 'b' }
-  const Tester = connectStore((_, {id}) => Observable.of(data[id]))(Child)
-  const wrapper = mount(<Tester id='a'/>)
+  const Tester = connectStore((_, { id }) => Observable.of(data[id]))(Child)
 
+  const wrapper = mount(<Tester id='a'/>)
   t.is(wrapper.text(), 'a')
   wrapper.setProps({ id: 'b' })
   t.is(wrapper.text(), 'b')
