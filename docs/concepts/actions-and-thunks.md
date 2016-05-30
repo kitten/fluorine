@@ -152,7 +152,7 @@ method will inject a dispatch method into a thunk's first
 argument automatically:
 
 ```js
-dispatcher.next(fetchTodos())
+dispatcher.next(thunkedTodos())
 ```
 
 The usage hasn't changed compared to promises.
