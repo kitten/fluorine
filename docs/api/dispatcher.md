@@ -76,7 +76,7 @@ store.subscribe(x => {
 
 ## next()
 
-Dispatches agendas, thunks, promises and actions on the dispatcher stream.
+Dispatches agendas, promises and actions on the dispatcher stream.
 This is the method with which you want to modify your stores' states.
 
 This is part of the Dispatcher's observer, since it can be used like a normal
@@ -84,7 +84,7 @@ observer.
 
 ### Arguments
 
-- `input`: Either an agenda, a thunk, a promise, or an action.
+- `input`: Either an agenda, a promise, or an action.
 
 ### Returns
 
@@ -97,6 +97,9 @@ event stream. Internally the dispatcher doesn't work with actions anymore, but
 exclusively with agendas.
 
 [Read more about the agendas in the Concepts documentation](../concepts/abstracting-side-effects-as-agendas.md)
+
+Don't forget to add the thunk middleware to the dispatcher, if you would like
+to pass next some thunks.
 
 #### Agenda
 

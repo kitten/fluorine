@@ -18,7 +18,7 @@ as the single source of truth.
 
 - Your stores are directly reduced from the dispatcher and actions are dispatched on it
 - Manage your side effect as Observables ("Agendas") with automatic rollbacks on error
-- Unopinionated and simple API
+- Unopinionated and simple API with Middleware support
 
 This is the ultimate way to use RxJS for state and side effect management!
 

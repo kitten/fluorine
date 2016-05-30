@@ -18,7 +18,7 @@ as the single source of truth.
 
 - Your stores are directly reduced from the dispatcher and actions are dispatched on it
 - Manage your side effect as Observables ("Agendas") with automatic rollbacks on error
-- Unopinionated and simple API
+- Unopinionated and simple API with Middleware support
 
 This is the ultimate way to use RxJS for state and side effect management!
 
@@ -35,6 +35,7 @@ It is of course not representetive for how to use it in real React projects.
 
 ```js
 import { createDispatcher } from 'fluorine-lib'
+import thunk from 'fluorine-lib/lib/middleware/thunk'
 
 /**
  * This is a reducer, a pure function with (state, action) => state signature.
@@ -59,7 +60,7 @@ function counter(state = 0, action) {
 }
 
 // Create a dispatcher which is our event stream
-const dispatcher = createDispatcher()
+const dispatcher = createDispatcher({ logging: true }, [ thunk ])
 
 // This reduces the dispatcher event stream to a store. This is essentially an
 // RxJS Observable that emits the state of the store over time
@@ -71,13 +72,13 @@ store.subscribe(x => {
 
 // Dispatch an action, a thunk, or a promise
 
-dispatcher.dispatch({ type: 'INCREMENT' })
+dispatcher.next({ type: 'INCREMENT' })
 
-dispatcher.dispatch(dispatch => {
-  dispatch({ type: 'DECREMENT' })
+dispatcher.next(next => {
+  next({ type: 'DECREMENT' })
 })
 
-dispatcher.dispatch(new Promise((resolve, reject) => {
+dispatcher.next(new Promise((resolve, reject) => {
   resolve({ type: 'INCREMENT' })
 }))
 
@@ -88,10 +89,9 @@ const addIfFetchSucceeds = Observable
   .of({ type: 'ADD' })
   .concat(Observable
     .of('/ping')
-    .flatMap(path => Observable.fromPromise(fetch(path)))
-  )
+    .flatMap(path => Observable.fromPromise(fetch(path))))
 
-dispatcher.schedule(addIfFetchSucceeds)
+dispatcher.next(addIfFetchSucceeds)
 ```
 
 Just as in Flux we've got stores, actions and a dispatcher. The seperation of
