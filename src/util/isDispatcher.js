@@ -1,9 +1,5 @@
-import isObservable from './isObservable'
+import { Dispatcher } from '../createDispatcher'
 
 export default function isDispatcher(obj) {
-  return (
-    isObservable(obj) &&
-    typeof obj.next === 'function' &&
-    typeof obj.reduce === 'function'
-  )
+  return Dispatcher.prototype.isPrototypeOf(obj)
 }
