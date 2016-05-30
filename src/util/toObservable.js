@@ -4,7 +4,7 @@ import isObservable from './isObservable'
 
 export default function toObservable(arg) {
   if (isObservable(arg)) {
-    return arg
+    return Observable.from(arg)
   } else if (isPromise(arg)) {
     return Observable.fromPromise(arg)
   }

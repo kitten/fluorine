@@ -47,7 +47,8 @@
   ],
   "dependencies": {
     "@reactivex/rxjs": "5.0.0-beta.6",
-    "babel-runtime": "^6.6.1"
+    "babel-runtime": "^6.6.1",
+    "symbol-observable": "^0.2.4"
   },
   "devDependencies": {
     "ava": "^0.15.1",

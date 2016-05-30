@@ -5,10 +5,6 @@ import isObservable from '../../lib/util/isObservable'
 
 test(t => {
   t.ok(isObservable(Observable.of('Value')))
-  t.ok(isObservable(new Observable()))
-  t.ok(isObservable({
-    subscribe: () => {}
-  }))
 
   t.notOk(isObservable())
   t.notOk(isObservable({}))
