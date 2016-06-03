@@ -130,8 +130,7 @@ Dispatcher.prototype.next = function next(arg) {
   const { middlewares, scheduler } = this
   let agenda = toObservable(arg)
     .subscribeOn(scheduler)
-    .publishReplay()
-    .refCount()
+    .share()
 
   for (let i = 0; i < middlewares.length; i++) {
     const middleware = middlewares[i]
@@ -143,7 +142,9 @@ Dispatcher.prototype.next = function next(arg) {
   }
 
   return this.rawNext(agenda
-    .filter(Boolean))
+    .filter(Boolean)
+    .publishReplay()
+    .refCount())
 }
 
 export default function createDispatcher(opts, middlewares) {
