@@ -5,10 +5,9 @@ export function createThunkMiddleware(...extraArgs) {
   return dispatcher => agenda => agenda.map(thunkish => {
     if (typeof thunkish === 'function') {
       const res = thunkish(
-        x => dispatcher.next(x),
-        x => dispatcher.reduce(x),
-        ...extraArgs
-      )
+        dispatcher.next.bind(dispatcher),
+        dispatcher.reduce.bind(dispatcher),
+        ...extraArgs)
 
       if (isObservable(res) || isPromise(res)) {
         dispatcher.next(res)
