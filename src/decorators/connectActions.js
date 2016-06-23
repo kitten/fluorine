@@ -14,14 +14,13 @@ export default function connectActions(actions, prop = 'actions', wrapRecursivel
     }
 
     render() {
-      const props = { [prop]: this.actions }
+      const { observer } = this.context
 
-      return (
-        <Child
-          {...this.props}
-          {...props}
-          observer={this.context.observer}/>
-      )
+      return React.createElement(Child, {
+        ...this.props,
+        [prop]: this.actions,
+        observer
+      })
     }
   }
 }

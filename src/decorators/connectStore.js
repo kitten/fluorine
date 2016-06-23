@@ -72,19 +72,18 @@ export default function connectStore(selector, prop = 'data', pureProps = true) 
     }
 
     render() {
+      const { observer } = this.context
       const { data } = this.state
+
       if (data === undefined) {
         return null
       }
 
-      const props = { [prop]: data }
-
-      return (
-        <Child
-          {...this.props}
-          {...props}
-          observer={this.context.observer}/>
-      )
+      return React.createElement(Child, {
+        ...this.props,
+        [prop]: data,
+        observer
+      })
     }
   }
 }

@@ -6,6 +6,9 @@
     "/node_modules/"
   ],
   "plugins": [
-    "transform-runtime"
+    "transform-runtime",
+    "transform-react-constant-elements",
+    "transform-react-inline-elements",
+    "closure-elimination"
   ]
 }
