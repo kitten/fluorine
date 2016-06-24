@@ -75,8 +75,8 @@ export default function connectStore(selector, prop = 'data', pureProps = true) 
       const { observer } = this.context
       const { data } = this.state
 
-      if (data === undefined) {
-        return null
+      if (process.env.NODE_ENV !== 'production' && data === undefined) {
+        console.error('Rendering `undefined` causes undefined behaviour in most cases! This message will only show up in development.')
       }
 
       return React.createElement(Child, {
