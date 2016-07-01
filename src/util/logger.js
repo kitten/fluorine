@@ -23,7 +23,10 @@ const agendaGroupHead = (agenda, timestamp) => (prepend = '') => {
   const timestampEnd = new Date()
   const title = `Agenda ${agenda.constructor.name} @ ${strTime(timestamp)} (in ${timestampEnd - timestamp}ms)`
 
-  console.groupCollapsed(`%c ${prepend + title}`, 'color: #111111;')
+  if (console.groupCollapsed) {
+    console.groupCollapsed(`%c ${prepend + title}`, 'color: #111111;')
+  }
+
   console.log('%c agenda', 'color: #9e9e9e; font-weight: bold;', agenda)
 }
 
@@ -45,14 +48,18 @@ export function logAgendas(dispatcher) {
           console.log('%c action', 'color: #03a9f4; font-weight: bold;', action)
         })
 
-        console.groupEnd()
+        if (console.groupEnd && console.groupCollapsed) {
+          console.groupEnd()
+        }
       }, error => {
         logStart('Error ')
 
         console.log('%c error', 'color: #f20404; font-weight: bold;', error)
         console.log('%c dispatched actions', 'color: #03a9f4; font-weight: bold;', errBucket)
 
-        console.groupEnd()
+        if (console.groupEnd && console.groupCollapsed) {
+          console.groupEnd()
+        }
       })
   })
 }
@@ -62,11 +69,16 @@ export const logStore = (name, agenda) => ({
     const timestamp = new Date()
     const title = `Store ${name} @ ${strTime(timestamp)}`
 
-    console.groupCollapsed(`%c ${title}`, 'color: #111111;')
+    if (console.groupCollapsed) {
+      console.groupCollapsed(`%c ${title}`, 'color: #111111;')
+    }
     console.log('%c agenda', 'color: #9e9e9e; font-weight: bold;', agenda)
     console.log('%c action', 'color: #03a9f4; font-weight: bold;', action)
     console.log('%c change', 'color: #4caf50; font-weight: bold;', state)
-    console.groupEnd()
+
+    if (console.groupCollapsed && console.groupEnd) {
+      console.groupEnd()
+    }
   },
   revert(states, error, bucket) {
     const timestamp = new Date()
@@ -74,14 +86,20 @@ export const logStore = (name, agenda) => ({
 
     const [ prevState, state ] = states
 
-    console.groupCollapsed(`%c ${title}`, 'color: #f20404;')
+    if (console.groupCollapsed) {
+      console.groupCollapsed(`%c ${title}`, 'color: #f20404;')
+    }
+
     console.log('%c agenda', 'color: #9e9e9e; font-weight: bold;', agenda)
     console.log('%c previous', 'color: #4caf50; font-weight: bold;', prevState)
     console.log('%c state', 'color: #4caf50; font-weight: bold;', state)
 
     console.log('%c error', 'color: #f20404; font-weight: bold;', error)
     console.log('%c bucket', 'color: #03a9f4; font-weight: bold;', bucket)
-    console.groupEnd()
+
+    if (console.groupCollapsed && console.groupEnd) {
+      console.groupEnd()
+    }
   }
 })
 
