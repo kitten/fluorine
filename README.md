@@ -131,6 +131,17 @@ is a fitting name.
 Furthermore the latin verb *fluo* means "flow", which is a direct refernce
 to Flux and its unidirectional data-flow.
 
+## Used and Supported by
+
+<table border="0">
+
+<tr>
+<td><img src="https://datawallet.io/img/logo.svg" height="100px"/></td>
+<td valign="middle"><h4><a href="https://datawallet.io">DataWallet</a></h4></td>
+</tr>
+
+</table>
+
 ## Thanks to
 
 * The ReactiveX team, all the RxJS developers and the ReactiveX community

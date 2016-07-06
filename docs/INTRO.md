@@ -22,3 +22,14 @@ as the single source of truth.
 
 This is the ultimate way to use RxJS for state and side effect management!
 
+## Used and Supported by
+
+<table border="0">
+
+<tr>
+<td><img src="https://datawallet.io/img/logo.svg" height="100px"/></td>
+<td valign="middle"><h4><a href="https://datawallet.io">DataWallet</a></h4></td>
+</tr>
+
+</table>
+
