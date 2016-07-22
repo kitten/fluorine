@@ -13,7 +13,7 @@ function Child({data}) {
 // tests but with the withStore signature
 
 describe('withStore',  () => {
-  it('wraps around connect correctly', done => {
+  it('passes on function correctly', done => {
     const reducer = () => {
       return { a: 'a', b: 'b' }
     }
@@ -34,6 +34,25 @@ describe('withStore',  () => {
         expect(wrapper.text()).toBe('a')
         wrapper.setProps({ id: 'b' })
         expect(wrapper.text()).toBe('b')
+      }, err => {
+        throw err
+      }, () => {
+        done()
+      })
+  })
+
+  it('passes on observables correctly', done => {
+    const reducer = () => 'test'
+    const dispatcher = createDispatcher()
+
+    const Tester = withStore(dispatcher.reduce(reducer))(Child)
+    const wrapper = mount(<Tester/>)
+
+    dispatcher
+      .reduce(reducer)
+      .first()
+      .subscribe(() => {
+        expect(wrapper.text()).toBe('test')
       }, err => {
         throw err
       }, () => {

@@ -62,5 +62,12 @@ describe('connectStore', () => {
     wrapper.setProps({ id: 'b' })
     expect(wrapper.text()).toBe('b')
   })
+
+  it('renders null if observable state is undefined', () => {
+    const Tester = connectStore(Observable.of(undefined))(Child)
+
+    const wrapper = mount(<Tester/>)
+    expect(wrapper.isEmpty()).toExist
+  })
 })
 

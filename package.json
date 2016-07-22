@@ -12,6 +12,7 @@
   "description": "Reactive state and side effect management for React using a single stream of actions",
   "scripts": {
     "test": "BABEL_ENV=commonjs mocha --compilers js:babel-register --recursive --require ./test/helpers/setup-browser-env.js",
+    "test:watch": "npm test -- --watch",
     "test:cov": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint src",
     "clean": "rm -rf lib es dist",
