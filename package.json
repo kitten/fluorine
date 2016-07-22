@@ -33,6 +33,10 @@
   "bugs": {
     "url": "https://github.com/philplckthun/fluorine/issues"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/philpl/fluorine.git"
+  },
   "license": "CC0-1.0",
   "keywords": [
     "fluorine",
