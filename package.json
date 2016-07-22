@@ -11,8 +11,8 @@
   ],
   "description": "Reactive state and side effect management for React using a single stream of actions",
   "scripts": {
-    "pretest": "npm run build:commonjs",
-    "test": "NODE_ENV=production ava --verbose && npm run lint",
+    "test": "BABEL_ENV=commonjs mocha --compilers js:babel-register --recursive --require ./test/helpers/setup-browser-env.js",
+    "test:cov": "nyc npm test && nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint src",
     "check": "npm run test && npm run build",
     "clean": "rm -rf lib es dist",
@@ -54,7 +54,6 @@
     "babel-runtime": "^6.9.2"
   },
   "devDependencies": {
-    "ava": "^0.15.2",
     "babel-cli": "^6.10.1",
     "babel-eslint": "^6.1.0",
     "babel-loader": "^6.2.4",
@@ -64,12 +63,17 @@
     "babel-plugin-transform-react-inline-elements": "^6.8.0",
     "babel-plugin-transform-runtime": "^6.9.0",
     "babel-preset-philpl": "^0.1.0",
+    "babel-register": "^6.9.0",
+    "coveralls": "^2.11.11",
     "enzyme": "^2.3.0",
     "eslint": "^3.0.1",
     "eslint-config-excellence": "^1.13.0",
     "eslint-plugin-react": "^5.2.2",
+    "expect": "^1.20.2",
     "gitbook-cli": "^2.1.2",
     "jsdom": "^9.2.1",
+    "mocha": "^2.5.3",
+    "nyc": "^7.0.0",
     "react": "^15.1.0",
     "react-addons-test-utils": "^15.1.0",
     "react-dom": "^15.1.0",
@@ -80,21 +84,5 @@
   },
   "engines": {
     "node": ">= 0.12.0"
-  },
-  "ava": {
-    "files": [
-      "test"
-    ],
-    "require": [
-      "./test/helpers/setup-browser-env.js"
-    ],
-    "babel": {
-      "presets": [
-        "babel-preset-philpl"
-      ],
-      "plugins": [
-        "transform-es2015-modules-commonjs"
-      ]
-    }
   }
 }
