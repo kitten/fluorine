@@ -106,6 +106,14 @@ On top of that we've got a new way of handling side effects: Agendas. This enabl
 you to schedule observables as streams of actions, which roll back all their changes
 if they fail. This makes it easy to design exceedingly complex side effects.
 
+## Fluorine-related Projects
+
+* [react-fluorine-boilerplate](https://github.com/philpl/react-fluorine-boilerplate):
+  A boilerplate that gets your started with React, Fluorine and Hot Reloading
+
+* [fluorine-orchestra](https://github.com/philpl/fluorine-orchestra):
+  A data orchestration library with dependency resolution using Immutable.js
+
 ## Frequently Asked Questions
 
 ### Why write another Flux library?
