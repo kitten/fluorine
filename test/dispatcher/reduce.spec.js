@@ -65,5 +65,59 @@ describe('dispatcher.reduce', () => {
     dispatcher.next(add)
     dispatcher.complete()
   })
+
+  it('reverts changes after an error is thrown', done => {
+    const dispatcher = createDispatcher()
+
+    dispatcher
+      .reduce(CounterStore)
+      .bufferCount(3)
+      .subscribe(([ a, b, c ]) => {
+        expect(a).toBe(0)
+        expect(b).toBe(1)
+        expect(c).toBe(0)
+      }, err => {
+        throw err
+      }, () => {
+        done()
+      })
+
+    dispatcher.next(Observable
+      .of(add)
+      .concat(Observable.throw(new Error('Test'))))
+    dispatcher.complete()
+  })
+
+  it('reverts changes without changing other states', done => {
+    const dispatcher = createDispatcher()
+    const TestStore = (state = 'quo') => 'quo'
+
+    dispatcher
+      .reduce(TestStore)
+      .subscribe(x => {
+        expect(x).toBe('quo')
+      }, err => {
+        throw err
+      })
+
+    dispatcher
+      .reduce(CounterStore)
+      .bufferCount(3)
+      .subscribe(([ a, b, c ]) => {
+        expect(a).toBe(0)
+        expect(b).toBe(1)
+        expect(c).toBe(0)
+      }, err => {
+        throw err
+      }, () => {
+        done()
+      })
+
+    dispatcher.next(Observable
+      .of(add)
+      .concat(Observable.throw(new Error('Test'))))
+    dispatcher.complete()
+  })
+
 })
 
