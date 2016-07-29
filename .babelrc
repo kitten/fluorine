@@ -10,5 +10,12 @@
     "transform-react-constant-elements",
     "transform-react-inline-elements",
     "closure-elimination"
-  ]
+  ],
+  env: {
+    commonjs: {
+      plugins: [
+        "transform-es2015-modules-commonjs"
+      ]
+    }
+  }
 }

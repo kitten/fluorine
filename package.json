@@ -22,7 +22,7 @@
     "build:umd:min": "NODE_ENV=production webpack src/index.js dist/fluorine.min.js",
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
     "prepublish": "npm run clean && npm run build",
-    "preversion": "npm run clean && npm run check",
+    "preversion": "npm run clean && npm run test",
     "version": "npm run build",
     "postversion": "git push && git push --tags",
     "prebook": "gitbook install ./docs",
