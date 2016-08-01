@@ -73,7 +73,7 @@
     "expect": "^1.20.2",
     "gitbook-cli": "^2.1.2",
     "jsdom": "^9.2.1",
-    "mocha": "^2.5.3",
+    "mocha": "^3.0.0",
     "nyc": "^7.0.0",
     "react": "^15.1.0",
     "react-addons-test-utils": "^15.1.0",
