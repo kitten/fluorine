@@ -19,7 +19,7 @@ export default function wrapActions(observer, arg, wrapRecursively = false) {
 
         assert(
           typeof x === 'function',
-          `wrapActions: Expected a \`function\`${keys.length ? ' in' + keys.toString() : ''} but got \`${typeof x}\`.`)
+          `wrapActions: Expected a \`function\`${keys.length ? ' in ' + keys.toString() : ''} but got \`${typeof x}\`.`)
 
         return transform(x)
       })
@@ -35,7 +35,7 @@ export default function wrapActions(observer, arg, wrapRecursively = false) {
           } else {
             assert(
               typeof x === 'function',
-              `wrapActions: Expected a \`function\`${keys.length ? ' in' + keys.toString() : ''} but got \`${typeof x}\`.`)
+              `wrapActions: Expected a \`function\`${keys.length ? ' in ' + keys.toString() : ''} but got \`${typeof x}\`.`)
 
             prev[key] = transform(x)
           }
@@ -45,7 +45,7 @@ export default function wrapActions(observer, arg, wrapRecursively = false) {
       }, {})
     }
 
-    throw new Error(`wrapActions: Expected a \`function\`${keys.length ? ' in' + keys.toString() : ''} but got \`${typeof x}\`.`)
+    throw new Error(`wrapActions: Expected a \`function\`${keys.length ? ' in ' + keys.toString() : ''} but got \`${typeof x}\`.`)
   }
 
   return wrap(arg)
