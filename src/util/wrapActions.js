@@ -5,19 +5,22 @@ export default function wrapActions(observer, arg, wrapRecursively = false) {
     'Expected observer to be an object containing at least a next method.')
 
   const transform = fn => (...args) => observer.next(fn(...args))
-  const wrap = input => {
+  const wrap = (input, keys = []) => {
     if (typeof input === 'function') {
       return transform(input)
     }
 
     if (Array.isArray(input)) {
-      return input.map(x => {
+      return input.map((x, key) => {
 
         if (wrapRecursively) {
-          return wrap(x)
+          return wrap(x, keys.concat(key))
         }
 
-        assert(typeof x === 'function', 'Expected array to contain exclusively functions. Did you intend to use wrapActions recursively?')
+        assert(
+          typeof x === 'function',
+          `wrapActions: Expected a \`function\`${keys.length ? ' in' + keys.toString() : ''} but got \`${typeof x}\`.`)
+
         return transform(x)
       })
     }
@@ -28,9 +31,12 @@ export default function wrapActions(observer, arg, wrapRecursively = false) {
           const x = input[key]
 
           if (wrapRecursively) {
-            prev[key] = wrap(x)
+            prev[key] = wrap(x, keys.concat(key))
           } else {
-            assert(typeof x === 'function', 'Expected object to contain exclusively functions.')
+            assert(
+              typeof x === 'function',
+              `wrapActions: Expected a \`function\`${keys.length ? ' in' + keys.toString() : ''} but got \`${typeof x}\`.`)
+
             prev[key] = transform(x)
           }
         }
@@ -39,7 +45,7 @@ export default function wrapActions(observer, arg, wrapRecursively = false) {
       }, {})
     }
 
-    throw new Error('Expected either an action creator or an array/object containing some as arguments.')
+    throw new Error(`wrapActions: Expected a \`function\`${keys.length ? ' in' + keys.toString() : ''} but got \`${typeof x}\`.`)
   }
 
   return wrap(arg)
