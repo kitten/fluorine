@@ -1,6 +1,6 @@
 import expect from 'expect'
 import React, { Component } from 'react'
-import { Observable } from '@reactivex/rxjs'
+import { Observable } from 'rxjs'
 import { mount } from 'enzyme'
 
 import connectActions from '../src/decorators/connectActions'

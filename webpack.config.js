@@ -23,11 +23,11 @@ var conf = {
       commonjs: 'react',
       amd: 'react'
     },
-    '@reactivex/rxjs': {
+    'rxjs': {
       root: 'Rx',
-      commonjs2: '@reactivex/rxjs',
-      commonjs: '@reactivex/rxjs',
-      amd: '@reactivex/rxjs'
+      commonjs2: 'rxjs',
+      commonjs: 'rxjs',
+      amd: 'rxjs'
     }
   },
   output: {

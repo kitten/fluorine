@@ -1,4 +1,4 @@
-import { Observable } from '@reactivex/rxjs'
+import { Observable } from 'rxjs'
 import isPromise from './isPromise'
 import isObservable from './isObservable'
 import isIterator from './isIterator'

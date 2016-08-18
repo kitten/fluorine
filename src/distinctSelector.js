@@ -1,4 +1,4 @@
-import { Observable } from '@reactivex/rxjs'
+import { Observable } from 'rxjs'
 import assert from './util/assert'
 
 export default function distinctSelector(keys) {

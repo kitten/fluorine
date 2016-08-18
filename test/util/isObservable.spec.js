@@ -1,5 +1,5 @@
 import expect from 'expect'
-import { Observable } from '@reactivex/rxjs'
+import { Observable } from 'rxjs'
 
 import isObservable from '../../src/util/isObservable'
 

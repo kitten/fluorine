@@ -1,4 +1,4 @@
-import { Observable } from '@reactivex/rxjs'
+import { Observable } from 'rxjs'
 import isObservable from './util/isObservable'
 
 export default function combineReducers(reducers) {

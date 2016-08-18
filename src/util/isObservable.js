@@ -1,4 +1,4 @@
-import { Observable } from '@reactivex/rxjs'
+import { Observable } from 'rxjs'
 
 export default function isObservable(obj) {
   return typeof obj === 'object' && (

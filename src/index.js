@@ -1,5 +1,5 @@
 import distinctSelector from './distinctSelector'
-import { Observable } from '@reactivex/rxjs'
+import { Observable } from 'rxjs'
 Observable.prototype.distinctSelector = distinctSelector
 
 import createDispatcher from './createDispatcher'
