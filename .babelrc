@@ -12,9 +12,12 @@
     "closure-elimination"
   ],
   env: {
-    commonjs: {
+    commonjssimple: {
       plugins: [
-        "transform-es2015-modules-commonjs"
+        ["transform-es2015-modules-commonjs-simple", {
+          "noMangle": true,
+          "addExports": true
+        }]
       ]
     }
   }
