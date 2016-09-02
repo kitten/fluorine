@@ -13,8 +13,8 @@ to these two packages.
 
 ## UMD
 
-You can link to the UMD version of Fluorine via npmcdn.com:
+You can link to the UMD version of Fluorine via unpkg.com:
 
-- https://npmcdn.com/fluorine-lib/dist/fluorine.js
-- https://npmcdn.com/fluorine-lib/dist/fluorine.min.js
+- https://unpkg.com/fluorine-lib/dist/fluorine.js
+- https://unpkg.com/fluorine-lib/dist/fluorine.min.js
 
