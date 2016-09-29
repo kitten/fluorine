@@ -1,4 +1,6 @@
+import _Symbol from 'es6-symbol'
+
 export default function isIterator(arg) {
-  return typeof arg[Symbol.iterator] === 'function'
+  return arg && typeof arg[_Symbol.iterator] === 'function'
 }
 
