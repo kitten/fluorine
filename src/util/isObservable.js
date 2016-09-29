@@ -1,9 +1,9 @@
-import _Symbol from 'es6-symbol'
+import symbolObservable from 'es6-symbol'
 import { Observable } from 'rxjs'
 
 export default function isObservable(obj) {
   return obj && (
-    typeof obj[_Symbol.observable] === 'function' ||
+    typeof obj[symbolObservable] === 'function' ||
     obj instanceof Observable
   )
 }
