@@ -30,8 +30,9 @@ export function Dispatcher(opts = {}, middlewares) {
 
   Subject.call(this)
 
-  this.identifier = Symbol()
-  this.cache = []
+  this.keyCache = []
+  this.valCache = []
+
   this.middlewares = [].concat(middlewares).map(x => x(this))
 
   // Options: Scheduler
@@ -53,15 +54,12 @@ Dispatcher.prototype = Object.create(Subject.prototype)
 Dispatcher.prototype.constructor = Dispatcher
 
 Dispatcher.prototype.reduce = function reduce(fn, init) {
-  const { cache, identifier, logging } = this
+  const { keyCache, valCache, logging } = this
 
-  if (typeof fn[identifier] === 'number') {
-    return cache[fn[identifier]].store
+  const index = keyCache.indexOf(fn)
+  if (index > -1) {
+    return valCache[index].store
   }
-
-  // Generate cache index and set it on the reducer
-  const index = cache.length
-  fn[identifier] = index
 
   // Create cursor pointing to the state history
   let cursor = createState(fn, fn(init, KICKSTART_ACTION))
@@ -115,10 +113,9 @@ Dispatcher.prototype.reduce = function reduce(fn, init) {
   const subscription = store.connect()
 
   // Cache the store
-  cache.push({
-    store,
-    subscription
-  })
+  const key = keyCache.length
+  keyCache.push(fn)
+  valCache[key] = { store, subscription }
 
   return store
 }
