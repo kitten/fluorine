@@ -4,7 +4,7 @@ var path = require('path')
 
 var conf = {
   resolve: {
-    extensions: [ '', '.js' ]
+    extensions: [ '.jsx', '.js' ]
   },
   plugins: [
     new webpack.DefinePlugin({
