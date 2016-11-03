@@ -434,12 +434,6 @@ babel-plugin-check-es2015-constants@^6.5.0:
   dependencies:
     babel-runtime "^6.0.0"
 
-babel-plugin-closure-elimination@^1.0.6:
-  version "1.1.11"
-  resolved "https://registry.yarnpkg.com/babel-plugin-closure-elimination/-/babel-plugin-closure-elimination-1.1.11.tgz#b47b1e905d16ec9447f06f26e813a0727e9ac0ac"
-  dependencies:
-    babel-polyfill "^6.3.14"
-
 babel-plugin-syntax-class-constructor-call@^6.18.0:
   version "6.18.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-syntax-class-constructor-call/-/babel-plugin-syntax-class-constructor-call-6.18.0.tgz#9cb9d39fe43c8600bec8146456ddcbd4e1a76416"
@@ -726,7 +720,7 @@ babel-plugin-transform-strict-mode@^6.18.0, babel-plugin-transform-strict-mode@^
     babel-runtime "^6.0.0"
     babel-types "^6.18.0"
 
-babel-polyfill@^6.16.0, babel-polyfill@^6.3.14:
+babel-polyfill@^6.16.0:
   version "6.16.0"
   resolved "https://registry.yarnpkg.com/babel-polyfill/-/babel-polyfill-6.16.0.tgz#2d45021df87e26a374b6d4d1a9c65964d17f2422"
   dependencies:
