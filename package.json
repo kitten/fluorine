@@ -74,7 +74,7 @@
     "gitbook-cli": "^2.1.2",
     "jsdom": "^9.5.0",
     "mocha": "^3.1.0",
-    "nyc": "^8.3.0",
+    "nyc": "^9.0.1",
     "react": "^15.3.2",
     "react-addons-test-utils": "^15.3.2",
     "react-dom": "^15.3.2",
