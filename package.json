@@ -62,7 +62,7 @@
     "babel-plugin-transform-react-constant-elements": "^6.9.1",
     "babel-plugin-transform-react-inline-elements": "^6.8.0",
     "babel-plugin-transform-runtime": "^6.15.0",
-    "babel-preset-philpl": "^0.4.0",
+    "babel-preset-philpl": "^0.5.0",
     "babel-register": "^6.16.0",
     "coveralls": "^2.11.14",
     "enzyme": "^2.4.1",
