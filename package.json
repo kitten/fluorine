@@ -27,6 +27,7 @@
     "postversion": "git push && git push --tags",
     "prebook": "gitbook install ./docs",
     "book": "gitbook build ./docs",
+    "postbook": "cp ./docs/now.json _book/",
     "book:watch": "gitbook serve ./docs"
   },
   "author": "Phil Plückthun <phil@plckthn.me> (https://github.com/philplckthun)",
@@ -71,7 +72,7 @@
     "eslint-plugin-mocha": "^4.5.1",
     "eslint-plugin-react": "^6.3.0",
     "expect": "^1.20.2",
-    "gitbook-cli": "^2.1.2",
+    "gitbook-cli": "^2.3.0",
     "jsdom": "^9.5.0",
     "mocha": "^3.1.0",
     "nyc": "^10.0.0",

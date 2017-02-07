@@ -1,19 +1,14 @@
 {
   "title": "Fluorine",
-  "gitbook": "2.x.x",
+  "gitbook": ">= 3.0.0",
   "structure": {
     "readme": "INTRO.md",
     "summary": "README.md"
   },
   "plugins": [
-    "collapsible-menu",
     "github",
     "heading-anchors",
-    "prism",
-    "-highlight",
-    "-sharing",
-    "-fontsettings",
-    "-search"
+    "prism"
   ],
   "pluginsConfig": {
     "github": {
