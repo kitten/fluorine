@@ -1,6 +1,7 @@
 {
   "title": "Fluorine",
   "gitbook": ">= 3.0.0",
+  "root": "docs",
   "structure": {
     "readme": "INTRO.md",
     "summary": "README.md"

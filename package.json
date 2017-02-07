@@ -25,10 +25,10 @@
     "preversion": "npm run clean && npm run test",
     "version": "npm run build",
     "postversion": "git push && git push --tags",
-    "prebook": "gitbook install ./docs",
-    "book": "gitbook build ./docs",
+    "prebook": "gitbook install",
+    "book": "gitbook build",
     "postbook": "cp ./docs/now.json _book/",
-    "book:watch": "gitbook serve ./docs"
+    "book:watch": "gitbook serve"
   },
   "author": "Phil Plückthun <phil@plckthn.me> (https://github.com/philplckthun)",
   "bugs": {

@@ -32,10 +32,5 @@ This is the ultimate way to use RxJS for state and side effect management!
 <td valign="middle"><h4><a href="https://datawallet.io">DataWallet</a></h4></td>
 </tr>
 
-<tr>
-<td><img src="https://piemapping.com/img/favicons/apple-touch-icon.png" height="100px"/></td>
-<td valign="middle"><h4><a href="https://piemapping.com">Pie Mapping</a></h4></td>
-</tr>
-
 </table>
 
