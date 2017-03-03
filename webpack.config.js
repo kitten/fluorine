@@ -27,12 +27,6 @@ var conf = {
       commonjs2: 'react',
       commonjs: 'react',
       amd: 'react'
-    },
-    'rxjs': {
-      root: 'Rx',
-      commonjs2: 'rxjs',
-      commonjs: 'rxjs',
-      amd: 'rxjs'
     }
   },
   output: {

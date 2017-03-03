@@ -1,3 +1,7 @@
+import { scan } from 'rxjs/operator/scan'
+import { _do } from 'rxjs/operator/do'
+import { last } from 'rxjs/operator/last'
+
 function strTime(date) {
   return `${date.toLocaleTimeString('en-GB')}.${date.getMilliseconds()}`
 }
@@ -36,11 +40,11 @@ export function logAgendas(dispatcher) {
     let errBucket
 
     agenda
-      .scan((bucket, action) => bucket.concat([ action ]), [])
-      .do(bucket => {
+      ::scan((bucket, action) => bucket.concat([ action ]), [])
+      ::_do(bucket => {
         errBucket = bucket
       })
-      .last()
+      ::last()
       .subscribe(actions => {
         logStart()
 

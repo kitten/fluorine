@@ -1,8 +1,8 @@
 import expect from 'expect'
-import { Observable } from 'rxjs'
-
 import createDispatcher from '../../src/createDispatcher'
-import isPromise from '../../src/util/isPromise'
+
+import { of } from 'rxjs/observable/of'
+import { mergeAll } from 'rxjs/operator/mergeAll'
 
 const init = { type: '_INIT_' }
 const action = { type: 'Test' }
@@ -12,7 +12,7 @@ describe('dispatcher.next', () => {
     const dispatcher = createDispatcher()
 
     dispatcher
-      .mergeAll()
+      ::mergeAll()
       .subscribe(x => {
         expect(x).toBe(action)
       }, err => {
@@ -29,7 +29,7 @@ describe('dispatcher.next', () => {
     const dispatcher = createDispatcher()
 
     dispatcher
-      .mergeAll()
+      ::mergeAll()
       .subscribe(x => {
         expect(x).toBe(action)
       }, err => {
@@ -46,7 +46,7 @@ describe('dispatcher.next', () => {
     const dispatcher = createDispatcher()
 
     dispatcher
-      .mergeAll()
+      ::mergeAll()
       .subscribe(x => {
         expect(x).toBe(action)
       }, err => {
@@ -55,7 +55,7 @@ describe('dispatcher.next', () => {
         done()
       })
 
-    dispatcher.next(Observable.of(action))
+    dispatcher.next(of(action))
     dispatcher.complete()
   })
 })

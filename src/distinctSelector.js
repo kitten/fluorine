@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs'
+import { Observable } from 'rxjs/Observable'
 import assert from './util/assert'
 
 export default function distinctSelector(keys) {

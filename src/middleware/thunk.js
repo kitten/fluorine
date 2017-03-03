@@ -1,8 +1,9 @@
+import { map } from 'rxjs/operator/map'
 import isObservable from '../util/isObservable'
 import isPromise from '../util/isPromise'
 
 export function createThunkMiddleware(...extraArgs) {
-  return dispatcher => agenda => agenda.map(thunkish => {
+  return dispatcher => agenda => agenda::map(thunkish => {
     if (typeof thunkish === 'function') {
       const res = thunkish(
         dispatcher.next.bind(dispatcher),

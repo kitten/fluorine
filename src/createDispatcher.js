@@ -1,9 +1,16 @@
-import {
-  Subject,
-  BehaviorSubject,
-  Scheduler,
-  Observable
-} from 'rxjs'
+import { Subject } from 'rxjs/Subject'
+import { Observable } from 'rxjs/Observable'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
+import { of } from 'rxjs/observable/of'
+import { concat } from 'rxjs/operator/concat'
+import { map } from 'rxjs/operator/map'
+import { mergeMap } from 'rxjs/operator/mergeMap'
+import { distinctUntilChanged } from 'rxjs/operator/distinctUntilChanged'
+import { publishReplay } from 'rxjs/operator/publishReplay'
+import { subscribeOn } from 'rxjs/operator/subscribeOn'
+import { share } from 'rxjs/operator/share'
+import { filter } from 'rxjs/operator/filter'
+import { _catch } from 'rxjs/operator/catch'
 
 import {
   createState,
@@ -23,20 +30,13 @@ import isObservable from './util/isObservable'
 
 const KICKSTART_ACTION = { type: '_INIT_' }
 
-export function Dispatcher(opts = {}, middlewares) {
-  if (!middlewares) {
-    middlewares = []
-  }
-
+export function Dispatcher(opts = {}, middlewares = []) {
   Subject.call(this)
 
   this.keyCache = []
   this.valCache = []
 
   this.middlewares = [].concat(middlewares).map(x => x(this))
-
-  // Options: Scheduler
-  this.scheduler = opts.scheduler || Scheduler.queue
 
   // Options: Logging
   this.logging = parseOpts(opts.logging)
@@ -65,9 +65,9 @@ Dispatcher.prototype.reduce = function reduce(fn, init) {
   let cursor = createState(fn, fn(init, KICKSTART_ACTION))
 
   // Describe states using the series of agendas
-  const store = Observable.of(cursor.state)
-    .concat(this
-      .map(agenda => {
+  const store = of(cursor.state)
+    ::concat(this
+      ::mergeMap(agenda => {
         // Reference agenda's root state
         const anchor = cursor
 
@@ -79,7 +79,7 @@ Dispatcher.prototype.reduce = function reduce(fn, init) {
 
         // Map Agenda to consecutive states and catch errors
         return agenda
-          .map(action => {
+          ::map(action => {
             cursor = cursor.doNext(action)
             actions.push(action)
 
@@ -89,7 +89,7 @@ Dispatcher.prototype.reduce = function reduce(fn, init) {
 
             return cursor.state
           })
-          .catch(err => {
+          ::_catch(err => {
             if (!logger) {
               console.error(err)
             }
@@ -102,13 +102,13 @@ Dispatcher.prototype.reduce = function reduce(fn, init) {
               logger.revert([ previousState, cursor.state ], err, actions) // Logging reversion
             }
 
-            return Observable.of(cursor.state)
+            return of(cursor.state)
           })
-          .distinctUntilChanged()
+          ::distinctUntilChanged()
       })
-      .mergeAll())
-    .distinctUntilChanged()
-    .publishReplay(1)
+    )
+    ::distinctUntilChanged()
+    ::publishReplay(1)
 
   const subscription = store.connect()
 
@@ -124,10 +124,9 @@ Dispatcher.prototype.reduce = function reduce(fn, init) {
 Dispatcher.prototype.rawNext = Dispatcher.prototype.next
 
 Dispatcher.prototype.next = function next(arg) {
-  const { middlewares, scheduler } = this
-  let agenda = toObservable(arg)
-    .subscribeOn(scheduler)
-    .share()
+  const { middlewares } = this
+
+  let agenda = toObservable(arg)::share()
 
   for (let i = 0; i < middlewares.length; i++) {
     const middleware = middlewares[i]
@@ -138,10 +137,12 @@ Dispatcher.prototype.next = function next(arg) {
     }
   }
 
-  return this.rawNext(agenda
-    .filter(Boolean)
-    .publishReplay()
-    .refCount())
+  return this.rawNext(
+    agenda
+      ::filter(Boolean)
+      ::publishReplay()
+      .refCount()
+  )
 }
 
 export default function createDispatcher(opts, middlewares) {

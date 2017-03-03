@@ -1,14 +1,13 @@
-import { Observable } from 'rxjs'
+import { of } from 'rxjs/observable/of'
+import { from } from 'rxjs/observable/from'
 import isPromise from './isPromise'
 import isObservable from './isObservable'
 
 export default function toObservable(arg) {
-  if (isObservable(arg)) {
-    return Observable.from(arg)
-  } else if (isPromise(arg)) {
-    return Observable.fromPromise(arg)
+  if (isObservable(arg) || isPromise(arg)) {
+    return from(arg)
   }
 
-  return Observable.of(arg)
+  return of(arg)
 }
 

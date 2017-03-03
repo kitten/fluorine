@@ -1,10 +1,10 @@
-import { Observable } from 'rxjs'
+import { combineLatest } from 'rxjs/observable/combineLatest'
 import isObservable from './util/isObservable'
 
 export default function combineReducers(reducers) {
   const keys = Object.keys(reducers)
 
-  return reduce => Observable.combineLatest(
+  return reduce => combineLatest(
     ...keys.map(key => {
       const reducer = reducers[key]
       if (isObservable(reducer)) {
