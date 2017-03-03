@@ -1,6 +1,6 @@
 {
   "name": "fluorine-lib",
-  "version": "4.2.2",
+  "version": "5.0.0",
   "main": "lib/index.js",
   "jsnext:main": "es/index.js",
   "files": [
