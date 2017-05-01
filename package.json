@@ -73,7 +73,7 @@
     "eslint-plugin-react": "^6.3.0",
     "expect": "^1.20.2",
     "gitbook-cli": "^2.3.0",
-    "jsdom": "^9.5.0",
+    "jsdom": "^10.1.0",
     "mocha": "^3.1.0",
     "nyc": "^10.0.0",
     "react": "^15.4.1",
