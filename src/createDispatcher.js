@@ -75,7 +75,15 @@ Dispatcher.prototype.reduce = function reduce(fn, init) {
         const actions = []
 
         // Prepare agenda logger if necessary
-        const logger = logging.stores ? logStore(fn.name || index, agenda) : null
+        let logger = null
+
+        if (logging.stores) {
+          if (typeof logging.stores === 'function') {
+            logger = logging.stores(fn.name || index, agenda)
+          } else {
+            logger = logStore(fn.name || index, agenda)
+          }
+        }
 
         // Map Agenda to consecutive states and catch errors
         return agenda
